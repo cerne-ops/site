@@ -273,4 +273,30 @@
     box-shadow: 0 0 24px oklch(0.71 0.20 42 / 0.45);
     border-color: oklch(0.71 0.20 42 / 0.55);
   }
+
+  .sector-card--featured {
+    border-color: oklch(0.71 0.20 42 / 0.55);
+    box-shadow:
+      inset 0 0 0 1px oklch(0.71 0.20 42 / 0.2),
+      0 18px 40px -28px oklch(0.71 0.20 42 / 0.6);
+  }
+
+  .sector-card--featured:hover {
+    transform: scale(1.024);
+    border-color: oklch(0.71 0.20 42 / 0.78);
+    box-shadow:
+      inset 0 0 0 1px oklch(0.71 0.20 42 / 0.38),
+      0 24px 50px -24px oklch(0.71 0.20 42 / 0.78);
+  }
+
+  .sector-card--featured .sector-icon {
+    border-color: oklch(0.71 0.20 42 / 0.55);
+    box-shadow: 0 0 18px oklch(0.71 0.20 42 / 0.28);
+  }
+
+  .sector-card--featured:hover .sector-icon {
+    transform: scale(1.11);
+    box-shadow: 0 0 28px oklch(0.71 0.20 42 / 0.58);
+    border-color: oklch(0.71 0.20 42 / 0.78);
+  }
 }

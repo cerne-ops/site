@@ -4,6 +4,7 @@ type Sector = {
   icon: string;
   title: string;
   impact: string;
+  featured?: boolean;
 };
 
 export const sectors: Sector[] = [
@@ -36,11 +37,21 @@ export const sectors: Sector[] = [
     title: "Manutenção / Serviços Técnicos",
     impact: "Ordem, histórico e execução sem falhas.",
   },
+  {
+    icon: "🧩",
+    title: "PARA SUA EMPRESA",
+    impact: "Mais performance. Menos custo operacional.",
+    featured: true,
+  },
 ];
 
-function SectorCard({ icon, title, impact }: Sector) {
+function SectorCard({ icon, title, impact, featured }: Sector) {
   return (
-    <article className="sector-card reveal-up rounded-2xl border border-border bg-surface/65 p-6 lg:p-7">
+    <article
+      className={`sector-card reveal-up rounded-2xl border border-border bg-surface/65 p-6 lg:p-7 ${
+        featured ? "sector-card--featured" : ""
+      }`}
+    >
       <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-ember/35 bg-background/60 text-2xl leading-none transition-transform duration-300 sector-icon">
         {icon}
       </div>
