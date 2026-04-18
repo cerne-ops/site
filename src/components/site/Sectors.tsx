@@ -295,7 +295,10 @@ export function Sectors() {
                   <SectorCard {...sector} />
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl rounded-2xl border-border bg-surface-elevated p-0 overflow-hidden">
+              <DialogContent
+                className="max-w-2xl rounded-2xl border-border bg-surface-elevated p-0 overflow-hidden"
+                onCloseAutoFocus={(event) => event.preventDefault()}
+              >
                 <div className="border-b border-border/80 p-6 sm:p-7 bg-background/35">
                   <DialogHeader className="text-left space-y-3">
                     <div className="inline-flex items-center gap-2">
