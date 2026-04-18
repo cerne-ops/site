@@ -4,6 +4,7 @@ import { Hero } from "@/components/site/Hero";
 import { Pillars } from "@/components/site/Pillars";
 import { Products } from "@/components/site/Products";
 import { HowItWorks } from "@/components/site/HowItWorks";
+import { Sectors } from "@/components/site/Sectors";
 import { Plans } from "@/components/site/Plans";
 import { CTA } from "@/components/site/CTA";
 import { Footer } from "@/components/site/Footer";
@@ -21,6 +22,7 @@ function Index() {
         <Pillars />
         <Products />
         <HowItWorks />
+        <Sectors />
         <Plans />
         <CTA />
       </main>
