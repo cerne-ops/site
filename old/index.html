@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cerne | Operacao com Inteligencia Aplicada</title>
+  <meta name="description" content="A Cerne transforma operacoes manuais em execucao inteligente, previsivel e escalavel." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0f12;
+      --panel: #13141a;
+      --panel-2: #171922;
+      --line: #272b36;
+      --text: #f5f4f0;
+      --muted: #b9b8b2;
+      --orange: #e8510a;
+      --orange-2: #ff8c00;
+      --blue: #4da6ff;
+      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 450px at -10% -10%, rgba(232, 81, 10, 0.2), transparent 55%),
+        radial-gradient(800px 420px at 110% -12%, rgba(77, 166, 255, 0.15), transparent 55%),
+        var(--bg);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .label, .brand-word { font-family: "Bebas Neue", Impact, sans-serif; letter-spacing: .03em; }
+
+    .container { width: min(1160px, 92vw); margin: 0 auto; }
+    .section { padding: 88px 0; }
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+    .label::before { content: ""; width: 18px; height: 2px; background: var(--orange); }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(14, 15, 18, 0.74);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .nav-wrap { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      color: #fff;
+      gap: 10px;
+    }
+    .brand img { width: auto; height: 34px; filter: drop-shadow(0 0 14px rgba(232, 81, 10, 0.3)); }
+    .brand-word { font-size: 24px; }
+
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: #d7d6d1; text-decoration: none; font-size: 15px; }
+    .nav-links a:hover { color: var(--orange-2); }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-family: "DM Sans", sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .2s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(120deg, var(--orange), var(--orange-2));
+      box-shadow: 0 10px 22px rgba(232, 81, 10, 0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(232, 81, 10, 0.45); }
+    .btn-soft {
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .btn-soft:hover { border-color: rgba(232, 81, 10, 0.7); background: rgba(232, 81, 10, 0.08); }
+
+    .hero { padding: 48px 0 82px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .hero-left, .hero-right {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, rgba(19, 20, 26, 0.95), rgba(12, 13, 17, 0.95));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left { padding: 34px; }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: #f3d8c9;
+      border: 1px solid rgba(232, 81, 10, 0.35);
+      background: rgba(232, 81, 10, 0.1);
+      border-radius: 999px;
+      padding: 7px 12px;
+    }
+
+    .hero-title {
+      margin: 14px 0 0;
+      font-size: clamp(44px, 7.4vw, 86px);
+      line-height: .92;
+      text-wrap: balance;
+    }
+
+    .hero-title .accent {
+      background: linear-gradient(120deg, #fff 5%, #ffc38e 45%, var(--orange) 85%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy {
+      margin: 14px 0 0;
+      color: #d3d1cb;
+      max-width: 62ch;
+      font-size: 17px;
+    }
+
+    .hero-note {
+      margin: 16px 0 0;
+      color: #efece6;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .hero-cta { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .hero-kpi {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .kpi {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 11px 12px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .kpi strong { display: block; font-size: 22px; color: var(--orange-2); }
+    .kpi span { color: #c8c7c1; font-size: 13px; }
+
+    .hero-right {
+      background:
+        linear-gradient(130deg, rgba(29, 11, 5, 0.72), rgba(10, 12, 18, 0.94)),
+        url("assets/UI_Login.png") center/cover no-repeat;
+      padding: 22px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+    }
+
+    .hero-brand {
+      border: 1px solid rgba(232, 81, 10, 0.36);
+      border-radius: 18px;
+      background: rgba(8, 10, 15, 0.74);
+      backdrop-filter: blur(6px);
+      padding: 14px;
+      max-width: 280px;
+    }
+    .hero-brand img { width: 150px; height: auto; display: block; }
+    .hero-brand p {
+      margin: 9px 0 0;
+      text-transform: uppercase;
+      font-size: 20px;
+      line-height: .95;
+      color: #f6f5f2;
+      font-family: "Bebas Neue", Impact, sans-serif;
+    }
+    .hero-brand p span { color: var(--orange); }
+
+    .trusted {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .trusted div {
+      text-align: center;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 9px 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #d6d5cf;
+      letter-spacing: .07em;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: .95;
+      text-wrap: balance;
+    }
+    .sub { margin: 8px 0 0; color: var(--muted); max-width: 70ch; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+
+    .card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(170deg, rgba(22, 23, 30, 0.94), rgba(14, 15, 19, 0.94));
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(232, 81, 10, 0.6);
+      box-shadow: 0 20px 40px rgba(232, 81, 10, 0.12);
+    }
+    .card h3 { margin: 0; font-size: 30px; line-height: .9; }
+    .card p { margin: 7px 0 0; color: #d2d0c9; }
+
+    .compare {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .compare ul { margin: 9px 0 0; padding-left: 18px; color: #dddad3; }
+    .before { border-color: rgba(232, 81, 10, 0.36); }
+    .after { border-color: rgba(77, 166, 255, 0.36); }
+
+    .stats {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .stat strong { display: block; font-size: 34px; font-family: "Bebas Neue", sans-serif; color: var(--orange-2); line-height: .9; }
+    .stat span { color: #ccc9c2; font-size: 14px; }
+
+    .plans-head {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .billing {
+      display: inline-flex;
+      border: 1px solid rgba(232, 81, 10, 0.4);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .billing button {
+      border: 0;
+      background: transparent;
+      color: #d5d3cd;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .billing button.active { background: linear-gradient(120deg, rgba(232, 81, 10, 0.26), rgba(77, 166, 255, 0.2)); color: #fff; }
+
+    .plans { margin-top: 14px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .plan { min-height: 390px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .plan h3 { margin: 0; font-size: 38px; line-height: .9; }
+    .plan .tier { margin: 5px 0 0; color: #d8d6cf; }
+    .price { margin: 10px 0 2px; font-family: "Bebas Neue", sans-serif; font-size: 40px; line-height: .9; color: #fff; }
+    .price span { font-family: "DM Sans", sans-serif; font-size: 14px; color: #d5d2cc; margin-left: 4px; }
+    .plan ul { margin: 10px 0 0; padding-left: 18px; color: #dddad2; }
+    .plan .btn { width: 100%; margin-top: 14px; }
+    .plan.popular {
+      border-color: rgba(232, 81, 10, 0.78);
+      box-shadow: 0 0 0 1px rgba(255, 140, 0, 0.5), 0 22px 42px rgba(232, 81, 10, 0.17);
+    }
+    .badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      background: linear-gradient(120deg, var(--orange), var(--blue));
+      color: #fff;
+    }
+
+    .final {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background:
+        radial-gradient(700px 260px at 80% 0%, rgba(77, 166, 255, 0.2), transparent 56%),
+        radial-gradient(700px 280px at 20% 0%, rgba(232, 81, 10, 0.22), transparent 56%),
+        var(--panel);
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+    .final h2 { margin: 0; font-size: clamp(36px, 5vw, 60px); line-height: .92; }
+    .final p { margin: 8px 0 0; color: #d7d4cd; max-width: 75ch; }
+    .final .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+    footer {
+      padding: 26px 0 38px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 70px;
+      color: #cfcdc6;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1080px) {
+      .nav-links { display: none; }
+      .hero-grid, .grid-2, .compare, .plans { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .trusted { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .hero-left, .hero-right, .card, .final { padding: 16px; }
+      .hero-kpi, .stats, .trusted { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+      .hero-cta { flex-direction: column; }
+      .site-nav .btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <div class="container nav-wrap">
+      <a class="brand" href="#inicio">
+        <img src="assets/Logo_FT.png" alt="Cerne" />
+      </a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="#dor">Dor operacional</a>
+        <a href="#transformacao">Transformacao</a>
+        <a href="#aplicacoes">Aplicacoes</a>
+        <a href="#planos">Planos</a>
+        <a href="#assinar">Assinar</a>
+      </nav>
+      <a class="btn btn-soft" href="#assinar">Assinar agora</a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <article class="hero-left">
+            <span class="pill">Gerenciamento de processos com inteligencia</span>
+            <h1 class="hero-title">Sua operacao nao esta lenta. <span class="accent">Ela esta manual.</span></h1>
+            <p class="hero-copy">A Cerne transforma tarefas soltas em execucao organizada: menos retrabalho, menos gargalo, mais fluidez e mais capacidade para crescer sem ampliar equipe na mesma proporcao.</p>
+            <p class="hero-note">Uma pessoa com a Cerne opera com a performance de dez.</p>
+            <div class="hero-cta">
+              <a class="btn btn-primary" href="#planos">Destravar minha operacao</a>
+              <a class="btn btn-soft" href="#transformacao">Ver como funciona</a>
+              <a class="btn btn-soft" href="#assinar">Ativar a Cerne agora</a>
+            </div>
+            <div class="hero-kpi">
+              <div class="kpi"><strong>+42%</strong><span>estabilidade do fluxo de execucao</span></div>
+              <div class="kpi"><strong>7 dias</strong><span>para operacao funcional em producao</span></div>
+              <div class="kpi"><strong>24h</strong><span>organizacao de prioridades criticas</span></div>
+              <div class="kpi"><strong>+1 nivel</strong><span>de previsibilidade operacional</span></div>
+            </div>
+          </article>
+
+          <aside class="hero-right" aria-hidden="true">
+            <div class="hero-brand">
+              <img src="assets/Logo_FT.png" alt="" />
+              <p>Gerencie seus processos com <span>inteligencia</span></p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="trusted">
+          <div>Saude</div>
+          <div>Industria</div>
+          <div>Comercio</div>
+          <div>Logistica</div>
+          <div>Financeiro</div>
+          <div>Juridico</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="dor">
+      <div class="container">
+        <span class="label">Dor operacional</span>
+        <h2 class="title">Se isso acontece na sua empresa, voce ja esta perdendo dinheiro</h2>
+        <p class="sub">O problema nao e sua equipe. E a forma como a operacao roda hoje.</p>
+        <div class="grid-2">
+          <article class="card"><h3>Retrabalho constante</h3><p>Informacao duplicada e perda de contexto em ferramentas desconectadas.</p></article>
+          <article class="card"><h3>Sistemas sem conversa</h3><p>Entradas manuais viram atrasos, inconsistencias e lentidao.</p></article>
+          <article class="card"><h3>Dependencia de pessoas</h3><p>Sem padrao, cada ausencia cria gargalo na rotina inteira.</p></article>
+          <article class="card"><h3>Decisao sem visibilidade</h3><p>A lideranca decide tarde porque os dados chegam quebrados.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="transformacao">
+      <div class="container">
+        <span class="label">Transformacao</span>
+        <h2 class="title">Sai o improviso. Entra a execucao.</h2>
+        <p class="sub">A Cerne transforma rotina solta em operacao organizada.</p>
+        <div class="compare">
+          <article class="card before">
+            <h3>Antes</h3>
+            <ul>
+              <li>Tarefas espalhadas e inconsistentes.</li>
+              <li>Memoria humana como sistema.</li>
+              <li>Retrabalho e erro recorrente.</li>
+              <li>Baixa escalabilidade.</li>
+            </ul>
+          </article>
+          <article class="card after">
+            <h3>Depois</h3>
+            <ul>
+              <li>Fluxo continuo e padronizado.</li>
+              <li>Decisao com contexto claro.</li>
+              <li>Menos erro, mais previsibilidade.</li>
+              <li>Mais capacidade com o mesmo time.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="aplicacoes">
+      <div class="container">
+        <span class="label">Aplicabilidade pratica</span>
+        <h2 class="title">Sem depender de prompt. Sem virar experimento.</h2>
+        <p class="sub">A Cerne orienta execucao real no dia a dia da empresa.</p>
+        <div class="grid-2">
+          <article class="card"><h3>Entrada organizada</h3><p>Demandas entram com prioridade e destino correto.</p></article>
+          <article class="card"><h3>Relatorios sem friccao</h3><p>Resumo padrao com leitura rapida para decisao.</p></article>
+          <article class="card"><h3>Atendimento com consistencia</h3><p>Padrao claro de resposta e acompanhamento.</p></article>
+          <article class="card"><h3>Checklist operacional</h3><p>Tarefas viram execucao rastreavel entre setores.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <span class="label">Cerne x IA generica</span>
+        <h2 class="title">Chats ajudam pessoas. A Cerne organiza a operacao.</h2>
+        <div class="compare">
+          <article class="card before">
+            <h3>IA generica</h3>
+            <ul>
+              <li>Ganho pontual individual.</li>
+              <li>Depende de quem sabe usar.</li>
+              <li>Nao padroniza o time.</li>
+              <li>Varia conforme cada executor.</li>
+            </ul>
+          </article>
+          <article class="card after">
+            <h3>Cerne</h3>
+            <ul>
+              <li>Ganho sistemico e continuo.</li>
+              <li>Consistencia operacional.</li>
+              <li>Menos dependencia tecnica.</li>
+              <li>Mais previsibilidade e fluidez.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <span class="label">Prova de valor</span>
+        <h2 class="title">Indicadores que importam no negocio</h2>
+        <p class="sub">Evolucao operacional percebida no ritmo da execucao.</p>
+        <div class="stats">
+          <article class="card stat"><strong>35%</strong><span>menos retrabalho com fluxo organizado.</span></article>
+          <article class="card stat"><strong>28%</strong><span>mais agilidade operacional.</span></article>
+          <article class="card stat"><strong>40%</strong><span>mais clareza para decidir.</span></article>
+          <article class="card stat"><strong>22%</strong><span>mais produtividade por pessoa.</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="planos">
+      <div class="container">
+        <span class="label">Planos Cerne Core</span>
+        <h2 class="title">Escolha o nivel da sua operacao</h2>
+        <p class="sub">Evolucao clara de maturidade operacional: Start, Boost, Scale e Dominus.</p>
+
+        <div class="plans-head">
+          <div></div>
+          <div class="billing" role="radiogroup" aria-label="Cobranca">
+            <button type="button" class="active" data-billing="monthly" aria-pressed="true">Mensal</button>
+            <button type="button" data-billing="yearly" aria-pressed="false">Anual</button>
+          </div>
+        </div>
+
+        <div class="plans">
+          <article class="card plan">
+            <div>
+              <h3>Start</h3>
+              <p class="tier">Entrada controlada.</p>
+              <div class="price" data-month-price="R$ 89" data-year-price="R$ 79">R$ 89<span>/mes</span></div>
+              <ul>
+                <li>Sair do improviso.</li>
+                <li>Padrao inicial da rotina.</li>
+                <li>Visibilidade basica de execucao.</li>
+              </ul>
+            </div>
+            <a class="btn btn-primary" data-plan="start" href="#">Comecar simples</a>
+          </article>
+
+          <article class="card plan popular" id="boost">
+            <span class="badge">Mais recomendado</span>
+            <div>
+              <h3>Boost</h3>
+              <p class="tier">Operacao real no dia a dia.</p>
+              <div class="price" data-month-price="R$ 249" data-year-price="R$ 219">R$ 249<span>/mes</span></div>
+              <ul>
+                <li>Fluxos conectados.</li>
+                <li>Consistencia entre areas.</li>
+                <li>Escala sem travar.</li>
+              </ul>
+            </div>
+            <a class="btn btn-primary" data-plan="boost" href="#">Operar com controle</a>
+          </article>
+
+          <article class="card plan">
+            <div>
+              <h3>Scale</h3>
+              <p class="tier">Equipe com velocidade.</p>
+              <div class="price" data-month-price="R$ 459" data-year-price="R$ 409">R$ 459<span>/mes</span></div>
+              <ul>
+                <li>Capacidade maior por time.</li>
+                <li>Gestao de gargalos em tempo real.</li>
+                <li>Produtividade com padrao.</li>
+              </ul>
+            </div>
+            <a class="btn btn-primary" data-plan="scale" href="#">Escalar sem travar</a>
+          </article>
+
+          <article class="card plan">
+            <div>
+              <h3>Dominus</h3>
+              <p class="tier">Operacao avancada.</p>
+              <div class="price" data-month-price="R$ 899" data-year-price="R$ 809">R$ 899<span>/mes</span></div>
+              <ul>
+                <li>Maxima capacidade operacional.</li>
+                <li>Execucao corporativa robusta.</li>
+                <li>Cadencia de alta performance.</li>
+              </ul>
+            </div>
+            <a class="btn btn-primary" data-plan="dominus" href="#">Rodar no maximo nivel</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="assinar">
+      <div class="container final">
+        <span class="label">Decisao</span>
+        <h2>Ou sua operacao continua manual. Ou muda agora.</h2>
+        <p>O custo da operacao manual nao aparece no boleto. Mas aparece todos os dias em tempo perdido, retrabalho e lentidao.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#planos">Destravar minha operacao agora</a>
+          <a class="btn btn-soft" href="#boost">Ver plano de entrada</a>
+          <a class="btn btn-soft" data-plan="dominus" href="#">Assinar Dominus</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+      <a class="brand" href="#inicio"><img src="assets/Logo_FT.png" alt="Cerne" /></a>
+      <span>&copy; 2026 Cerne Core. Operacao com inteligencia aplicada.</span>
+    </div>
+  </footer>
+
+  <script>
+    const stripeLinks = {
+      start: "https://buy.stripe.com/START_PLACEHOLDER",
+      boost: "https://buy.stripe.com/BOOST_PLACEHOLDER",
+      scale: "https://buy.stripe.com/SCALE_PLACEHOLDER",
+      dominus: "https://buy.stripe.com/DOMINUS_PLACEHOLDER"
+    };
+
+    document.querySelectorAll("[data-plan]").forEach((a) => {
+      const key = a.getAttribute("data-plan");
+      if (stripeLinks[key]) a.setAttribute("href", stripeLinks[key]);
+    });
+
+    const billingButtons = document.querySelectorAll(".billing button");
+    const prices = document.querySelectorAll(".price");
+    let mode = "monthly";
+
+    const syncBilling = () => {
+      prices.forEach((price) => {
+        const monthly = price.getAttribute("data-month-price") || "R$ 0";
+        const yearly = price.getAttribute("data-year-price") || monthly;
+        const value = mode === "yearly" ? yearly : monthly;
+        const suffix = mode === "yearly" ? "/mes*" : "/mes";
+        price.innerHTML = `${value}<span>${suffix}</span>`;
+      });
+    };
+
+    billingButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        billingButtons.forEach((b) => { b.classList.remove("active"); b.setAttribute("aria-pressed", "false"); });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        mode = btn.getAttribute("data-billing") === "yearly" ? "yearly" : "monthly";
+        syncBilling();
+      });
+    });
+
+    syncBilling();
+  </script>
+</body>
+</html>

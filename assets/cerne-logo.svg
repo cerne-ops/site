@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc" preserveAspectRatio="xMidYMid meet">
+  <title id="title">Logo Cerne</title>
+  <desc id="desc">Símbolo de marca Cerne em gradiente de laranja com traço técnico interno.</desc>
+  <defs>
+    <radialGradient id="flare" cx="30%" cy="26%" r="72%">
+      <stop offset="0%" stop-color="#FF8C00"/>
+      <stop offset="60%" stop-color="#E8510A"/>
+      <stop offset="100%" stop-color="#8F2F00"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8510A"/>
+      <stop offset="60%" stop-color="#FF8C00"/>
+      <stop offset="100%" stop-color="#F5A03A"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" rx="72" fill="#0E0F12"/>
+  <path d="M53 96 L173 40 L280 102 L280 214 L173 276 L53 220 Z" fill="url(#flare)"/>
+  <path d="M67 111 L173 64 L266 117 L266 203 L173 256 L80 204 Z" fill="url(#flare)" opacity="0.94"/>
+  <path d="M160 78 L242 123 L242 197 L160 242 L78 197 L78 126 Z" fill="none" stroke="url(#ring)" stroke-width="12"/>
+  <path d="M96 129 L160 102 L215 126 L215 178 L160 202 L102 174 Z" fill="none" stroke="rgba(245,244,240,0.82)" stroke-width="10"/>
+  <path d="M160 92 C208 107 208 207 160 222" fill="none" stroke="#4DA6FF" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="160" cy="160" r="20" fill="#4DA6FF"/>
+  <circle cx="160" cy="160" r="10" fill="#0E0F12"/>
+</svg>
