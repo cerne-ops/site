@@ -1,4 +1,8 @@
+import { useSupraContactModal } from "@/components/site/SupraContactModal";
+
 export function Products() {
+  const { openModal } = useSupraContactModal();
+
   return (
     <section className="relative py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -118,13 +122,14 @@ export function Products() {
                 ))}
               </ul>
 
-              <a
-                href="#contato"
+              <button
+                type="button"
+                onClick={() => openModal("products-supra")}
                 className="inline-flex items-center gap-2 rounded-lg border border-ember/40 text-ember font-semibold px-5 py-3 hover:bg-ember/10 transition text-sm"
               >
                 Conversar com a Cerne
                 <span aria-hidden>→</span>
-              </a>
+              </button>
             </div>
           </div>
         </div>

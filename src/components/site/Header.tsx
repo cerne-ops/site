@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/cerne-logo.png";
+import { useSupraContactModal } from "@/components/site/SupraContactModal";
 
 const nav = [
   { label: "Plataforma", to: "/#plataforma" },
@@ -9,6 +10,8 @@ const nav = [
 ];
 
 export function Header() {
+  const { openModal } = useSupraContactModal();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-7xl px-6 pt-5">
@@ -44,12 +47,13 @@ export function Header() {
             >
               Entrar
             </a>
-            <a
-              href="#contato"
+            <button
+              type="button"
+              onClick={() => openModal("header-cta")}
               className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-medium text-sm px-4 py-2.5 shadow-ember hover:brightness-110 transition"
             >
               Falar com a Cerne
-            </a>
+            </button>
           </div>
         </div>
       </div>

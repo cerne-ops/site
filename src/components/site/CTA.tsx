@@ -1,4 +1,8 @@
+import { useSupraContactModal } from "@/components/site/SupraContactModal";
+
 export function CTA() {
+  const { openModal } = useSupraContactModal();
+
   return (
     <section id="contato" className="relative py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -30,12 +34,13 @@ export function CTA() {
                 Entrar no Cerne Core
                 <span aria-hidden>→</span>
               </a>
-              <a
-                href="mailto:contato@cerneops.com.br"
+              <button
+                type="button"
+                onClick={() => openModal("cta-section")}
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/60 backdrop-blur px-7 py-4 font-medium hover:bg-surface transition"
               >
                 Falar com Especialista
-              </a>
+              </button>
             </div>
           </div>
         </div>

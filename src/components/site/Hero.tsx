@@ -1,6 +1,9 @@
 import logo from "@/assets/cerne-logo.png";
+import { useSupraContactModal } from "@/components/site/SupraContactModal";
 
 export function Hero() {
+  const { openModal } = useSupraContactModal();
+
   return (
     <section className="relative pt-40 pb-28 overflow-hidden bg-hero">
       <div className="absolute inset-0 bg-grid pointer-events-none" />
@@ -44,12 +47,13 @@ export function Hero() {
                 Conhecer o Cerne Core
                 <span aria-hidden>→</span>
               </a>
-              <a
-                href="#supra"
+              <button
+                type="button"
+                onClick={() => openModal("hero-supra")}
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/40 backdrop-blur px-6 py-3.5 font-medium hover:bg-surface transition"
               >
                 Falar com Especialista Supra
-              </a>
+              </button>
             </div>
 
             <div className="mt-12 flex items-center gap-3 text-sm text-muted-foreground">

@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useSupraContactModal } from "@/components/site/SupraContactModal";
 
 type Sector = {
   icon: string;
@@ -238,6 +239,7 @@ function SectorCard({ icon, title, impact, featured }: Sector) {
 
 export function Sectors() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const { openModal } = useSupraContactModal();
 
   useEffect(() => {
     const root = sectionRef.current;
@@ -331,12 +333,15 @@ export function Sectors() {
 
                   <div className="mt-6 flex flex-wrap items-center gap-3">
                     <DialogClose asChild>
-                      <a
-                        href="#contato"
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTimeout(() => openModal(`setor-${sector.title}`), 0);
+                        }}
                         className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-5 py-3 shadow-ember hover:brightness-110 transition"
                       >
                         {sector.cta}
-                      </a>
+                      </button>
                     </DialogClose>
                     <DialogClose asChild>
                       <button
