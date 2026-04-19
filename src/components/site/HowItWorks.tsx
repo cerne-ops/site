@@ -41,7 +41,7 @@ export function HowItWorks() {
             <img
               src={supraLogo}
               alt="Supra"
-              className="mb-5 h-11 w-11 object-contain opacity-80"
+              className="mb-7 w-[170px] sm:w-[210px] h-auto object-contain opacity-95"
             />
             <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
               A operação no nível mais alto —
