@@ -30,6 +30,22 @@ function getPlanMeta(slug: string) {
   };
 }
 
+const AGENT_GROUP_LABELS: Record<string, string> = {
+  comunicacao_conteudo: "Comunicacao e Conteudo",
+  organizacao_execucao: "Organizacao e Execucao",
+  conhecimento_estruturacao: "Conhecimento e Estruturacao",
+  atendimento_relacionamento: "Atendimento e Relacionamento",
+  dados_inteligencia_operacional: "Dados e Inteligencia Operacional",
+};
+
+function normalizeGroupLabel(groupKey?: string) {
+  const normalized = String(groupKey || "")
+    .trim()
+    .toLowerCase();
+  if (!normalized) return "Outros agentes";
+  return AGENT_GROUP_LABELS[normalized] || "Outros agentes";
+}
+
 export const Route = createFileRoute("/planos/$slug")({
   head: ({ params }) => {
     const meta = getPlanMeta(params.slug);
@@ -52,6 +68,16 @@ function PlanRoutePage() {
   const [agents, setAgents] = useState<Array<{ name?: string; description?: string; group?: string }>>(
     [],
   );
+  const groupedAgents = useMemo(() => {
+    const groups = new Map<string, Array<{ name?: string; description?: string; group?: string }>>();
+    for (const agent of agents) {
+      const label = normalizeGroupLabel(agent.group);
+      const current = groups.get(label) || [];
+      current.push(agent);
+      groups.set(label, current);
+    }
+    return Array.from(groups.entries()).map(([groupLabel, items]) => ({ groupLabel, items }));
+  }, [agents]);
 
   useEffect(() => {
     let mounted = true;
@@ -190,25 +216,30 @@ function PlanRoutePage() {
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold mb-4">Agentes incluídos</h2>
-              {agents.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {agents.map((agent, index) => (
-                    <div key={`${agent.name}-${index}`} className="rounded-xl border border-border/80 bg-background/35 p-4">
-                      <div className="font-semibold">{agent.name || "Agente"}</div>
-                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                        {agent.description || "Consulte disponibilidade"}
-                      </p>
-                      {agent.group ? (
-                        <div className="mt-3 font-mono text-[11px] text-ember uppercase tracking-widest">
-                          {agent.group}
-                        </div>
-                      ) : null}
+              {groupedAgents.length > 0 ? (
+                <div className="space-y-5">
+                  {groupedAgents.map(({ groupLabel, items }) => (
+                    <div key={groupLabel} className="space-y-3">
+                      <h3 className="font-display text-lg font-semibold text-foreground/90">{groupLabel}</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {items.map((agent, index) => (
+                          <div
+                            key={`${groupLabel}-${agent.name}-${index}`}
+                            className="rounded-xl border border-border/80 bg-background/35 p-4"
+                          >
+                            <div className="font-semibold">{agent.name || "Agente"}</div>
+                            {agent.description ? (
+                              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{agent.description}</p>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="rounded-xl border border-border/80 bg-background/35 p-4 text-sm text-muted-foreground">
-                  Consulte disponibilidade
+                  Nenhum agente disponivel para este plano no momento.
                 </div>
               )}
             </div>
