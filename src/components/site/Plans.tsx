@@ -79,7 +79,15 @@ export function Plans() {
                 <img
                   src={plan.logo}
                   alt={`${plan.name} logo`}
-                  className="h-11 w-auto object-contain opacity-95 pointer-events-none"
+                  className={`w-auto object-contain opacity-95 pointer-events-none ${
+                    plan.id === "dominus"
+                      ? "h-[55px]"
+                      : plan.id === "scale"
+                        ? "h-[51px]"
+                        : plan.id === "boost"
+                          ? "h-12"
+                          : "h-11"
+                  }`}
                 />
               </div>
               <div className="font-mono text-xs text-foreground/70 mb-4">
