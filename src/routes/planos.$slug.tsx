@@ -184,12 +184,15 @@ function PlanRoutePage() {
                   </div>
                 </div>
 
-                <div className="lg:col-span-6 flex items-center justify-center lg:justify-end">
-                  <img
-                    src={plan.logo}
-                    alt={`${plan.name} logo`}
-                    className="w-[250px] sm:w-[320px] lg:w-[360px] xl:w-[400px] h-auto object-contain opacity-95"
-                  />
+                <div className="lg:col-span-6 flex items-center justify-center">
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute h-28 w-44 sm:h-36 sm:w-56 lg:h-44 lg:w-64 rounded-full bg-white/15 blur-3xl pointer-events-none" />
+                    <img
+                      src={plan.logo}
+                      alt={`${plan.name} logo`}
+                      className="relative w-[250px] sm:w-[320px] lg:w-[360px] xl:w-[400px] h-auto object-contain opacity-95"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
