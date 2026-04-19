@@ -29,6 +29,7 @@ type PlanStatic = {
   bullets: string[];
   modalHeadline: string;
   modalDescription: string;
+  modalAudience: string;
   modalWhatItDoes: string[];
   modalImpact: string[];
   modalCta: string;
@@ -49,6 +50,8 @@ const planCatalog: PlanStatic[] = [
     modalHeadline: "O primeiro passo para sair do manual",
     modalDescription:
       "Você começa a organizar tarefas básicas e parar de fazer tudo do zero.",
+    modalAudience:
+      "Para empresas que estão saindo do manual e precisam criar padrão nas tarefas do dia a dia.",
     modalWhatItDoes: [
       "Criar textos prontos",
       "Resumir informações",
@@ -66,6 +69,8 @@ const planCatalog: PlanStatic[] = [
     bullets: ["Mais capacidade", "Uso em equipe", "Menos retrabalho"],
     modalHeadline: "A operação começa a ganhar tração",
     modalDescription: "Você sai do uso individual e entra na operação real.",
+    modalAudience:
+      "Para empresas que já saíram do uso individual e precisam organizar melhor a execução da equipe.",
     modalWhatItDoes: [
       "Organizar equipe",
       "Padronizar execução",
@@ -83,6 +88,8 @@ const planCatalog: PlanStatic[] = [
     bullets: ["Processos organizados", "Mais controle", "Produtividade por equipe"],
     modalHeadline: "A operação começa a escalar",
     modalDescription: "A IA passa a estruturar como a empresa funciona.",
+    modalAudience:
+      "Para operações que precisam crescer com mais controle e visibilidade da execução.",
     modalWhatItDoes: [
       "Gerar relatórios",
       "Analisar dados",
@@ -100,6 +107,8 @@ const planCatalog: PlanStatic[] = [
     bullets: ["Todos os agentes", "Máxima capacidade", "Prioridade operacional"],
     modalHeadline: "Capacidade máxima do Core",
     modalDescription: "Tudo que a plataforma pode entregar, no nível mais alto.",
+    modalAudience:
+      "Para empresas que exigem capacidade máxima, prioridade e organização em escala.",
     modalWhatItDoes: [
       "Estruturar documentos",
       "Organizar dados",
@@ -204,65 +213,97 @@ export function Plans() {
                 <div className="flex h-full flex-col">
                   <div className="border-b border-border/80 p-6 sm:p-7 bg-background/35">
                     <DialogHeader className="text-left space-y-3">
-                      <div className="font-mono text-xs uppercase tracking-widest text-ember">
-                        {plan.label} / {plan.name}
+                      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+                        <DialogTitle className="font-display text-3xl leading-none tracking-tight">
+                          {plan.name}
+                        </DialogTitle>
+                        <span className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                          {plan.label}
+                        </span>
                       </div>
-                      <DialogTitle className="font-display text-3xl leading-tight tracking-tight">
-                        {plan.modalHeadline}
-                      </DialogTitle>
+                      <div className="font-mono text-xs text-foreground/80">
+                        {formatValue(plan.dynamic.price_monthly)}
+                      </div>
+                      <p className="text-sm text-foreground/90">{plan.modalHeadline}</p>
                       <DialogDescription className="text-base text-foreground/85 leading-relaxed">
                         {plan.modalDescription}
                       </DialogDescription>
                     </DialogHeader>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-6 sm:p-7">
-                    <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-3">
-                      / O que faz
-                    </div>
-                    <ul className="space-y-3 text-sm">
-                      {plan.modalWhatItDoes.map((item) => (
-                        <li key={item} className="flex items-start gap-2.5">
-                          <span className="mt-1.5 h-1 w-1 rounded-full bg-ember shrink-0" />
-                          <span className="text-foreground/90">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="flex-1 overflow-y-auto p-6 sm:p-7 space-y-6">
+                    <section className="rounded-xl border border-border/80 bg-background/35 p-4 sm:p-5">
+                      <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-2">
+                        Para quem é
+                      </div>
+                      <p className="text-sm text-foreground/90 leading-relaxed">
+                        {plan.modalAudience}
+                      </p>
+                    </section>
 
-                    <div className="font-mono text-[11px] uppercase tracking-widest text-ember mt-7 mb-3">
-                      / Limites do plano
-                    </div>
-                    <ul className="space-y-2.5 text-sm text-foreground/90">
-                      <li>Até {formatValue(plan.dynamic.max_users)} usuário(s)</li>
-                      <li>{formatValue(plan.dynamic.tasks_day)} tarefas/dia</li>
-                      <li>{formatValue(plan.dynamic.tasks_month)} tarefas/mês</li>
-                      <li>{formatValue(plan.dynamic.uploads_day)} uploads/dia</li>
-                      <li>Tamanho de upload: {formatValue(plan.dynamic.upload_size)}</li>
-                      <li>Retenção: {formatValue(plan.dynamic.retention_days)} dias</li>
-                      <li>Suporte: {formatValue(plan.dynamic.support_level)}</li>
-                      <li>Prioridade: {formatValue(plan.dynamic.priority)}</li>
-                    </ul>
+                    <section>
+                      <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-3">
+                        O que você consegue fazer
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {plan.modalWhatItDoes.map((item) => (
+                          <div
+                            key={item}
+                            className="rounded-xl border border-border/80 bg-background/30 px-4 py-3 text-sm text-foreground/90 leading-relaxed"
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    </section>
 
-                    <div className="font-mono text-[11px] uppercase tracking-widest text-ember mt-7 mb-3">
-                      / Impacto
-                    </div>
-                    <ul className="space-y-3 text-sm">
-                      {plan.modalImpact.map((item) => (
-                        <li key={item} className="flex items-start gap-2.5">
-                          <span className="mt-1.5 h-1 w-1 rounded-full bg-ember shrink-0" />
-                          <span className="text-foreground/90">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <section>
+                      <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-3">
+                        Capacidade do plano
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="rounded-xl border border-border/80 bg-background/30 px-4 py-3">
+                          <div className="font-display text-xl leading-none">
+                            {formatValue(plan.dynamic.max_users)}
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground">usuários</div>
+                        </div>
+                        <div className="rounded-xl border border-border/80 bg-background/30 px-4 py-3">
+                          <div className="font-display text-xl leading-none">
+                            {formatValue(plan.dynamic.tasks_day)}
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground">tarefas/dia</div>
+                        </div>
+                        <div className="rounded-xl border border-border/80 bg-background/30 px-4 py-3">
+                          <div className="font-display text-xl leading-none">
+                            {formatValue(plan.dynamic.tasks_month)}
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground">tarefas/mês</div>
+                        </div>
+                        <div className="rounded-xl border border-border/80 bg-background/30 px-4 py-3">
+                          <div className="font-display text-xl leading-none">
+                            {formatValue(plan.dynamic.uploads_day)}
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground">uploads/dia</div>
+                        </div>
+                      </div>
+                    </section>
 
-                    <div className="font-mono text-[11px] uppercase tracking-widest text-ember mt-7 mb-3">
-                      / Expansão conforme crescimento
-                    </div>
-                    <ul className="space-y-2.5 text-sm text-foreground/90">
-                      <li>usuários adicionais</li>
-                      <li>pacotes de tarefas</li>
-                      <li>capacidade sob demanda</li>
-                    </ul>
+                    <section>
+                      <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-3">
+                        O que muda na prática
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {plan.modalImpact.map((item) => (
+                          <span
+                            key={item}
+                            className="inline-flex items-center rounded-full border border-border/80 bg-background/35 px-3 py-1.5 text-xs text-foreground/90"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </section>
                   </div>
 
                   <div className="sticky bottom-0 border-t border-border/80 p-5 sm:p-6 bg-surface-elevated/95 backdrop-blur">
@@ -283,6 +324,9 @@ export function Plans() {
                         Falar com especialista
                       </button>
                     </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      Sem compromisso. Você vê o plano ideal para a sua operação.
+                    </p>
                   </div>
                 </div>
               </DialogContent>
