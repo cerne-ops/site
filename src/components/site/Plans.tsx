@@ -81,7 +81,7 @@ export function Plans() {
                   alt={`${plan.name} logo`}
                   className={`w-auto object-contain opacity-95 pointer-events-none ${
                     plan.id === "dominus"
-                      ? "h-[55px]"
+                      ? "h-[63px]"
                       : plan.id === "scale"
                         ? "h-[51px]"
                         : plan.id === "boost"
