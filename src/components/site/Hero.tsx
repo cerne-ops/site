@@ -5,7 +5,7 @@ export function Hero() {
   const { openModal } = useSupraContactModal();
 
   return (
-    <section className="relative pt-40 pb-28 overflow-hidden bg-hero">
+    <section id="topo" className="relative pt-28 sm:pt-36 lg:pt-40 pb-28 overflow-hidden bg-hero">
       <div className="absolute inset-0 bg-grid pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"

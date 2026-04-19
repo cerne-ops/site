@@ -266,7 +266,7 @@ export function Sectors() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-28 bg-background/95">
+    <section id="setores" ref={sectionRef} className="relative py-28 bg-background/95">
       <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6">
