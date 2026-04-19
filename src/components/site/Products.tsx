@@ -34,26 +34,35 @@ export function Products() {
                 </div>
                 <div>
                   <div className="font-mono text-xs text-ember uppercase tracking-widest">
-                    Produto SaaS
+                    PRODUTO SAAS
                   </div>
                   <div className="font-display text-xl font-semibold">Cerne Core</div>
                 </div>
               </div>
 
               <h3 className="font-display text-3xl font-bold leading-tight mb-4">
-                A plataforma de operação inteligente baseada em agentes.
+                Sua operação rodando melhor todos os dias — sem depender de ninguém.
               </h3>
-              <p className="text-muted-foreground leading-relaxed mb-8">
-                Multiempresa, escalável, com planos definidos e oferta padronizada
-                de agentes. Acesso rápido para quem quer ganho operacional imediato.
+              <p className="text-muted-foreground leading-relaxed mb-9">
+                Hoje, boa parte do seu tempo ainda é consumida por tarefas repetitivas,
+                decisões sem dado e retrabalho silencioso. O Core organiza, executa e
+                dá controle — para sua empresa produzir mais com o que já tem.
               </p>
 
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3.5 mb-8 text-[15px] leading-relaxed">
                 {[
-                  "Plataforma multi-tenant com isolamento lógico rígido",
-                  "Agentes por grupos, permissões e plano",
-                  "Administração de usuários, perfis e auditoria",
-                  "Quatro planos: Start, Boost, Scale e Dominus",
+                  "Execução padronizada — sem depender de quem faz",
+                  "Fim do retrabalho causado por erro ou falta de processo",
+                  "Tarefas repetitivas deixam de consumir sua equipe",
+                  "Processos organizados que não travam no dia a dia",
+                  "Mais clareza do que está acontecendo na operação",
+                  "Decisão baseada em informação, não em feeling",
+                  "Redução de gargalos invisíveis que travam crescimento",
+                  "Equipe mais produtiva sem precisar aumentar estrutura",
+                  "Menos tempo apagando incêndio operacional",
+                  "Mais tempo focando em crescimento e estratégia",
+                  "Organização que se mantém, não depende de esforço constante",
+                  "Sua operação começa a escalar sem perder controle",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm">
                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />
@@ -62,19 +71,25 @@ export function Products() {
                 ))}
               </ul>
 
+              <p className="text-foreground/85 leading-relaxed mb-7">
+                Você não precisa trabalhar mais.
+                <br />
+                Precisa de uma operação que funcione melhor.
+              </p>
+
               <div className="flex items-center gap-4">
                 <a
-                  href="https://core.cerneops.com.br"
+                  href="#planos"
                   className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-5 py-3 shadow-ember hover:brightness-110 transition text-sm"
                 >
-                  Acessar o Core
+                  Destravar minha operação
                   <span aria-hidden>→</span>
                 </a>
                 <a
                   href="#planos"
                   className="text-sm text-muted-foreground hover:text-foreground transition"
                 >
-                  Ver planos →
+                  Ver planos
                 </a>
               </div>
             </div>
@@ -93,27 +108,35 @@ export function Products() {
                 </div>
                 <div>
                   <div className="font-mono text-xs text-ember uppercase tracking-widest">
-                    Consultoria High-Touch
+                    CONSULTORIA HIGH-TOUCH
                   </div>
                   <div className="font-display text-xl font-semibold">Cerne Supra</div>
                 </div>
               </div>
 
               <h3 className="font-display text-3xl font-bold leading-tight mb-4">
-                Operação construída sob medida, do zero ao funcionamento real.
+                Quando sua operação exige mais do que ferramenta — exige solução construída para você.
               </h3>
-              <p className="text-muted-foreground leading-relaxed mb-8">
-                Ambiente dedicado, todos os agentes liberados, aplicações
-                desenvolvidas para a operação específica do cliente. Sem limites
-                de plano.
+              <p className="text-muted-foreground leading-relaxed mb-9">
+                Se sua operação já é complexa, o problema não é falta de ferramenta
+                — é falta de estrutura. A Cerne entra para desenhar, conectar e fazer
+                funcionar de verdade.
               </p>
 
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3.5 mb-8 text-[15px] leading-relaxed">
                 {[
-                  "Subdomínio dedicado: [cliente].cerneops.com.br",
-                  "Aplicações e agentes desenhados sob medida",
-                  "Operação modelada com a equipe Cerne",
-                  "Sem teto de plano. Profundidade total.",
+                  "Diagnóstico real do que está travando sua operação",
+                  "Solução desenhada exatamente para o seu cenário",
+                  "Automação de processos críticos do seu negócio",
+                  "Integração entre sistemas que hoje não se conversam",
+                  "Eliminação de retrabalho estrutural",
+                  "Redução de falhas humanas em processos-chave",
+                  "Operação mais previsível e controlada",
+                  "Implementação acompanhada até funcionar na prática",
+                  "Ajustes contínuos conforme sua operação evolui",
+                  "Ganho de eficiência sem aumentar complexidade",
+                  "Escala operacional sem aumentar proporcionalmente o custo",
+                  "Estrutura preparada para crescimento real",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm">
                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />
@@ -122,12 +145,18 @@ export function Products() {
                 ))}
               </ul>
 
+              <p className="text-foreground/85 leading-relaxed mb-7">
+                Aqui não é sobre usar IA.
+                <br />
+                É sobre sua operação finalmente funcionar como deveria.
+              </p>
+
               <button
                 type="button"
                 onClick={() => openModal("products-supra")}
                 className="inline-flex items-center gap-2 rounded-lg border border-ember/40 text-ember font-semibold px-5 py-3 hover:bg-ember/10 transition text-sm"
               >
-                Conversar com a Cerne
+                Resolver minha operação com a Cerne
                 <span aria-hidden>→</span>
               </button>
             </div>
