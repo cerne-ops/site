@@ -152,11 +152,11 @@ function PlanRoutePage() {
           <div className="absolute inset-0 bg-grid opacity-35 pointer-events-none" />
           <div className="relative mx-auto max-w-7xl px-6">
             <div className="relative overflow-hidden rounded-3xl border border-border bg-surface/55 p-8 lg:p-12 lg:pr-[44%]">
-              <div className="hidden lg:flex absolute right-10 top-1/2 -translate-y-1/2 w-[36%] h-[52%] items-center justify-center rounded-2xl border border-border/60 bg-background/20 p-6">
+              <div className="hidden lg:flex absolute right-10 top-1/2 -translate-y-1/2 items-center justify-center">
                 <img
                   src={plan.logo}
                   alt={`${plan.name} logo`}
-                  className="max-h-full max-w-full object-contain opacity-95"
+                  className="w-[250px] h-auto object-contain opacity-95"
                 />
               </div>
               <img
