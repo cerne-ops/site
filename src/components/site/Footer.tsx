@@ -25,17 +25,17 @@ export function Footer() {
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#core" className="hover:text-foreground transition">
+                <a href="/#core" className="hover:text-foreground transition">
                   Cerne Core
                 </a>
               </li>
               <li>
-                <a href="#supra" className="hover:text-foreground transition">
+                <a href="/#supra" className="hover:text-foreground transition">
                   Cerne Supra
                 </a>
               </li>
               <li>
-                <a href="#planos" className="hover:text-foreground transition">
+                <a href="/#planos" className="hover:text-foreground transition">
                   Planos
                 </a>
               </li>

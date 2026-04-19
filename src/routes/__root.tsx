@@ -2,6 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import faviconPng from "../../assets/favicon.png?url";
+import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
 
 function NotFoundComponent() {
   return (
@@ -88,5 +89,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <SupraContactModalProvider>
+      <Outlet />
+    </SupraContactModalProvider>
+  );
 }

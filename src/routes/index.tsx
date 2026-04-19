@@ -9,7 +9,6 @@ import { Sectors } from "@/components/site/Sectors";
 import { Plans } from "@/components/site/Plans";
 import { CTA } from "@/components/site/CTA";
 import { Footer } from "@/components/site/Footer";
-import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -17,21 +16,19 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <SupraContactModalProvider>
-      <div className="min-h-screen bg-background text-foreground">
-        <Header />
-        <main>
-          <Hero />
-          <WhyCerneNotChat />
-          <Pillars />
-          <Products />
-          <HowItWorks />
-          <Sectors />
-          <Plans />
-          <CTA />
-        </main>
-        <Footer />
-      </div>
-    </SupraContactModalProvider>
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main>
+        <Hero />
+        <WhyCerneNotChat />
+        <Pillars />
+        <Products />
+        <HowItWorks />
+        <Sectors />
+        <Plans />
+        <CTA />
+      </main>
+      <Footer />
+    </div>
   );
 }
