@@ -1,26 +1,88 @@
+import { useEffect, useRef } from "react";
+
 const pillars = [
   {
     tag: "01",
-    title: "Chat de IA melhora a pessoa.",
-    body: "Cerne melhora a operação. Não vendemos chat genérico — entregamos capacidade operacional repetível, padronizada e mensurável.",
+    title: "Padronização de execução",
+    blocks: [
+      "Hoje, o mesmo processo pode ser executado de formas diferentes dentro da sua empresa — dependendo de quem faz.",
+      "A Cerne elimina essa variação.",
+      "O que precisa ser feito passa a seguir um padrão claro, repetível e consistente, garantindo qualidade independente de quem executa.",
+    ],
   },
   {
     tag: "02",
-    title: "Agentes que executam, não respondem.",
-    body: "Cada agente é uma capacidade funcional dentro da plataforma, organizada por grupos, permissões e estado operacional.",
+    title: "Controle real da operação",
+    blocks: [
+      "Você deixa de depender de acompanhamento manual ou percepção.",
+      "Com a operação estruturada, você passa a enxergar o que está acontecendo de verdade — o que foi feito, o que está em andamento e o que está travando.",
+    ],
   },
   {
     tag: "03",
-    title: "Você não compra plano. Destrava capacidade.",
-    body: "A Cerne remove gargalos, amplia o time e dá escala sem contratar proporcionalmente. O plano é apenas o tamanho da operação.",
+    title: "Repetibilidade com qualidade",
+    blocks: [
+      "O que hoje exige esforço constante passa a acontecer de forma organizada e previsível.",
+      "A Cerne transforma tarefas em processos que se repetem com padrão, mantendo qualidade mesmo com aumento de volume.",
+    ],
+  },
+  {
+    tag: "04",
+    title: "Rastreabilidade de ponta a ponta",
+    blocks: [
+      "Você passa a ter histórico, contexto e visibilidade de tudo que acontece na operação.",
+      "Nada se perde, nada fica “no meio do caminho”, e qualquer etapa pode ser entendida, revisada ou ajustada.",
+    ],
+  },
+  {
+    tag: "05",
+    title: "Organização que se mantém",
+    blocks: [
+      "A operação deixa de depender de esforço constante para se manter organizada.",
+      "Processos bem definidos mantêm a estrutura funcionando no dia a dia, sem necessidade de reorganizar tudo o tempo todo.",
+    ],
+  },
+  {
+    tag: "06",
+    title: "Escala com previsibilidade",
+    blocks: [
+      "Crescer sem estrutura aumenta o caos.",
+      "Com a Cerne, sua operação está preparada para crescer mantendo controle, padrão e eficiência — sem aumentar proporcionalmente a complexidade.",
+    ],
   },
 ];
 
 export function Pillars() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+
+    const reveals = root.querySelectorAll<HTMLElement>(".reveal-up");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.16 },
+    );
+
+    reveals.forEach((item, index) => {
+      item.style.setProperty("--reveal-delay", `${index * 70}ms`);
+      observer.observe(item);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="plataforma" className="relative py-28">
+    <section ref={sectionRef} id="plataforma" className="relative py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl mb-16">
+        <div className="max-w-2xl mb-16 reveal-up">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
             / O que é a Cerne
           </div>
@@ -31,20 +93,26 @@ export function Pillars() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden border border-border">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {pillars.map((p) => (
             <div
               key={p.tag}
-              className="group bg-surface/60 p-8 lg:p-10 hover:bg-surface-elevated transition-colors relative"
+              className="group reveal-up rounded-2xl border border-border bg-surface/60 p-8 lg:p-9 hover:bg-surface-elevated hover:border-ember/35 transition-all"
             >
-              <div className="absolute top-0 left-0 right-0 h-px overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-px overflow-hidden rounded-t-2xl">
                 <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-ember to-transparent opacity-0 group-hover:opacity-100 animate-scan" />
               </div>
               <div className="font-mono text-xs text-ember mb-6">{p.tag}</div>
               <h3 className="font-display text-2xl font-semibold leading-snug mb-4">
                 {p.title}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">{p.body}</p>
+              <div className="space-y-3">
+                {p.blocks.map((block) => (
+                  <p key={block} className="text-muted-foreground leading-relaxed">
+                    {block}
+                  </p>
+                ))}
+              </div>
             </div>
           ))}
         </div>
