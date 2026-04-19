@@ -15,7 +15,7 @@ const nav = [
 const desktopNav = [
   { label: "Plataforma", to: "/#plataforma" },
   { label: "Core", to: "/#core" },
-  { label: "Supra", to: "/#supra" },
+  { label: "Supra", to: "/#como-funciona" },
   { label: "Planos", to: "/#planos" },
 ];
 
