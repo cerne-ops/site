@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { fetchLandingPlans, formatPlanValue, planCatalog, type PlanDynamic } from "@/lib/plans";
+import { fetchLandingPlans, formatPlanPriceBRL, formatPlanValue, planCatalog, type PlanDynamic } from "@/lib/plans";
 
 type PlanView = (typeof planCatalog)[number] & { dynamic: PlanDynamic };
 
@@ -90,8 +90,8 @@ export function Plans() {
                   }`}
                 />
               </div>
-              <div className="font-mono text-xs text-foreground/70 mb-4">
-                {formatPlanValue(plan.dynamic.price_monthly)}
+              <div className="font-mono text-[13px] text-foreground/70 mb-4">
+                {formatPlanPriceBRL(plan.dynamic.price_monthly)}
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 {plan.dynamic.short_description || plan.teaser}

@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import {
   fetchPlanBySlug,
+  formatPlanPriceBRL,
   formatPlanValue,
   getStaticPlanBySlug,
   mergePlanDynamic,
@@ -160,8 +161,8 @@ function PlanRoutePage() {
                   <h1 className="font-display text-5xl sm:text-6xl font-bold leading-[0.95]">
                     {plan.name}
                   </h1>
-                  <div className="mt-4 font-mono text-sm text-foreground/80">
-                    {formatPlanValue(plan.dynamic.price_monthly)}
+                  <div className="mt-4 font-mono text-[15px] text-foreground/80">
+                    {formatPlanPriceBRL(plan.dynamic.price_monthly)}
                   </div>
                   <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
                     {plan.dynamic.short_description || plan.teaser}

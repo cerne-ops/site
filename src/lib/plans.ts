@@ -142,6 +142,32 @@ export function formatPlanValue(value: string | number | null | undefined) {
   return String(value);
 }
 
+export function formatPlanPriceBRL(value: string | number | null | undefined) {
+  if (value === null || value === undefined || value === "") return "—";
+
+  const toCurrency = (amount: number) =>
+    `${new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)}/mês`;
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return toCurrency(value);
+  }
+
+  const raw = String(value).trim();
+  const normalized = raw.replace(/\./g, "").replace(",", ".").replace(/[^\d.-]/g, "");
+  const parsed = Number(normalized);
+
+  if (Number.isFinite(parsed)) {
+    return toCurrency(parsed);
+  }
+
+  return raw;
+}
+
 function normalizeSlug(input: string | undefined | null) {
   return (input ?? "").trim().toLowerCase();
 }
