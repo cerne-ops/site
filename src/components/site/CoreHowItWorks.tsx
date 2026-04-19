@@ -75,7 +75,7 @@ export function CoreHowItWorks() {
               / Como o Core funciona
             </div>
             <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
-              Sua operação executando melhor —
+              Sua operação executando melhor
               <br />
               com agentes especializados
               <br />
@@ -83,14 +83,37 @@ export function CoreHowItWorks() {
             </h2>
 
             <div className="mt-7 space-y-4 text-muted-foreground leading-relaxed">
-              <p>No Cerne Core, você não usa uma “IA genérica”.</p>
+              <p>No Cerne Core, você não usa uma “IA genérica” para tentar resolver tudo.</p>
               <p>
-                Você usa agentes — cada um especializado em um tipo de tarefa da sua operação.
+                Você usa agentes, cada um preparado para executar uma parte real da sua operação.
               </p>
-              <p>Um escreve. Outro organiza. Outro analisa. Outro estrutura decisões.</p>
               <p>
-                Na prática, é como ter pessoas focadas em cada tipo de trabalho — só que com mais
-                velocidade, mais padrão e sem desgaste operacional.
+                Um escreve com clareza e objetivo.
+                <br />
+                Outro organiza tarefas e prioridades.
+                <br />
+                Outro analisa informações e identifica o que importa.
+                <br />
+                Outro estrutura decisões com base no contexto.
+              </p>
+              <p>
+                Na prática, é como ter pessoas focadas em cada tipo de trabalho, só que com mais
+                velocidade, mais padrão e sem o desgaste de fazer tudo manualmente.
+              </p>
+              <p>
+                O que antes exigia tempo para pensar, organizar e revisar,
+                <br />
+                agora já começa estruturado e pronto para execução.
+              </p>
+              <p>
+                Sua equipe para de improvisar.
+                <br />
+                Para de retrabalhar.
+                <br />
+                Para de perder tempo com tarefas que não deveriam ser difíceis.
+              </p>
+              <p>
+                E começa a produzir mais, com menos esforço, menos erro e muito mais consistência.
               </p>
             </div>
 
@@ -98,7 +121,7 @@ export function CoreHowItWorks() {
               Se o Supra transforma a operação inteira,
               <br />
               <span className="text-gradient-ember">
-                o Core melhora como cada tarefa é executada — todos os dias.
+                o Core melhora como cada tarefa é executada, todos os dias.
               </span>
             </p>
           </div>
