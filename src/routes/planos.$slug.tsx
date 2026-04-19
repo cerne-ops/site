@@ -151,44 +151,46 @@ function PlanRoutePage() {
         <section className="relative">
           <div className="absolute inset-0 bg-grid opacity-35 pointer-events-none" />
           <div className="relative mx-auto max-w-7xl px-6">
-            <div className="relative overflow-hidden rounded-3xl border border-border bg-surface/55 p-8 lg:p-12 lg:pr-[44%]">
-              <div className="hidden lg:flex absolute right-10 top-1/2 -translate-y-1/2 items-center justify-center">
-                <img
-                  src={plan.logo}
-                  alt={`${plan.name} logo`}
-                  className="w-[250px] h-auto object-contain opacity-95"
-                />
-              </div>
-              <img
-                src={plan.logo}
-                alt={`${plan.name} logo`}
-                className="mb-5 h-12 w-12 object-contain opacity-80 lg:hidden"
-              />
-              <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
-                {plan.label}
-              </div>
-              <h1 className="font-display text-5xl sm:text-6xl font-bold leading-[0.95]">{plan.name}</h1>
-              <div className="mt-4 font-mono text-sm text-foreground/80">
-                {formatPlanValue(plan.dynamic.price_monthly)}
-              </div>
-              <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
-                {plan.dynamic.short_description || plan.teaser}
-              </p>
-              <p className="mt-3 text-foreground/90">{plan.heroIntent}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={handleSubscribe}
-                  className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
-                >
-                  Assinar plano
-                </button>
-                <a
-                  href="/#contato"
-                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
-                >
-                  Falar com especialista
-                </a>
+            <div className="rounded-3xl border border-border bg-surface/55 p-8 lg:p-12">
+              <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+                <div className="lg:col-span-6">
+                  <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
+                    {plan.label}
+                  </div>
+                  <h1 className="font-display text-5xl sm:text-6xl font-bold leading-[0.95]">
+                    {plan.name}
+                  </h1>
+                  <div className="mt-4 font-mono text-sm text-foreground/80">
+                    {formatPlanValue(plan.dynamic.price_monthly)}
+                  </div>
+                  <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                    {plan.dynamic.short_description || plan.teaser}
+                  </p>
+                  <p className="mt-3 text-foreground/90">{plan.heroIntent}</p>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={handleSubscribe}
+                      className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                    >
+                      Assinar plano
+                    </button>
+                    <a
+                      href="/#contato"
+                      className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
+                    >
+                      Falar com especialista
+                    </a>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-6 flex items-center justify-center lg:justify-end">
+                  <img
+                    src={plan.logo}
+                    alt={`${plan.name} logo`}
+                    className="w-[250px] sm:w-[320px] lg:w-[360px] xl:w-[400px] h-auto object-contain opacity-95"
+                  />
+                </div>
               </div>
             </div>
           </div>
