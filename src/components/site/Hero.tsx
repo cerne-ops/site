@@ -33,33 +33,44 @@ export function Hero() {
               <span className="text-gradient-ember">com inteligência.</span>
             </h1>
 
-            <p className="mt-8 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              A Cerne transforma operações fragmentadas em sistemas inteligentes,
-              integrados e de alto desempenho. Reduza retrabalho, elimine gargalos
-              e dê escala à sua equipe — sem contratar proporcionalmente.
-            </p>
+            <div className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-150">
+              <p>
+                Se hoje sua operação depende de alguém para lembrar, organizar e executar,
+                você já tem um problema de escala.
+              </p>
+              <p>
+                Não importa o tamanho da sua empresa — isso gera retrabalho, perda de tempo,
+                erro humano e decisões sem visibilidade real.
+              </p>
+              <p>E quanto mais você cresce, mais isso piora.</p>
+              <p>A Cerne resolve exatamente isso.</p>
+              <p>
+                Ela pega o que hoje é manual, desorganizado e dependente de pessoas — e
+                transforma em processos que rodam com padrão, clareza e controle.
+              </p>
+            </div>
 
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-10 flex flex-wrap items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
               <a
-                href="#core"
-                className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                href="#plataforma"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
               >
-                Conhecer o Cerne Core
+                Ver como isso funciona na prática
                 <span aria-hidden>→</span>
               </a>
               <button
                 type="button"
                 onClick={() => openModal("hero-supra")}
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/40 backdrop-blur px-6 py-3.5 font-medium hover:bg-surface transition"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg border border-border bg-surface/40 backdrop-blur px-6 py-3.5 font-medium hover:bg-surface transition"
               >
-                Falar com Especialista Supra
+                Resolver minha operação com a Cerne
               </button>
             </div>
 
             <div className="mt-12 flex items-center gap-3 text-sm text-muted-foreground">
               <div className="h-px w-10 bg-ember/60" />
               <span className="font-mono uppercase tracking-widest text-xs">
-                Uma pessoa com a Cerne opera com a performance de dez
+                Uma pessoa com a Cerne opera como uma equipe
               </span>
             </div>
           </div>
