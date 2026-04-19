@@ -38,11 +38,13 @@ export function HowItWorks() {
             <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
               / Como o Supra funciona
             </div>
-            <img
-              src={supraLogo}
-              alt="Supra"
-              className="mb-7 w-[170px] sm:w-[210px] h-auto object-contain opacity-95"
-            />
+            <div className="mb-7 flex justify-center lg:justify-center">
+              <img
+                src={supraLogo}
+                alt="Supra"
+                className="w-[188px] sm:w-[232px] h-auto object-contain opacity-95"
+              />
+            </div>
             <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
               A operação no nível mais alto —
               <br />
