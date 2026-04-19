@@ -6,6 +6,7 @@ import { Pillars } from "@/components/site/Pillars";
 import { Products } from "@/components/site/Products";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { Sectors } from "@/components/site/Sectors";
+import { CoreHowItWorks } from "@/components/site/CoreHowItWorks";
 import { Plans } from "@/components/site/Plans";
 import { CTA } from "@/components/site/CTA";
 import { Footer } from "@/components/site/Footer";
@@ -25,6 +26,7 @@ function Index() {
         <Products />
         <HowItWorks />
         <Sectors />
+        <CoreHowItWorks />
         <Plans />
         <CTA />
       </main>
