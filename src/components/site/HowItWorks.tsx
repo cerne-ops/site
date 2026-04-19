@@ -1,23 +1,28 @@
 const steps = [
   {
     n: "01",
-    title: "Mapeamos a operação",
-    body: "Identificamos onde sua equipe perde tempo, onde há retrabalho e quais tarefas são repetíveis.",
+    title: "Mapeamos onde você perde dinheiro",
+    body: "Entramos na sua operação para identificar gargalos, retrabalho e tarefas que não deveriam ser manuais. Aqui não é diagnóstico superficial — é entender o que realmente trava sua empresa.",
   },
   {
     n: "02",
-    title: "Ativamos os agentes",
-    body: "Cada agente assume uma capacidade funcional clara, com permissões, limites e auditoria.",
+    title: "Desenhamos processos que funcionam",
+    body: "Reorganizamos sua operação com fluxos claros, simples e executáveis. Cada etapa passa a ter padrão, lógica e previsibilidade — sem depender de improviso.",
   },
   {
     n: "03",
-    title: "Integramos no fluxo",
-    body: "Os agentes operam dentro do processo — não como ferramenta paralela, como parte da execução.",
+    title: "Aplicamos todo o poder do Core Dominus",
+    body: "Você usa todos os agentes, recursos e capacidades do Dominus no nível mais completo. Organizados dentro do seu processo, não soltos como ferramenta. Tirando gaps, padronizando tarefas diárias e reduzindo desperdícios.",
   },
   {
     n: "04",
-    title: "Escalamos com previsibilidade",
-    body: "Você cresce a operação sem crescer custo proporcionalmente. Padronização vira vantagem.",
+    title: "Construímos o que sua operação precisa",
+    body: "Criamos automações, integrações e estruturas específicas para o seu negócio. Se não existe pronto, a gente desenvolve.",
+  },
+  {
+    n: "05",
+    title: "Implantamos até rodar de verdade",
+    body: "Nada fica no papel. A operação entra em funcionamento, é ajustada com sua equipe e passa a rodar com padrão, controle e previsibilidade.",
   },
 ];
 
@@ -29,18 +34,26 @@ export function HowItWorks() {
         <div className="grid lg:grid-cols-12 gap-16">
           <div className="lg:col-span-4">
             <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
-              / Como funciona
+              / Como o Supra funciona
             </div>
             <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
-              IA dentro da
+              A operação no nível mais alto —
               <br />
-              operação,
+              estruturada, automatizada
               <br />
-              <span className="text-gradient-ember">não ao lado dela.</span>
+              <span className="text-gradient-ember">e sob medida com o SUPRA.</span>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              IA genérica resolve tarefas pontuais. A Cerne organiza IA dentro do
-              processo, transformando uso eventual em execução repetível.
+              O Cerne Supra é o nível máximo da Cerne.
+              <br />
+              <br />
+              Você tem tudo que o Core oferece — no mais alto nível do Dominus —
+              e ainda uma operação desenhada, adaptada e implantada para a sua realidade.
+            </p>
+            <p className="mt-8 text-foreground/90 leading-relaxed font-display text-xl">
+              Se o Core melhora a execução,
+              <br />
+              <span className="text-gradient-ember">o Supra transforma a operação.</span>
             </p>
           </div>
 
