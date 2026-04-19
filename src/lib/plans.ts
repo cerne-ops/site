@@ -19,6 +19,28 @@ export type PlanDynamic = {
   }> | null;
 };
 
+type LandingApiPlan = {
+  id?: string;
+  slug?: string;
+  name?: string;
+  label?: string;
+  price?: string | number | null;
+  maxUsers?: string | number | null;
+  tasksDay?: string | number | null;
+  tasksMonth?: string | number | null;
+  uploadsDay?: string | number | null;
+  uploadSize?: string | number | null;
+  retentionDays?: string | number | null;
+  supportLevel?: string | null;
+  priority?: string | number | null;
+  stripePriceId?: string | null;
+  agents?: Array<{
+    name?: string | null;
+    description?: string | null;
+    group?: string | null;
+  }> | null;
+};
+
 export type PlanStatic = {
   id: PlanSlug;
   name: string;
@@ -125,13 +147,40 @@ export function mergePlanDynamic(slug: string, dynamic: PlanDynamic) {
   return { ...plan, dynamic };
 }
 
+function getPlansApiBase() {
+  const configured = import.meta.env.VITE_PLANS_API_BASE as string | undefined;
+  const fallback = "https://admin.cerneops.com.br";
+  return (configured || fallback).replace(/\/+$/, "");
+}
+
+function mapApiPlanToLegacy(plan: LandingApiPlan): Record<string, unknown> {
+  const slug = String(plan.slug || plan.id || "").toLowerCase();
+  return {
+    id: slug,
+    slug,
+    name: plan.name,
+    label: plan.label,
+    price_monthly: plan.price ?? null,
+    max_users: plan.maxUsers ?? null,
+    tasks_day: plan.tasksDay ?? null,
+    tasks_month: plan.tasksMonth ?? null,
+    uploads_day: plan.uploadsDay ?? null,
+    upload_size: plan.uploadSize ?? null,
+    retention_days: plan.retentionDays ?? null,
+    support_level: plan.supportLevel ?? null,
+    priority: plan.priority ?? null,
+    stripe_price_id: plan.stripePriceId ?? null,
+    agents: Array.isArray(plan.agents) ? plan.agents : [],
+  };
+}
+
 export async function fetchLandingPlans() {
   try {
-    const response = await fetch("/api/plans/landing");
+    const response = await fetch(`${getPlansApiBase()}/api/plans/landing`);
     if (!response.ok) throw new Error("landing plans unavailable");
-    const payload = (await response.json()) as Array<Record<string, unknown>>;
-    if (!Array.isArray(payload)) throw new Error("invalid landing payload");
-    return payload;
+    const payload = (await response.json()) as { plans?: LandingApiPlan[] };
+    if (!Array.isArray(payload?.plans)) throw new Error("invalid landing payload");
+    return payload.plans.map(mapApiPlanToLegacy);
   } catch {
     return null;
   }
@@ -139,10 +188,11 @@ export async function fetchLandingPlans() {
 
 export async function fetchPlanBySlug(slug: string) {
   try {
-    const response = await fetch(`/api/plans/${slug}`);
+    const response = await fetch(`${getPlansApiBase()}/api/plans/${slug}`);
     if (!response.ok) throw new Error("plan unavailable");
-    const payload = (await response.json()) as Record<string, unknown>;
-    return payload;
+    const payload = (await response.json()) as { plan?: LandingApiPlan | null };
+    if (!payload?.plan) return null;
+    return mapApiPlanToLegacy(payload.plan);
   } catch {
     return null;
   }
