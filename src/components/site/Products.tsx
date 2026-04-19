@@ -41,28 +41,26 @@ export function Products() {
               </div>
 
               <h3 className="font-display text-3xl font-bold leading-tight mb-4">
-                Sua operação rodando melhor todos os dias — sem depender de ninguém.
+                Uma plataforma que executa tarefas do dia a dia da sua empresa com padrão e velocidade.
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-9">
-                Hoje, boa parte do seu tempo ainda é consumida por tarefas repetitivas,
-                decisões sem dado e retrabalho silencioso. O Core organiza, executa e
-                dá controle — para sua empresa produzir mais com o que já tem.
+                Você usa para escrever, organizar, analisar e estruturar tudo que hoje
+                sua equipe faz manualmente — só que mais rápido, com padrão e sem retrabalho.
               </p>
 
+              <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
+                / O que faz na prática
+              </div>
               <ul className="space-y-3.5 mb-8 text-[15px] leading-relaxed">
                 {[
-                  "Execução padronizada — sem depender de quem faz",
-                  "Fim do retrabalho causado por erro ou falta de processo",
-                  "Tarefas repetitivas deixam de consumir sua equipe",
-                  "Processos organizados que não travam no dia a dia",
-                  "Mais clareza do que está acontecendo na operação",
-                  "Decisão baseada em informação, não em feeling",
-                  "Redução de gargalos invisíveis que travam crescimento",
-                  "Equipe mais produtiva sem precisar aumentar estrutura",
-                  "Menos tempo apagando incêndio operacional",
-                  "Mais tempo focando em crescimento e estratégia",
-                  "Organização que se mantém, não depende de esforço constante",
-                  "Sua operação começa a escalar sem perder controle",
+                  "Gera textos, respostas e conteúdos prontos para uso (e-mail, atendimento, cobrança, comunicação)",
+                  "Organiza tarefas e transforma demandas em listas executáveis",
+                  "Resume e estrutura informações (documentos, reuniões, ideias)",
+                  "Analisa dados simples e gera relatórios claros",
+                  "Padroniza a forma como sua equipe executa atividades",
+                  "Reescreve conteúdos com objetivo específico (vender, cobrar, explicar)",
+                  "Classifica e organiza informações automaticamente",
+                  "Apoia decisões com base no que já foi processado",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm">
                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />
@@ -71,11 +69,22 @@ export function Products() {
                 ))}
               </ul>
 
-              <p className="text-foreground/85 leading-relaxed mb-7">
-                Você não precisa trabalhar mais.
-                <br />
-                Precisa de uma operação que funcione melhor.
-              </p>
+              <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
+                / O que isso muda
+              </div>
+              <ul className="space-y-3.5 mb-7 text-[15px] leading-relaxed">
+                {[
+                  "Sua equipe produz mais no mesmo tempo",
+                  "Você reduz erro e retrabalho",
+                  "A operação fica mais organizada",
+                  "Você ganha clareza do que está acontecendo",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-sm">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
 
               <div className="flex items-center gap-4">
                 <a
@@ -115,28 +124,27 @@ export function Products() {
               </div>
 
               <h3 className="font-display text-3xl font-bold leading-tight mb-4">
-                Quando sua operação exige mais do que ferramenta — exige solução construída para você.
+                A Cerne entra na sua empresa e constrói a operação automatizada com você.
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-9">
-                Se sua operação já é complexa, o problema não é falta de ferramenta
-                — é falta de estrutura. A Cerne entra para desenhar, conectar e fazer
-                funcionar de verdade.
+                Aqui não é você usando uma ferramenta.
+                <br />
+                A gente entende sua operação, desenha os fluxos e entrega tudo funcionando — integrado ao seu dia a dia.
               </p>
 
+              <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
+                / O que fazemos na prática
+              </div>
               <ul className="space-y-3.5 mb-8 text-[15px] leading-relaxed">
                 {[
-                  "Diagnóstico real do que está travando sua operação",
-                  "Solução desenhada exatamente para o seu cenário",
-                  "Automação de processos críticos do seu negócio",
-                  "Integração entre sistemas que hoje não se conversam",
-                  "Eliminação de retrabalho estrutural",
-                  "Redução de falhas humanas em processos-chave",
-                  "Operação mais previsível e controlada",
-                  "Implementação acompanhada até funcionar na prática",
-                  "Ajustes contínuos conforme sua operação evolui",
-                  "Ganho de eficiência sem aumentar complexidade",
-                  "Escala operacional sem aumentar proporcionalmente o custo",
-                  "Estrutura preparada para crescimento real",
+                  "Mapeamos como sua operação funciona hoje",
+                  "Identificamos gargalos, retrabalho e falhas",
+                  "Desenhamos fluxos mais eficientes",
+                  "Automatizamos tarefas repetitivas",
+                  "Integramos sistemas que hoje não se conversam",
+                  "Criamos relatórios automáticos da sua operação",
+                  "Organizamos dados para decisão em tempo real",
+                  "Implantamos tudo com sua equipe usando de verdade",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm">
                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />
@@ -145,11 +153,22 @@ export function Products() {
                 ))}
               </ul>
 
-              <p className="text-foreground/85 leading-relaxed mb-7">
-                Aqui não é sobre usar IA.
-                <br />
-                É sobre sua operação finalmente funcionar como deveria.
-              </p>
+              <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
+                / O que isso muda
+              </div>
+              <ul className="space-y-3.5 mb-7 text-[15px] leading-relaxed">
+                {[
+                  "Sua operação para de depender de controle manual",
+                  "Você reduz custo operacional",
+                  "Os processos passam a rodar com padrão",
+                  "Você ganha escala sem aumentar equipe",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-sm">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
 
               <button
                 type="button"
