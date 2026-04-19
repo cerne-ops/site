@@ -152,6 +152,11 @@ function PlanRoutePage() {
           <div className="absolute inset-0 bg-grid opacity-35 pointer-events-none" />
           <div className="relative mx-auto max-w-7xl px-6">
             <div className="rounded-3xl border border-border bg-surface/55 p-8 lg:p-12">
+              <img
+                src={plan.logo}
+                alt={`${plan.name} logo`}
+                className="mb-5 h-12 w-12 object-contain opacity-80"
+              />
               <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
                 {plan.label}
               </div>

@@ -67,6 +67,11 @@ export function Plans() {
                   : "border-border bg-surface/60 hover:border-ember/35"
               }`}
             >
+              <img
+                src={plan.logo}
+                alt={`${plan.name} logo`}
+                className="absolute top-6 right-6 h-8 w-8 object-contain opacity-70 pointer-events-none"
+              />
               {plan.id === "dominus" ? (
                 <div className="absolute -top-3 left-7 font-mono text-[10px] uppercase tracking-widest gradient-ember text-primary-foreground px-2 py-1 rounded">
                   Mais completo

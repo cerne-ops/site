@@ -1,3 +1,8 @@
+import startLogo from "@/assets/planos/START.png";
+import boostLogo from "@/assets/planos/BOOST.png";
+import scaleLogo from "@/assets/planos/SCALE.png";
+import dominusLogo from "@/assets/planos/DOMINUS.png";
+
 export type PlanSlug = "start" | "boost" | "scale" | "dominus";
 
 export type PlanDynamic = {
@@ -45,6 +50,7 @@ export type PlanStatic = {
   id: PlanSlug;
   name: string;
   label: string;
+  logo: string;
   teaser: string;
   bullets: string[];
   heroIntent: string;
@@ -59,6 +65,7 @@ export const planCatalog: PlanStatic[] = [
     id: "start",
     name: "Start",
     label: "Entrada",
+    logo: startLogo,
     teaser: "Para sair do manual e começar a organizar o dia a dia.",
     bullets: ["Execução com padrão", "Organização básica", "Uso individual"],
     heroIntent: "O primeiro passo para sair do manual.",
@@ -77,6 +84,7 @@ export const planCatalog: PlanStatic[] = [
     id: "boost",
     name: "Boost",
     label: "Aceleração",
+    logo: boostLogo,
     teaser: "Para operações que precisam ganhar velocidade.",
     bullets: ["Mais capacidade", "Uso em equipe", "Menos retrabalho"],
     heroIntent: "A operação começa a ganhar tração.",
@@ -94,6 +102,7 @@ export const planCatalog: PlanStatic[] = [
     id: "scale",
     name: "Scale",
     label: "Escala",
+    logo: scaleLogo,
     teaser: "Para empresas que estruturam a operação.",
     bullets: ["Processos organizados", "Mais controle", "Produtividade por equipe"],
     heroIntent: "A operação começa a escalar.",
@@ -111,6 +120,7 @@ export const planCatalog: PlanStatic[] = [
     id: "dominus",
     name: "Dominus",
     label: "Topo do Core",
+    logo: dominusLogo,
     teaser: "Capacidade máxima da plataforma.",
     bullets: ["Todos os agentes", "Máxima capacidade", "Prioridade operacional"],
     heroIntent: "Capacidade máxima do Core.",

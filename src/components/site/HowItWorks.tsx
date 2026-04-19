@@ -1,3 +1,5 @@
+import supraLogo from "@/assets/planos/SUPRA.png";
+
 const steps = [
   {
     n: "01",
@@ -36,6 +38,11 @@ export function HowItWorks() {
             <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
               / Como o Supra funciona
             </div>
+            <img
+              src={supraLogo}
+              alt="Supra"
+              className="mb-5 h-11 w-11 object-contain opacity-80"
+            />
             <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
               A operação no nível mais alto —
               <br />
