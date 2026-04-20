@@ -4,7 +4,7 @@ const steps = [
   {
     n: "01",
     title: "Mapeamos onde você perde dinheiro",
-    body: "Entramos na sua operação para identificar gargalos, retrabalho e tarefas que não deveriam ser manuais. Aqui não é diagnóstico superficial — é entender o que realmente trava sua empresa.",
+    body: "Entramos na sua operação para identificar gargalos, retrabalho e tarefas que não deveriam ser manuais. Aqui não é diagnóstico superficial, é entender o que realmente trava sua empresa.",
   },
   {
     n: "02",
