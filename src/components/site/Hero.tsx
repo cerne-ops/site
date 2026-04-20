@@ -39,13 +39,13 @@ export function Hero() {
                 você já tem um problema de escala.
               </p>
               <p>
-                Não importa o tamanho da sua empresa — isso gera retrabalho, perda de tempo,
+                Não importa o tamanho da sua empresa, isso gera retrabalho, perda de tempo,
                 erro humano e decisões sem visibilidade real.
               </p>
               <p>E quanto mais você cresce, mais isso piora.</p>
               <p>A Cerne resolve exatamente isso.</p>
               <p>
-                Ela pega o que hoje é manual, desorganizado e dependente de pessoas — e
+                Ela pega o que hoje é manual, desorganizado e dependente de pessoas, e
                 transforma em processos que rodam com padrão, clareza e controle.
               </p>
             </div>
