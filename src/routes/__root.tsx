@@ -1,8 +1,18 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import faviconPng from "../../assets/favicon.png?url";
 import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Cerne",
+  url: "https://cerneops.com.br",
+  logo: "https://cerneops.com.br/logo.png",
+  description:
+    "Consultoria e plataforma de inteligência operacional com automação, integração de sistemas e agentes inteligentes para empresas.",
+  sameAs: [],
+};
 
 function NotFoundComponent() {
   return (
@@ -31,32 +41,45 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cerne — Gerenciamento de processos com inteligência" },
+      { title: "Cerne | Integração Inteligente de Operações" },
       {
         name: "description",
         content:
-          "A Cerne integra IA dentro da sua operação. Reduza retrabalho, elimine gargalos e dê escala à sua equipe com a plataforma Cerne Core e a consultoria Cerne Supra.",
+          "Transforme processos manuais em uma operação inteligente com automação, integração e agentes que executam tarefas por você.",
       },
+      { name: "robots", content: "index, follow" },
       { name: "author", content: "Cerne" },
-      { property: "og:title", content: "Cerne — Integração inteligente de operações" },
+      { name: "theme-color", content: "#0E0F12" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://cerneops.com.br" },
+      { property: "og:title", content: "Integração inteligente de operações" },
       {
         property: "og:description",
         content:
-          "Plataforma de operação inteligente baseada em agentes. Uma pessoa com a Cerne opera com a performance de dez.",
+          "Automatize, organize e escale sua operação com agentes inteligentes. Mais performance, menos retrabalho.",
       },
-      { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://cerneops.com.br/og-image.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:type", content: "image/png" },
+      { property: "og:site_name", content: "Cerne" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Integração inteligente de operações" },
+      {
+        name: "twitter:description",
+        content:
+          "Sistema operacional de agentes para empresas. Automatize e escale sua operação.",
+      },
+      { name: "twitter:image", content: "https://cerneops.com.br/og-image.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      {
-        rel: "icon",
-        type: "image/png",
-        href: faviconPng,
-      },
+      { rel: "canonical", href: "https://cerneops.com.br" },
+      { rel: "icon", href: "https://cerneops.com.br/favicon.ico" },
+      { rel: "apple-touch-icon", href: "https://cerneops.com.br/logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -76,9 +99,15 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
       </head>
       <body>
         {children}
