@@ -58,10 +58,10 @@ export const Route = createRootRoute({
         content:
           "Automatize, organize e escale sua operação com agentes inteligentes. Mais performance, menos retrabalho.",
       },
-      { property: "og:image", content: "https://cerneops.com.br/og-image.png?v=20260420" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:type", content: "image/png" },
+      { property: "og:image", content: "https://cerneops.com.br/og-whatsapp-v2.jpg" },
+      { property: "og:image:width", content: "1024" },
+      { property: "og:image:height", content: "1024" },
+      { property: "og:image:type", content: "image/jpeg" },
       { property: "og:site_name", content: "Cerne" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Integração inteligente de operações" },
@@ -70,7 +70,7 @@ export const Route = createRootRoute({
         content:
           "Sistema operacional de agentes para empresas. Automatize e escale sua operação.",
       },
-      { name: "twitter:image", content: "https://cerneops.com.br/og-image.png?v=20260420" },
+      { name: "twitter:image", content: "https://cerneops.com.br/og-whatsapp-v2.jpg" },
     ],
     links: [
       {
