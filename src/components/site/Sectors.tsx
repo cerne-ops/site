@@ -222,19 +222,29 @@ export const sectors: Sector[] = [
 ];
 
 function SectorCard({ icon, title, impact, featured }: Sector) {
+  const compactTitle = title.length > 22;
+
   return (
     <div
-      className={`sector-card reveal-up h-[200px] sm:h-[210px] rounded-2xl border border-border bg-surface/65 p-5 lg:p-5 ${
+      className={`sector-card reveal-up h-[112px] sm:h-[118px] rounded-2xl border border-border bg-surface/65 px-4 py-3 ${
         featured ? "sector-card--featured" : ""
       }`}
     >
-      <div className="flex h-full items-start gap-4">
-        <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-ember/35 bg-background/60 text-2xl leading-none transition-transform duration-300 sector-icon">
+      <div className="flex h-full items-center gap-4">
+        <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-ember/45 bg-background/70 text-2xl leading-none transition-transform duration-300 sector-icon">
           {icon}
         </div>
         <div className="min-w-0">
-          <h3 className="font-display text-xl lg:text-[1.35rem] font-semibold leading-tight">{title}</h3>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{impact}</p>
+          <h3
+            className={`font-display font-semibold leading-tight text-foreground ${
+              compactTitle ? "text-lg sm:text-xl" : "text-2xl"
+            }`}
+          >
+            {title}
+          </h3>
+          <p className="mt-1 text-[1.03rem] text-muted-foreground leading-[1.18] line-clamp-2">
+            {impact}
+          </p>
         </div>
       </div>
     </div>
