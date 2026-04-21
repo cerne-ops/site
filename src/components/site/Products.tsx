@@ -8,7 +8,7 @@ export function Products() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-16">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
-            / Arquitetura Cerne
+            / Arquitetura da oferta
           </div>
           <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
             Dois modelos.
@@ -28,25 +28,25 @@ export function Products() {
               style={{ background: "var(--gradient-radial-ember)" }}
             />
             <div className="relative">
-              <div className="mb-8 rounded-2xl border border-border bg-background/45 p-4 sm:p-5">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="flex items-center gap-3 sm:min-w-[240px]">
-                    <div className="h-12 w-12 rounded-2xl gradient-ember flex items-center justify-center font-mono text-lg font-bold text-primary-foreground">
-                      C
-                    </div>
-                    <div>
-                      <div className="font-mono text-[11px] text-ember uppercase tracking-widest">
-                        Produto ANOP
-                      </div>
-                      <div className="font-display text-[1.9rem] leading-none font-semibold">Cerne Core</div>
-                    </div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-10 w-10 rounded-xl gradient-ember flex items-center justify-center font-mono text-sm font-bold text-primary-foreground">
+                  C
+                </div>
+                <div>
+                  <div className="font-mono text-xs text-ember uppercase tracking-widest">
+                    PRODUTO SAAS
                   </div>
-                  <div className="hidden sm:block self-stretch w-px bg-border/80" />
-                  <p className="text-foreground/90 leading-snug font-medium sm:max-w-[460px] sm:text-[0.98rem] text-[0.95rem] uppercase tracking-wide">
-                    A Cerne não é uma SaaS tradicional. É uma ANOP: AI-Native Operations Platform, uma plataforma que faz sua operação rodar.
-                  </p>
+                  <div className="font-display text-xl font-semibold">Cerne Core</div>
                 </div>
               </div>
+
+              <h3 className="font-display text-3xl font-bold leading-tight mb-4">
+                Uma plataforma que executa tarefas do dia a dia da sua empresa com padrão e velocidade.
+              </h3>
+              <p className="text-muted-foreground leading-relaxed mb-9">
+                Você usa para escrever, organizar, analisar e estruturar tudo que hoje
+                sua equipe faz manualmente , só que mais rápido, com padrão e sem retrabalho.
+              </p>
 
               <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
                 / O que faz na prática
