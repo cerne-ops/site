@@ -270,14 +270,14 @@ export function Sectors() {
       <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="max-w-3xl mb-14 reveal-up">
+        <div className="max-w-2xl mb-16 reveal-up">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
             / Setores atendidos
           </div>
-          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.02] uppercase">
+          <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
             Atendemos empresas de todos os tamanhos
             <br />
-            e de todos os setores
+            <span className="text-muted-foreground">e de todos os setores.</span>
           </h2>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
             Se existe operação, existe ganho com a Cerne.
@@ -286,7 +286,7 @@ export function Sectors() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
           {sectors.map((sector) => (
             <Dialog key={sector.title}>
               <DialogTrigger asChild>
