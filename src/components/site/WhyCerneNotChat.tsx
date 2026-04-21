@@ -115,7 +115,7 @@ export function WhyCerneNotChat() {
 
           <article className="rounded-2xl border border-border bg-surface/45 p-7 lg:p-8 hover:bg-surface transition-colors">
             <h3 className="font-display text-2xl font-semibold mb-5">
-              Quando o problema não é tarefa — é a operação inteira
+              Quando o problema não é tarefa , é a operação inteira
             </h3>
             <ul className="space-y-3 text-sm text-foreground/90">
               {[
@@ -140,7 +140,7 @@ export function WhyCerneNotChat() {
               já visível para decisão.
             </p>
             <p className="mt-5 font-display text-xl leading-tight">
-              A operação roda — sem depender de alguém empurrar.
+              A operação roda , sem depender de alguém empurrar.
             </p>
           </article>
         </div>

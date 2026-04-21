@@ -5,7 +5,7 @@ const pillars = [
     tag: "01",
     title: "Padronização de execução",
     blocks: [
-      "Hoje, o mesmo processo pode ser executado de formas diferentes dentro da sua empresa — dependendo de quem faz.",
+      "Hoje, o mesmo processo pode ser executado de formas diferentes dentro da sua empresa , dependendo de quem faz.",
       "A Cerne elimina essa variação.",
       "O que precisa ser feito passa a seguir um padrão claro, repetível e consistente, garantindo qualidade independente de quem executa.",
     ],
@@ -15,7 +15,7 @@ const pillars = [
     title: "Controle real da operação",
     blocks: [
       "Você deixa de depender de acompanhamento manual ou percepção.",
-      "Com a operação estruturada, você passa a enxergar o que está acontecendo de verdade — o que foi feito, o que está em andamento e o que está travando.",
+      "Com a operação estruturada, você passa a enxergar o que está acontecendo de verdade , o que foi feito, o que está em andamento e o que está travando.",
     ],
   },
   {
@@ -47,7 +47,7 @@ const pillars = [
     title: "Escala com previsibilidade",
     blocks: [
       "Crescer sem estrutura aumenta o caos.",
-      "Com a Cerne, sua operação está preparada para crescer mantendo controle, padrão e eficiência — sem aumentar proporcionalmente a complexidade.",
+      "Com a Cerne, sua operação está preparada para crescer mantendo controle, padrão e eficiência , sem aumentar proporcionalmente a complexidade.",
     ],
   },
 ];

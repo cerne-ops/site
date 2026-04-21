@@ -14,7 +14,7 @@ const steps = [
   {
     n: "03",
     title: "A execução já sai estruturada",
-    body: "O agente não só responde — ele organiza a execução. O conteúdo já vem claro, estruturado e com objetivo definido. Você não precisa revisar várias vezes, ajustar manualmente ou recomeçar. Grande parte do trabalho já vem pronta para uso.",
+    body: "O agente não só responde , ele organiza a execução. O conteúdo já vem claro, estruturado e com objetivo definido. Você não precisa revisar várias vezes, ajustar manualmente ou recomeçar. Grande parte do trabalho já vem pronta para uso.",
   },
   {
     n: "04",

@@ -26,7 +26,7 @@ export const sectors: Sector[] = [
     icon: "🏥",
     title: "Saúde",
     impact: "Menos papel. Mais cuidado.",
-    subheadline: "Agenda cheia, operação travada — isso não pode acontecer.",
+    subheadline: "Agenda cheia, operação travada , isso não pode acontecer.",
     points: [
       "Confirmação automática de consultas e redução de faltas",
       "Organização de prontuários e atendimentos sem retrabalho",
@@ -40,7 +40,7 @@ export const sectors: Sector[] = [
     icon: "🌾",
     title: "Agronegócio",
     impact: "Gestão que não dorme.",
-    subheadline: "Produção rodando, mas sem controle fino — margem indo embora.",
+    subheadline: "Produção rodando, mas sem controle fino , margem indo embora.",
     points: [
       "Consolidação automática de dados de campo (produção, insumos, custos)",
       "Alertas de falha operacional antes de virar prejuízo",
@@ -54,7 +54,7 @@ export const sectors: Sector[] = [
     icon: "🏭",
     title: "Indústria",
     impact: "Processos que rodam sozinhos.",
-    subheadline: "Produção não para — mas o retrabalho continua.",
+    subheadline: "Produção não para , mas o retrabalho continua.",
     points: [
       "Checklists automáticos de linha de produção",
       "Registro e análise de falhas recorrentes",
@@ -96,7 +96,7 @@ export const sectors: Sector[] = [
     icon: "🏗️",
     title: "Construção Civil",
     impact: "Obra no prazo, com dado em tempo real.",
-    subheadline: "Atraso e retrabalho custam caro — sempre.",
+    subheadline: "Atraso e retrabalho custam caro , sempre.",
     points: [
       "Controle de etapas da obra com atualização em tempo real",
       "Registro de execução e acompanhamento remoto",
@@ -152,7 +152,7 @@ export const sectors: Sector[] = [
     icon: "🏨",
     title: "Hotelaria",
     impact: "Experiência fluida, operação invisível.",
-    subheadline: "Experiência do cliente depende da operação — sempre.",
+    subheadline: "Experiência do cliente depende da operação , sempre.",
     points: [
       "Organização de reservas, check-ins e fluxos internos",
       "Padronização do atendimento",

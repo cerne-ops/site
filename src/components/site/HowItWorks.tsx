@@ -9,7 +9,7 @@ const steps = [
   {
     n: "02",
     title: "Desenhamos processos que funcionam",
-    body: "Reorganizamos sua operação com fluxos claros, simples e executáveis. Cada etapa passa a ter padrão, lógica e previsibilidade — sem depender de improviso.",
+    body: "Reorganizamos sua operação com fluxos claros, simples e executáveis. Cada etapa passa a ter padrão, lógica e previsibilidade , sem depender de improviso.",
   },
   {
     n: "03",
@@ -46,7 +46,7 @@ export function HowItWorks() {
               />
             </div>
             <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
-              A operação no nível mais alto —
+              A operação no nível mais alto ,
               <br />
               estruturada, automatizada
               <br />
@@ -56,7 +56,7 @@ export function HowItWorks() {
               O Cerne Supra é o nível máximo da Cerne.
               <br />
               <br />
-              Você tem tudo que o Core oferece — no mais alto nível do Dominus —
+              Você tem tudo que o Core oferece , no mais alto nível do Dominus ,
               e ainda uma operação desenhada, adaptada e implantada para a sua realidade.
             </p>
             <p className="mt-8 text-foreground/90 leading-relaxed font-display text-xl">

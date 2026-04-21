@@ -45,7 +45,7 @@ export function Products() {
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-9">
                 Você usa para escrever, organizar, analisar e estruturar tudo que hoje
-                sua equipe faz manualmente — só que mais rápido, com padrão e sem retrabalho.
+                sua equipe faz manualmente , só que mais rápido, com padrão e sem retrabalho.
               </p>
 
               <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
@@ -129,7 +129,7 @@ export function Products() {
               <p className="text-muted-foreground leading-relaxed mb-9">
                 Aqui não é você usando uma ferramenta.
                 <br />
-                A gente entende sua operação, desenha os fluxos e entrega tudo funcionando — integrado ao seu dia a dia.
+                A gente entende sua operação, desenha os fluxos e entrega tudo funcionando , integrado ao seu dia a dia.
               </p>
 
               <div className="font-mono text-[11px] uppercase tracking-widest text-ember mb-4">
