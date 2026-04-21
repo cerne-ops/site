@@ -224,7 +224,7 @@ export const sectors: Sector[] = [
 function SectorCard({ icon, title, impact, featured }: Sector) {
   return (
     <div
-      className={`sector-card reveal-up rounded-2xl border border-border bg-surface/65 p-6 lg:p-7 ${
+      className={`sector-card reveal-up h-[230px] sm:h-[240px] rounded-2xl border border-border bg-surface/65 p-6 lg:p-7 ${
         featured ? "sector-card--featured" : ""
       }`}
     >
@@ -292,7 +292,9 @@ export function Sectors() {
               <DialogTrigger asChild>
                 <button
                   type="button"
-                  className="text-left rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/45"
+                  className={`text-left rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/45 h-full ${
+                    sector.featured ? "lg:col-span-2" : ""
+                  }`}
                 >
                   <SectorCard {...sector} />
                 </button>
