@@ -46,7 +46,7 @@ export function Header() {
           <Link to="/" className="flex items-center gap-2.5 group">
             <img
               src={logo}
-              alt="Cerne"
+              alt="CerneOps"
               className="h-8 w-8 md:h-9 md:w-9 object-contain transition-transform group-hover:scale-105"
             />
             <span className="font-display text-base md:text-lg tracking-tight">
@@ -79,7 +79,7 @@ export function Header() {
               onClick={() => openModal("header-cta")}
               className="hidden md:inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-medium text-sm px-4 py-2.5 shadow-ember hover:brightness-110 transition"
             >
-              Falar com a Cerne
+              Falar com a CerneOps
             </button>
             <button
               type="button"

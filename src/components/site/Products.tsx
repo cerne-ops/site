@@ -36,7 +36,7 @@ export function Products() {
                   <div className="font-mono text-xs text-ember uppercase tracking-widest">
                     PRODUTO SAAS
                   </div>
-                  <div className="font-display text-xl font-semibold">Cerne Core</div>
+                  <div className="font-display text-xl font-semibold">CerneOps Core</div>
                 </div>
               </div>
 
@@ -119,12 +119,12 @@ export function Products() {
                   <div className="font-mono text-xs text-ember uppercase tracking-widest">
                     CONSULTORIA HIGH-TOUCH
                   </div>
-                  <div className="font-display text-xl font-semibold">Cerne Supra</div>
+                  <div className="font-display text-xl font-semibold">CerneOps Supra</div>
                 </div>
               </div>
 
               <h3 className="font-display text-3xl font-bold leading-tight mb-4">
-                A Cerne entra na sua empresa e constrói a operação automatizada com você.
+                A CerneOps entra na sua empresa e constrói a operação automatizada com você.
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-9">
                 Aqui não é você usando uma ferramenta.
@@ -175,7 +175,7 @@ export function Products() {
                 onClick={() => openModal("products-supra")}
                 className="inline-flex items-center gap-2 rounded-lg border border-ember/40 text-ember font-semibold px-5 py-3 hover:bg-ember/10 transition text-sm"
               >
-                Resolver minha operação com a Cerne
+                Resolver minha operação com a CerneOps
                 <span aria-hidden>→</span>
               </button>
             </div>

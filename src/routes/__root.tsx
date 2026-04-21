@@ -6,7 +6,7 @@ import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Cerne",
+  name: "CerneOps",
   url: "https://cerneops.com.br",
   logo: "https://cerneops.com.br/logo.png",
   description:
@@ -41,14 +41,14 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cerne | Integração Inteligente de Operações" },
+      { title: "CerneOps | Integração Inteligente de Operações" },
       {
         name: "description",
         content:
           "Transforme processos manuais em uma operação inteligente com automação, integração e agentes que executam tarefas por você.",
       },
       { name: "robots", content: "index, follow" },
-      { name: "author", content: "Cerne" },
+      { name: "author", content: "CerneOps" },
       { name: "theme-color", content: "#0E0F12" },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://cerneops.com.br" },
@@ -62,7 +62,7 @@ export const Route = createRootRoute({
       { property: "og:image:width", content: "1024" },
       { property: "og:image:height", content: "1024" },
       { property: "og:image:type", content: "image/jpeg" },
-      { property: "og:site_name", content: "Cerne" },
+      { property: "og:site_name", content: "CerneOps" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Integração inteligente de operações" },
       {

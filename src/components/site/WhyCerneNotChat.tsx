@@ -9,12 +9,12 @@ export function WhyCerneNotChat() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="max-w-4xl mb-14">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
-            / Por que Cerne e não chat de IA?
+            / Por que CerneOps e não chat de IA?
           </div>
           <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.02]">
             Chat de IA ajuda pessoas.
             <br />
-            <span className="text-gradient-ember">A Cerne organiza e executa a operação.</span>
+            <span className="text-gradient-ember">A CerneOps organiza e executa a operação.</span>
           </h2>
           <p className="mt-7 text-lg text-muted-foreground leading-relaxed max-w-3xl">
             Se você já usa IA, você já viu ganho.
@@ -184,7 +184,7 @@ export function WhyCerneNotChat() {
           <p className="font-display text-2xl sm:text-3xl leading-tight">
             Chat melhora quem executa.
             <br />
-            <span className="text-gradient-ember">A Cerne melhora o que é executado.</span>
+            <span className="text-gradient-ember">A CerneOps melhora o que é executado.</span>
           </p>
         </div>
 

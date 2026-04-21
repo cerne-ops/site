@@ -44,7 +44,7 @@
 :root {
   --radius: 0.75rem;
 
-  /* Cerne dark identity */
+  /* CerneOps dark identity */
   --background: oklch(0.16 0.02 260);
   --foreground: oklch(0.97 0.01 250);
 

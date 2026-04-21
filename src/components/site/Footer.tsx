@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <img src={logo} alt="Cerne" className="h-9 w-9 object-contain" />
+              <img src={logo} alt="CerneOps" className="h-9 w-9 object-contain" />
               <span className="font-display text-lg tracking-tight">
                 <span className="text-ember">CER</span>
                 <span className="text-foreground/80">NE</span>
@@ -26,12 +26,12 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <a href="/#core" className="hover:text-foreground transition">
-                  Cerne Core
+                  CerneOps Core
                 </a>
               </li>
               <li>
                 <a href="/#supra" className="hover:text-foreground transition">
-                  Cerne Supra
+                  CerneOps Supra
                 </a>
               </li>
               <li>

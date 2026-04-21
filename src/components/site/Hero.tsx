@@ -43,7 +43,7 @@ export function Hero() {
                 erro humano e decisões sem visibilidade real.
               </p>
               <p>E quanto mais você cresce, mais isso piora.</p>
-              <p>A Cerne resolve exatamente isso.</p>
+              <p>A CerneOps resolve exatamente isso.</p>
               <p>
                 Ela pega o que hoje é manual, desorganizado e dependente de pessoas, e
                 transforma em processos que rodam com padrão, clareza e controle.
@@ -63,14 +63,14 @@ export function Hero() {
                 onClick={() => openModal("hero-supra")}
                 className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg border border-border bg-surface/40 backdrop-blur px-6 py-3.5 font-medium hover:bg-surface transition"
               >
-                Resolver minha operação com a Cerne
+                Resolver minha operação com a CerneOps
               </button>
             </div>
 
             <div className="mt-12 flex items-center gap-3 text-sm text-muted-foreground">
               <div className="h-px w-10 bg-ember/60" />
               <span className="font-mono uppercase tracking-widest text-xs">
-                Uma pessoa com a Cerne opera como uma equipe
+                Uma pessoa com a CerneOps opera como uma equipe
               </span>
             </div>
           </div>
@@ -84,7 +84,7 @@ export function Hero() {
               <div className="absolute inset-24 rounded-full border border-ember/10" />
               <img
                 src={logo}
-                alt="Logo Cerne"
+                alt="Logo CerneOps"
                 className="relative w-full h-full object-contain animate-float"
               />
             </div>

@@ -299,7 +299,7 @@ export function Sectors() {
             <span className="text-muted-foreground">e de todos os setores.</span>
           </h2>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Se existe operação, existe ganho com a Cerne.
+            Se existe operação, existe ganho com a CerneOps.
             <br />
             O problema não é o setor. É como a operação roda hoje.
           </p>

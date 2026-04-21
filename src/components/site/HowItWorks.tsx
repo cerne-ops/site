@@ -53,7 +53,7 @@ export function HowItWorks() {
               <span className="text-gradient-ember">e sob medida com o SUPRA.</span>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              O Cerne Supra é o nível máximo da Cerne.
+              O CerneOps Supra é o nível máximo da CerneOps.
               <br />
               <br />
               Você tem tudo que o Core oferece , no mais alto nível do Dominus ,

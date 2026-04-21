@@ -71,7 +71,7 @@ export function SupraContactModalProvider({ children }: { children: ReactNode })
             <div className="relative">
               <DialogHeader className="space-y-3 text-left">
                 <div className="font-mono text-xs uppercase tracking-widest text-ember">
-                  / Cerne Supra
+                  / CerneOps Supra
                 </div>
                 <DialogTitle className="font-display text-3xl leading-tight">
                   Fale com um especialista

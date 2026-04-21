@@ -6,7 +6,7 @@ const pillars = [
     title: "Padronização de execução",
     blocks: [
       "Hoje, o mesmo processo pode ser executado de formas diferentes dentro da sua empresa , dependendo de quem faz.",
-      "A Cerne elimina essa variação.",
+      "A CerneOps elimina essa variação.",
       "O que precisa ser feito passa a seguir um padrão claro, repetível e consistente, garantindo qualidade independente de quem executa.",
     ],
   },
@@ -23,7 +23,7 @@ const pillars = [
     title: "Repetibilidade com qualidade",
     blocks: [
       "O que hoje exige esforço constante passa a acontecer de forma organizada e previsível.",
-      "A Cerne transforma tarefas em processos que se repetem com padrão, mantendo qualidade mesmo com aumento de volume.",
+      "A CerneOps transforma tarefas em processos que se repetem com padrão, mantendo qualidade mesmo com aumento de volume.",
     ],
   },
   {
@@ -47,7 +47,7 @@ const pillars = [
     title: "Escala com previsibilidade",
     blocks: [
       "Crescer sem estrutura aumenta o caos.",
-      "Com a Cerne, sua operação está preparada para crescer mantendo controle, padrão e eficiência , sem aumentar proporcionalmente a complexidade.",
+      "Com a CerneOps, sua operação está preparada para crescer mantendo controle, padrão e eficiência , sem aumentar proporcionalmente a complexidade.",
     ],
   },
 ];
@@ -84,7 +84,7 @@ export function Pillars() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-16 reveal-up">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
-            / O que é a Cerne
+            / O que é a CerneOps
           </div>
           <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
             Implementação aplicada.

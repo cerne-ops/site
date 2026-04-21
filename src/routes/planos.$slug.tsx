@@ -21,12 +21,12 @@ function getPlanMeta(slug: string) {
   const plan = getStaticPlanBySlug(slug);
   if (!plan) {
     return {
-      title: "Plano Cerne",
-      description: "Detalhes de plano da Cerne.",
+      title: "Plano CerneOps",
+      description: "Detalhes de plano da CerneOps.",
     };
   }
   return {
-    title: `Cerne ${plan.name} — Detalhes do plano`,
+    title: `CerneOps ${plan.name} — Detalhes do plano`,
     description: `${plan.name}: ${plan.teaser}`,
   };
 }

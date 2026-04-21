@@ -31,7 +31,7 @@ export function CTA() {
                 href="https://core.cerneops.com.br"
                 className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-7 py-4 shadow-ember hover:brightness-110 transition"
               >
-                Entrar no Cerne Core
+                Entrar no CerneOps Core
                 <span aria-hidden>→</span>
               </a>
               <button

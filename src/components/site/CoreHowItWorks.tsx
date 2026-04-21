@@ -83,7 +83,7 @@ export function CoreHowItWorks() {
             </h2>
 
             <div className="mt-7 space-y-4 text-muted-foreground leading-relaxed">
-              <p>No Cerne Core, você não usa uma “IA genérica” para tentar resolver tudo.</p>
+              <p>No CerneOps Core, você não usa uma “IA genérica” para tentar resolver tudo.</p>
               <p>
                 Você usa agentes, cada um preparado para executar uma parte real da sua operação.
               </p>
