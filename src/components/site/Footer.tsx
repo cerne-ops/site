@@ -70,7 +70,7 @@ export function Footer() {
         <div className="ember-divider my-10" />
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-muted-foreground font-mono">
-          <div>© 2026 CERNE · TODOS OS DIREITOS RESERVADOS</div>
+          <div>© 2026 CERNEOPS · TODOS OS DIREITOS RESERVADOS</div>
           <div>INTEGRAÇÃO INTELIGENTE DE OPERAÇÕES</div>
         </div>
       </div>
