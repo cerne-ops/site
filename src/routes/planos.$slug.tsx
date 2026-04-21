@@ -11,6 +11,8 @@ import {
   type PlanDynamic,
 } from "@/lib/plans";
 
+const SITE_URL = "https://cerneops.com.br";
+
 declare global {
   interface Window {
     openCheckout?: (priceId: string) => void;
@@ -50,12 +52,23 @@ function normalizeGroupLabel(groupKey?: string) {
 export const Route = createFileRoute("/planos/$slug")({
   head: ({ params }) => {
     const meta = getPlanMeta(params.slug);
+    const canonical = `${SITE_URL}/planos/${params.slug}`;
     return {
       meta: [
         { title: meta.title },
         { name: "description", content: meta.description },
+        { name: "robots", content: "index, follow" },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: canonical },
         { property: "og:title", content: meta.title },
         { property: "og:description", content: meta.description },
+        { property: "og:site_name", content: "CerneOps" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: meta.title },
+        { name: "twitter:description", content: meta.description },
+      ],
+      links: [
+        { rel: "canonical", href: canonical },
       ],
     };
   },
@@ -113,6 +126,22 @@ function PlanRoutePage() {
   }, [slug]);
 
   const plan = useMemo(() => (staticPlan ? mergePlanDynamic(slug, dynamic) : null), [slug, dynamic, staticPlan]);
+  const planJsonLd = useMemo(() => {
+    if (!plan) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: `CerneOps ${plan.name}`,
+      provider: {
+        "@type": "Organization",
+        name: "CerneOps",
+        url: SITE_URL,
+      },
+      description: plan.dynamic.short_description || plan.teaser,
+      url: `${SITE_URL}/planos/${slug}`,
+      areaServed: "BR",
+    };
+  }, [plan, slug]);
 
   const handleSubscribe = () => {
     const priceId = dynamic.stripe_price_id;
@@ -149,6 +178,12 @@ function PlanRoutePage() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="pt-36 pb-24">
+        {planJsonLd ? (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(planJsonLd) }}
+          />
+        ) : null}
         <section className="relative">
           <div className="absolute inset-0 bg-grid opacity-35 pointer-events-none" />
           <div className="relative mx-auto max-w-7xl px-6">
