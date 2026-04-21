@@ -222,7 +222,8 @@ export const sectors: Sector[] = [
 ];
 
 function SectorCard({ icon, title, impact, featured }: Sector) {
-  const compactTitle = title.length > 22;
+  const compactTitle = title.length > 16;
+  const extraCompactTitle = title.length > 24;
 
   return (
     <div
@@ -237,12 +238,16 @@ function SectorCard({ icon, title, impact, featured }: Sector) {
         <div className="min-w-0">
           <h3
             className={`font-display font-semibold leading-tight text-foreground ${
-              compactTitle ? "text-lg sm:text-xl" : "text-2xl"
+              extraCompactTitle
+                ? "text-[1.02rem] sm:text-[1.08rem]"
+                : compactTitle
+                  ? "text-[1.15rem] sm:text-[1.22rem]"
+                  : "text-[1.45rem]"
             }`}
           >
             {title}
           </h3>
-          <p className="mt-1 text-[1.03rem] text-muted-foreground leading-[1.18] line-clamp-2">
+          <p className="mt-1 text-[0.92rem] text-muted-foreground leading-[1.2] line-clamp-2">
             {impact}
           </p>
         </div>
