@@ -224,15 +224,19 @@ export const sectors: Sector[] = [
 function SectorCard({ icon, title, impact, featured }: Sector) {
   return (
     <div
-      className={`sector-card reveal-up h-[230px] sm:h-[240px] rounded-2xl border border-border bg-surface/65 p-6 lg:p-7 ${
+      className={`sector-card reveal-up h-[200px] sm:h-[210px] rounded-2xl border border-border bg-surface/65 p-5 lg:p-5 ${
         featured ? "sector-card--featured" : ""
       }`}
     >
-      <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-ember/35 bg-background/60 text-2xl leading-none transition-transform duration-300 sector-icon">
-        {icon}
+      <div className="flex h-full items-start gap-4">
+        <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-ember/35 bg-background/60 text-2xl leading-none transition-transform duration-300 sector-icon">
+          {icon}
+        </div>
+        <div className="min-w-0">
+          <h3 className="font-display text-xl lg:text-[1.35rem] font-semibold leading-tight">{title}</h3>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{impact}</p>
+        </div>
       </div>
-      <h3 className="font-display text-2xl font-semibold leading-tight">{title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{impact}</p>
     </div>
   );
 }
