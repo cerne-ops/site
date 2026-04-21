@@ -8,9 +8,9 @@ export function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
               <img src={logo} alt="CerneOps" className="h-9 w-9 object-contain" />
-              <span className="font-display text-lg tracking-tight">
-                <span className="text-ember">CER</span>
-                <span className="text-foreground/80">NE</span>
+              <span className="font-brand text-[1.7rem]">
+                <span className="brand-cerne">CERNE</span>
+                <span className="brand-ops">OPS</span>
               </span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">

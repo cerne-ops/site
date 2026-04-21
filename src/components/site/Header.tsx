@@ -49,9 +49,9 @@ export function Header() {
               alt="CerneOps"
               className="h-8 w-8 md:h-9 md:w-9 object-contain transition-transform group-hover:scale-105"
             />
-            <span className="font-display text-base md:text-lg tracking-tight">
-              <span className="text-ember">CER</span>
-              <span className="text-foreground/80">NE</span>
+            <span className="font-brand text-[1.55rem] md:text-[1.7rem]">
+              <span className="brand-cerne">CERNE</span>
+              <span className="brand-ops">OPS</span>
             </span>
           </Link>
 
@@ -103,9 +103,9 @@ export function Header() {
           />
           <div className="absolute inset-y-0 right-0 w-[86%] max-w-sm border-l border-border bg-surface-elevated p-6 animate-in slide-in-from-right duration-200">
             <div className="flex items-center justify-between mb-8">
-              <div className="font-display text-lg tracking-tight">
-                <span className="text-ember">CER</span>
-                <span className="text-foreground/80">NE</span>
+              <div className="font-brand text-[1.6rem]">
+                <span className="brand-cerne">CERNE</span>
+                <span className="brand-ops">OPS</span>
               </div>
               <button
                 type="button"

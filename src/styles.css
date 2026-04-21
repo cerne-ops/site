@@ -138,6 +138,21 @@
     font-family: var(--font-mono);
   }
 
+  .font-brand {
+    font-family: "Bebas Neue", var(--font-sans);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    font-weight: 400;
+  }
+
+  .brand-cerne {
+    color: #ff5c00;
+  }
+
+  .brand-ops {
+    color: #ebebeb;
+  }
+
   .text-ember {
     color: var(--ember);
   }
