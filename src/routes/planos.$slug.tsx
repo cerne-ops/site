@@ -217,7 +217,7 @@ function PlanRoutePage() {
                 Agentes CerneOps inclusos nesse plano: {planAgentCount} agentes
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                Vocês contrato o time de agentes conforme sua necessidade
+                Contrate o time de agentes conforme sua necessidade
               </p>
               <div className="mt-5">
                 <a

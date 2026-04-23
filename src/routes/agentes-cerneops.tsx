@@ -246,11 +246,11 @@ const agents: Agent[] = [
 export const Route = createFileRoute("/agentes-cerneops")({
   head: () => ({
     meta: [
-      { title: "Agentes CerneOps | 20 Agentes Core" },
+      { title: "Agentes CerneOps | Agentes Core" },
       {
         name: "description",
         content:
-          "Conheça os 20 agentes Core da CerneOps para eliminar burocracia com integração zero e acelerar a operação da sua empresa.",
+          "Conheça os agentes Core da CerneOps para eliminar burocracia com integração zero e acelerar a operação da sua empresa.",
       },
     ],
     links: [{ rel: "canonical", href: "https://cerneops.com.br/agentes-cerneops" }],
@@ -273,15 +273,15 @@ function AgentsPage() {
                 / Agentes CerneOps
               </div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.03]">
-                20 Agentes Core da Cerne,
+                Agentes Core da CerneOps,
                 <br />
                 <span className="text-muted-foreground">Eliminação de Burocracia com Integração Zero.</span>
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-                O plano Core da Cerne foi desenhado para atacar a raiz da ineficiência nas pequenas e médias empresas: o trabalho manual e burocrático. O objetivo não é criar sistemas complexos, mas sim fornecer ferramentas práticas que o empresário ou operador possa usar imediatamente, sem necessidade de integrações de TI, treinamentos longos ou mudanças drásticas na infraestrutura atual.
+                O plano Core da CerneOps foi desenhado para atacar a raiz da ineficiência nas pequenas e médias empresas: o trabalho manual e burocrático. O objetivo não é criar sistemas complexos, mas sim fornecer ferramentas práticas que o empresário ou operador possa usar imediatamente, sem necessidade de integrações de TI, treinamentos longos ou mudanças drásticas na infraestrutura atual.
               </p>
               <p className="mt-4 text-foreground/90 leading-relaxed">
-                Esses agentes materializam o lema da Cerne: "Uma pessoa com a Cerne opera com a performance de dez."
+                Esses agentes materializam o lema da CerneOps: "Uma pessoa com a CerneOps opera com a performance de dez."
               </p>
             </div>
           </div>
@@ -338,10 +338,10 @@ function AgentsPage() {
             <div className="rounded-2xl border border-ember/35 bg-surface-elevated p-7">
               <h2 className="font-display text-3xl font-semibold">Conclusão, O Impacto do Core</h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                A beleza destes 20 agentes reside na sua simplicidade operacional. Eles não exigem que o empresário mude seu software de gestão ou contrate uma equipe de TI. Eles atuam exatamente onde a dor é mais aguda: na interface entre o mundo físico (papéis, fotos, áudios, planilhas desorganizadas) e a necessidade de informação estruturada.
+                A beleza destes agentes reside na sua simplicidade operacional. Eles não exigem que o empresário mude seu software de gestão ou contrate uma equipe de TI. Eles atuam exatamente onde a dor é mais aguda: na interface entre o mundo físico (papéis, fotos, áudios, planilhas desorganizadas) e a necessidade de informação estruturada.
               </p>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Ao adotar o plano Core da Cerne, o empresário transforma horas de trabalho braçal e burocrático em minutos de supervisão inteligente, liberando seu tempo e o de sua equipe para focar no que realmente importa: atender bem o cliente e crescer o negócio.
+                Ao adotar o plano Core da CerneOps, o empresário transforma horas de trabalho braçal e burocrático em minutos de supervisão inteligente, liberando seu tempo e o de sua equipe para focar no que realmente importa: atender bem o cliente e crescer o negócio.
               </p>
             </div>
           </div>
