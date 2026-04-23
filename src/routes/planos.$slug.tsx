@@ -33,21 +33,12 @@ function getPlanMeta(slug: string) {
   };
 }
 
-const AGENT_GROUP_LABELS: Record<string, string> = {
-  comunicacao_conteudo: "Comunicacao e Conteudo",
-  organizacao_execucao: "Organizacao e Execucao",
-  conhecimento_estruturacao: "Conhecimento e Estruturacao",
-  atendimento_relacionamento: "Atendimento e Relacionamento",
-  dados_inteligencia_operacional: "Dados e Inteligencia Operacional",
+const PLAN_AGENT_COUNT: Record<string, number> = {
+  start: 5,
+  boost: 9,
+  scale: 14,
+  dominus: 20,
 };
-
-function normalizeGroupLabel(groupKey?: string) {
-  const normalized = String(groupKey || "")
-    .trim()
-    .toLowerCase();
-  if (!normalized) return "Outros agentes";
-  return AGENT_GROUP_LABELS[normalized] || "Outros agentes";
-}
 
 export const Route = createFileRoute("/planos/$slug")({
   head: ({ params }) => {
@@ -79,19 +70,6 @@ function PlanRoutePage() {
   const { slug } = Route.useParams();
   const staticPlan = useMemo(() => getStaticPlanBySlug(slug), [slug]);
   const [dynamic, setDynamic] = useState<PlanDynamic>({});
-  const [agents, setAgents] = useState<Array<{ name?: string; description?: string; group?: string }>>(
-    [],
-  );
-  const groupedAgents = useMemo(() => {
-    const groups = new Map<string, Array<{ name?: string; description?: string; group?: string }>>();
-    for (const agent of agents) {
-      const label = normalizeGroupLabel(agent.group);
-      const current = groups.get(label) || [];
-      current.push(agent);
-      groups.set(label, current);
-    }
-    return Array.from(groups.entries()).map(([groupLabel, items]) => ({ groupLabel, items }));
-  }, [agents]);
 
   useEffect(() => {
     let mounted = true;
@@ -110,15 +88,6 @@ function PlanRoutePage() {
         short_description: payload.short_description as string | null | undefined,
         stripe_price_id: payload.stripe_price_id as string | null | undefined,
       });
-      if (Array.isArray(payload.agents)) {
-        setAgents(
-          payload.agents.map((agent) => ({
-            name: String((agent as { name?: unknown }).name ?? ""),
-            description: String((agent as { description?: unknown }).description ?? ""),
-            group: String((agent as { group?: unknown }).group ?? ""),
-          })),
-        );
-      }
     });
     return () => {
       mounted = false;
@@ -126,6 +95,7 @@ function PlanRoutePage() {
   }, [slug]);
 
   const plan = useMemo(() => (staticPlan ? mergePlanDynamic(slug, dynamic) : null), [slug, dynamic, staticPlan]);
+  const planAgentCount = PLAN_AGENT_COUNT[slug] ?? 0;
   const planJsonLd = useMemo(() => {
     if (!plan) return null;
     return {
@@ -243,13 +213,20 @@ function PlanRoutePage() {
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <h2 className="font-display text-2xl font-semibold mb-4">O que você consegue fazer</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {plan.whatCanDo.map((item) => (
-                  <div key={item} className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
-                    {item}
-                  </div>
-                ))}
+              <h2 className="font-display text-2xl font-semibold">
+                Agentes CerneOps inclusos nesse plano: {planAgentCount} agentes
+              </h2>
+              <p className="mt-3 text-muted-foreground leading-relaxed">
+                Vocês contrato o time de agentes conforme sua necessidade
+              </p>
+              <div className="mt-5">
+                <a
+                  href="/agentes-cerneops"
+                  className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-5 py-3 shadow-ember hover:brightness-110 transition"
+                >
+                  Confira nossos agentes disponíveis
+                  <span aria-hidden>→</span>
+                </a>
               </div>
             </div>
 
@@ -265,36 +242,6 @@ function PlanRoutePage() {
                 <StatCard value={formatPlanValue(plan.dynamic.support_level)} label="suporte" />
                 <StatCard value={formatPlanValue(plan.dynamic.priority)} label="prioridade" />
               </div>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <h2 className="font-display text-2xl font-semibold mb-4">Agentes incluídos</h2>
-              {groupedAgents.length > 0 ? (
-                <div className="space-y-5">
-                  {groupedAgents.map(({ groupLabel, items }) => (
-                    <div key={groupLabel} className="space-y-3">
-                      <h3 className="font-display text-lg font-semibold text-foreground/90">{groupLabel}</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {items.map((agent, index) => (
-                          <div
-                            key={`${groupLabel}-${agent.name}-${index}`}
-                            className="rounded-xl border border-border/80 bg-background/35 p-4"
-                          >
-                            <div className="font-semibold">{agent.name || "Agente"}</div>
-                            {agent.description ? (
-                              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{agent.description}</p>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-xl border border-border/80 bg-background/35 p-4 text-sm text-muted-foreground">
-                  Nenhum agente disponivel para este plano no momento.
-                </div>
-              )}
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">

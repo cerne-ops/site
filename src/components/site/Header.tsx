@@ -6,6 +6,7 @@ import { useSupraContactModal } from "@/components/site/SupraContactModal";
 const nav = [
   { label: "Início", to: "/#topo" },
   { label: "Plataforma", to: "/#plataforma" },
+  { label: "Agentes", to: "/agentes-cerneops" },
   { label: "Planos", to: "/#planos" },
   { label: "Como funciona", to: "/#como-funciona" },
   { label: "Setores", to: "/#setores" },
@@ -14,6 +15,7 @@ const nav = [
 
 const desktopNav = [
   { label: "Plataforma", to: "/#plataforma" },
+  { label: "Agentes", to: "/agentes-cerneops" },
   { label: "Core", to: "/#como-o-core-funciona" },
   { label: "Supra", to: "/#como-funciona" },
   { label: "Planos", to: "/#planos" },

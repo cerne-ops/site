@@ -39,6 +39,11 @@ export function Footer() {
                   Planos
                 </a>
               </li>
+              <li>
+                <a href="/agentes-cerneops" className="hover:text-foreground transition">
+                  Agentes CerneOps
+                </a>
+              </li>
             </ul>
           </div>
 
