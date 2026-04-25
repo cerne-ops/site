@@ -13,7 +13,7 @@ type Agent = {
 
 const principles = [
   {
-    title: "Integração Zero",
+    title: "zero código",
     body: "A entrada de dados é feita de forma manual e simples (upload de arquivos, fotos, planilhas básicas ou textos copiados). Não há necessidade de conectar APIs ou sistemas legados.",
   },
   {
@@ -250,7 +250,7 @@ export const Route = createFileRoute("/agentes-cerneops")({
       {
         name: "description",
         content:
-          "Conheça os agentes Core da CerneOps para eliminar burocracia com integração zero e acelerar a operação da sua empresa.",
+          "Conheça os agentes Core da CerneOps para eliminar burocracia com zero código e acelerar a operação da sua empresa.",
       },
     ],
     links: [{ rel: "canonical", href: "https://cerneops.com.br/agentes-cerneops" }],
@@ -275,7 +275,7 @@ function AgentsPage() {
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.03]">
                 Agentes Core da CerneOps,
                 <br />
-                <span className="text-muted-foreground">Eliminação de Burocracia com Integração Zero.</span>
+                <span className="text-muted-foreground">Eliminação de Burocracia com zero código.</span>
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
                 O plano Core da CerneOps foi desenhado para atacar a raiz da ineficiência nas pequenas e médias empresas: o trabalho manual e burocrático. O objetivo não é criar sistemas complexos, mas sim fornecer ferramentas práticas que o empresário ou operador possa usar imediatamente, sem necessidade de integrações de TI, treinamentos longos ou mudanças drásticas na infraestrutura atual.
