@@ -21,6 +21,9 @@ export type PlanDynamic = {
     name?: string | null;
     description?: string | null;
     group?: string | null;
+    problem?: string | null;
+    operation?: string | null;
+    delivery?: string | null;
   }> | null;
 };
 
@@ -43,6 +46,9 @@ type LandingApiPlan = {
     name?: string | null;
     description?: string | null;
     group?: string | null;
+    problem?: string | null;
+    operation?: string | null;
+    delivery?: string | null;
   }> | null;
 };
 
@@ -206,7 +212,16 @@ function mapApiPlanToLegacy(plan: LandingApiPlan): Record<string, unknown> {
     support_level: plan.supportLevel ?? null,
     priority: plan.priority ?? null,
     stripe_price_id: plan.stripePriceId ?? null,
-    agents: Array.isArray(plan.agents) ? plan.agents : [],
+    agents: Array.isArray(plan.agents)
+      ? plan.agents.map((agent) => ({
+          name: agent?.name ?? null,
+          description: agent?.description ?? null,
+          group: agent?.group ?? null,
+          problem: agent?.problem ?? null,
+          operation: agent?.operation ?? null,
+          delivery: agent?.delivery ?? null,
+        }))
+      : [],
   };
 }
 

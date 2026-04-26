@@ -9,6 +9,9 @@ type Agent = {
   title: string;
   description: string;
   group: string;
+  problem: string;
+  operation: string;
+  delivery: string;
 };
 
 const principles = [
@@ -29,6 +32,26 @@ const principles = [
 function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
   const byKey = new Map<string, Agent>();
 
+  const normalizeGroupLabel = (raw: string) => {
+    if (!raw) return "Sem grupo";
+    const specialGroups: Record<string, string> = {
+      rh_departamento_pessoal: "Recursos Humanos e Departamento Pessoal",
+      vendas_comercial: "Vendas e Comercial",
+      financeiro_administrativo: "Financeiro e Administrativo",
+      atendimento_relacionamento: "Atendimento e Relacionamento com Cliente",
+      operacao_logistica: "Operação e Logística",
+      gestao_produtividade_gestor: "Gestão e Produtividade do Gestor",
+    };
+    const key = raw.trim().toLowerCase();
+    if (specialGroups[key]) return specialGroups[key];
+    return raw
+      .replace(/_/g, " ")
+      .split(" ")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(" ");
+  };
+
   for (const plan of plans) {
     const planAgents = Array.isArray(plan.agents)
       ? (plan.agents as Array<Record<string, unknown>>)
@@ -38,10 +61,14 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
       const title = String(rawAgent?.name ?? "").trim();
       if (!title) continue;
 
-      const group = String(rawAgent?.group ?? "Sem grupo").trim() || "Sem grupo";
+      const groupRaw = String(rawAgent?.group ?? "Sem grupo").trim() || "Sem grupo";
+      const group = normalizeGroupLabel(groupRaw);
       const description =
         String(rawAgent?.description ?? "").trim() ||
         "Descrição em atualização no painel administrativo.";
+      const problem = String(rawAgent?.problem ?? "").trim() || "Em atualização no Admin.";
+      const operation = String(rawAgent?.operation ?? "").trim() || "Em atualização no Admin.";
+      const delivery = String(rawAgent?.delivery ?? "").trim() || "Em atualização no Admin.";
       const key = `${title.toLowerCase()}::${group.toLowerCase()}`;
 
       if (!byKey.has(key)) {
@@ -50,6 +77,9 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
           title,
           group,
           description,
+          problem,
+          operation,
+          delivery,
         });
       }
     }
@@ -189,6 +219,17 @@ function AgentsPage() {
                         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
                           {agent.description}
                         </p>
+                        <div className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
+                          <p>
+                            <span className="text-foreground font-medium">Problema:</span> {agent.problem}
+                          </p>
+                          <p>
+                            <span className="text-foreground font-medium">Operação:</span> {agent.operation}
+                          </p>
+                          <p>
+                            <span className="text-foreground font-medium">Entrega:</span> {agent.delivery}
+                          </p>
+                        </div>
                       </article>
                     ))}
                 </div>
