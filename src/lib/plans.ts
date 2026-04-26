@@ -21,6 +21,8 @@ export type PlanDynamic = {
     name?: string | null;
     description?: string | null;
     group?: string | null;
+    group_key?: string | null;
+    group_name?: string | null;
     problem?: string | null;
     operation?: string | null;
     delivery?: string | null;
@@ -46,6 +48,8 @@ type LandingApiPlan = {
     name?: string | null;
     description?: string | null;
     group?: string | null;
+    group_key?: string | null;
+    group_name?: string | null;
     problem?: string | null;
     operation?: string | null;
     delivery?: string | null;
@@ -217,6 +221,8 @@ function mapApiPlanToLegacy(plan: LandingApiPlan): Record<string, unknown> {
           name: agent?.name ?? null,
           description: agent?.description ?? null,
           group: agent?.group ?? null,
+          group_key: agent?.group_key ?? null,
+          group_name: agent?.group_name ?? null,
           problem: agent?.problem ?? null,
           operation: agent?.operation ?? null,
           delivery: agent?.delivery ?? null,
