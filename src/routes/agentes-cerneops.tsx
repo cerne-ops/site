@@ -61,8 +61,9 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
       const title = String(rawAgent?.name ?? "").trim();
       if (!title) continue;
 
+      const groupNameRaw = String(rawAgent?.group_name ?? "").trim();
       const groupRaw = String(rawAgent?.group ?? "Sem grupo").trim() || "Sem grupo";
-      const group = normalizeGroupLabel(groupRaw);
+      const group = groupNameRaw || normalizeGroupLabel(groupRaw);
       const description =
         String(rawAgent?.description ?? "").trim() ||
         "Descrição em atualização no painel administrativo.";
