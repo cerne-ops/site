@@ -9,38 +9,65 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AgentesCerneopsRouteImport } from './routes/agentes-cerneops'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlanosSlugRouteImport } from './routes/planos.$slug'
 
+const AgentesCerneopsRoute = AgentesCerneopsRouteImport.update({
+  id: '/agentes-cerneops',
+  path: '/agentes-cerneops',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanosSlugRoute = PlanosSlugRouteImport.update({
+  id: '/planos/$slug',
+  path: '/planos/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agentes-cerneops': typeof AgentesCerneopsRoute
+  '/planos/$slug': typeof PlanosSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agentes-cerneops': typeof AgentesCerneopsRoute
+  '/planos/$slug': typeof PlanosSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agentes-cerneops': typeof AgentesCerneopsRoute
+  '/planos/$slug': typeof PlanosSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/agentes-cerneops' | '/planos/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/agentes-cerneops' | '/planos/$slug'
+  id: '__root__' | '/' | '/agentes-cerneops' | '/planos/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgentesCerneopsRoute: typeof AgentesCerneopsRoute
+  PlanosSlugRoute: typeof PlanosSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/agentes-cerneops': {
+      id: '/agentes-cerneops'
+      path: '/agentes-cerneops'
+      fullPath: '/agentes-cerneops'
+      preLoaderRoute: typeof AgentesCerneopsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/planos/$slug': {
+      id: '/planos/$slug'
+      path: '/planos/$slug'
+      fullPath: '/planos/$slug'
+      preLoaderRoute: typeof PlanosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgentesCerneopsRoute: AgentesCerneopsRoute,
+  PlanosSlugRoute: PlanosSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
