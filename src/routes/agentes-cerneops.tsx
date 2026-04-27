@@ -12,6 +12,7 @@ type Agent = {
   problem: string;
   operation: string;
   delivery: string;
+  status: "ativo" | "inativo" | "manutencao" | "desenvolvimento";
 };
 
 const principles = [
@@ -71,6 +72,13 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
       const operation = String(rawAgent?.operation ?? "").trim() || "Em atualização no Admin.";
       const delivery = String(rawAgent?.delivery ?? "").trim() || "Em atualização no Admin.";
       const key = `${title.toLowerCase()}::${group.toLowerCase()}`;
+      const rawStatus = String(rawAgent?.status ?? "ativo").trim().toLowerCase();
+      const status: Agent["status"] =
+        rawStatus === "inativo" ||
+        rawStatus === "manutencao" ||
+        rawStatus === "desenvolvimento"
+          ? rawStatus
+          : "ativo";
 
       if (!byKey.has(key)) {
         byKey.set(key, {
@@ -81,6 +89,7 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
           problem,
           operation,
           delivery,
+          status,
         });
       }
     }
@@ -149,6 +158,31 @@ function AgentsPage() {
     [agents],
   );
 
+  const statusBadge = (status: Agent["status"]) => {
+    if (status === "inativo") {
+      return {
+        label: "Inativo",
+        className: "border-red-500/35 bg-red-500/15 text-red-300",
+      };
+    }
+    if (status === "manutencao") {
+      return {
+        label: "Em Manutenção",
+        className: "border-amber-500/35 bg-amber-500/15 text-amber-300",
+      };
+    }
+    if (status === "desenvolvimento") {
+      return {
+        label: "Em Breve",
+        className: "border-indigo-500/35 bg-indigo-500/15 text-indigo-300",
+      };
+    }
+    return {
+      label: "Operacional",
+      className: "border-emerald-500/35 bg-emerald-500/15 text-emerald-300",
+    };
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -215,7 +249,14 @@ function AgentsPage() {
                     .filter((agent) => agent.group === group)
                     .map((agent) => (
                       <article key={agent.id} className="rounded-2xl border border-border bg-surface/55 p-6">
-                        <div className="font-mono text-xs uppercase tracking-widest text-ember">Agente</div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium ${statusBadge(agent.status).className}`}
+                          >
+                            {statusBadge(agent.status).label}
+                          </span>
+                          <div className="font-mono text-xs uppercase tracking-widest text-ember">Agente</div>
+                        </div>
                         <h4 className="mt-2 font-display text-2xl leading-tight font-semibold">{agent.title}</h4>
                         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
                           {agent.description}

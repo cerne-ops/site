@@ -26,6 +26,7 @@ export type PlanDynamic = {
     problem?: string | null;
     operation?: string | null;
     delivery?: string | null;
+    status?: "ativo" | "inativo" | "manutencao" | "desenvolvimento" | null;
   }> | null;
 };
 
@@ -53,6 +54,7 @@ type LandingApiPlan = {
     problem?: string | null;
     operation?: string | null;
     delivery?: string | null;
+    status?: "ativo" | "inativo" | "manutencao" | "desenvolvimento" | null;
   }> | null;
 };
 
@@ -226,6 +228,7 @@ function mapApiPlanToLegacy(plan: LandingApiPlan): Record<string, unknown> {
           problem: agent?.problem ?? null,
           operation: agent?.operation ?? null,
           delivery: agent?.delivery ?? null,
+          status: agent?.status ?? "ativo",
         }))
       : [],
   };
