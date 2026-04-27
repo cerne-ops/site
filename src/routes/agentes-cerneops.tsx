@@ -160,7 +160,10 @@ function AgentsPage() {
 
   const statusBadge = (status: Agent["status"]) => {
     if (status === "inativo") {
-      return null;
+      return {
+        label: "Inativo",
+        className: "border-red-500/35 bg-red-500/15 text-red-300",
+      };
     }
     if (status === "manutencao") {
       return {
