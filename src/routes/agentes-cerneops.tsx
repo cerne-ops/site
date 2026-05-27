@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { Bot, ChevronDown, ChevronRight } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { fetchLandingPlans } from "@/lib/plans";
@@ -117,6 +118,7 @@ function AgentsPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     let alive = true;
@@ -157,6 +159,38 @@ function AgentsPage() {
     () => Array.from(new Set(agents.map((agent) => agent.group))).sort((a, b) => a.localeCompare(b)),
     [agents],
   );
+
+  const groupedAgents = useMemo(
+    () =>
+      groups.map((group) => {
+        const groupAgents = agents
+          .filter((agent) => agent.group === group)
+          .sort((a, b) => a.title.localeCompare(b.title));
+        return {
+          group,
+          agents: groupAgents,
+          activeCount: groupAgents.filter((agent) => agent.status === "ativo").length,
+        };
+      }),
+    [agents, groups],
+  );
+
+  const activeAgentsTotal = useMemo(
+    () => agents.filter((agent) => agent.status === "ativo").length,
+    [agents],
+  );
+
+  const toggleGroup = (group: string) => {
+    setExpandedGroups((current) => {
+      const next = new Set(current);
+      if (next.has(group)) {
+        next.delete(group);
+      } else {
+        next.add(group);
+      }
+      return next;
+    });
+  };
 
   const statusBadge = (status: Agent["status"]) => {
     if (status === "inativo") {
@@ -225,7 +259,26 @@ function AgentsPage() {
 
         <section className="mt-10">
           <div className="mx-auto max-w-7xl px-6">
-            <h2 className="font-display text-3xl font-semibold">Catálogo de Agentes Core</h2>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h2 className="font-display text-3xl font-semibold">Catálogo de Agentes Core</h2>
+                {!isLoading && !hasError && agents.length > 0 ? (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {agents.length} agentes em {groups.length} grupo{groups.length === 1 ? "" : "s"}.
+                  </p>
+                ) : null}
+              </div>
+              {!isLoading && !hasError && agents.length > 0 ? (
+                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                  <span className="rounded-full border border-border bg-surface/55 px-3 py-1">
+                    {agents.length} total
+                  </span>
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-300">
+                    {activeAgentsTotal} ativos
+                  </span>
+                </div>
+              ) : null}
+            </div>
             {isLoading && (
               <p className="mt-4 text-sm text-muted-foreground">
                 Carregando catálogo oficial de agentes...
@@ -241,46 +294,91 @@ function AgentsPage() {
                 Nenhum agente disponível para exibição no momento.
               </p>
             )}
-            {groups.map((group) => (
-              <div key={group} className="mt-8">
-                <h3 className="font-display text-2xl font-semibold text-ember">{group}</h3>
-                <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {agents
-                    .filter((agent) => agent.group === group)
-                    .map((agent) => {
-                      const badge = statusBadge(agent.status);
-                      return (
-                      <article key={agent.id} className="rounded-2xl border border-border bg-surface/55 p-6">
-                        <div className="flex items-center gap-2">
-                          <div className="font-mono text-xs uppercase tracking-widest text-ember">Agente</div>
-                          {badge ? (
-                            <span
-                              className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium ${badge.className}`}
+            <div className="mt-6 space-y-4">
+              {groupedAgents.map((group) => {
+                const expanded = expandedGroups.has(group.group);
+                return (
+                  <section key={group.group} className="space-y-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group.group)}
+                      aria-expanded={expanded}
+                      aria-controls={`agent-group-${group.group.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`}
+                      className="flex w-full items-center justify-between gap-4 rounded-2xl border border-border bg-surface/55 p-5 text-left transition hover:border-ember/45 hover:bg-surface-elevated focus:outline-none"
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        {expanded ? (
+                          <ChevronDown className="h-5 w-5 shrink-0 text-ember" />
+                        ) : (
+                          <ChevronRight className="h-5 w-5 shrink-0 text-ember" />
+                        )}
+                        <Bot className="h-5 w-5 shrink-0 text-ember" />
+                        <span className="truncate font-display text-2xl font-semibold text-ember">
+                          {group.group}
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 flex-wrap justify-end gap-2 text-xs text-muted-foreground">
+                        <span className="rounded-full border border-border px-2.5 py-1">
+                          {group.agents.length} total
+                        </span>
+                        <span className="rounded-full border border-emerald-500/30 px-2.5 py-1 text-emerald-300">
+                          {group.activeCount} ativos
+                        </span>
+                      </span>
+                    </button>
+                    {expanded ? (
+                      <div
+                        id={`agent-group-${group.group.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`}
+                        className="grid grid-cols-1 gap-4 lg:grid-cols-2"
+                      >
+                        {group.agents.map((agent) => {
+                          const badge = statusBadge(agent.status);
+                          return (
+                            <article
+                              key={agent.id}
+                              className="rounded-2xl border border-border bg-surface/55 p-6 transition hover:border-ember/45"
                             >
-                              {badge.label}
-                            </span>
-                          ) : null}
-                        </div>
-                        <h4 className="mt-2 font-display text-2xl leading-tight font-semibold">{agent.title}</h4>
-                        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                          {agent.description}
-                        </p>
-                        <div className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
-                          <p>
-                            <span className="text-foreground font-medium">Problema:</span> {agent.problem}
-                          </p>
-                          <p>
-                            <span className="text-foreground font-medium">Operação:</span> {agent.operation}
-                          </p>
-                          <p>
-                            <span className="text-foreground font-medium">Entrega:</span> {agent.delivery}
-                          </p>
-                        </div>
-                      </article>
-                    )})}
-                </div>
-              </div>
-            ))}
+                              <div className="flex items-center gap-2">
+                                <div className="font-mono text-xs uppercase tracking-widest text-ember">
+                                  Agente
+                                </div>
+                                {badge ? (
+                                  <span
+                                    className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium ${badge.className}`}
+                                  >
+                                    {badge.label}
+                                  </span>
+                                ) : null}
+                              </div>
+                              <h4 className="mt-2 font-display text-2xl leading-tight font-semibold">
+                                {agent.title}
+                              </h4>
+                              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                                {agent.description}
+                              </p>
+                              <div className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
+                                <p>
+                                  <span className="text-foreground font-medium">Problema:</span>{" "}
+                                  {agent.problem}
+                                </p>
+                                <p>
+                                  <span className="text-foreground font-medium">Operação:</span>{" "}
+                                  {agent.operation}
+                                </p>
+                                <p>
+                                  <span className="text-foreground font-medium">Entrega:</span>{" "}
+                                  {agent.delivery}
+                                </p>
+                              </div>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </section>
+                );
+              })}
+            </div>
           </div>
         </section>
 
