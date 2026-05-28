@@ -78,6 +78,7 @@ function PlanRoutePage() {
       setDynamic({
         price_monthly: payload.price_monthly as string | number | null | undefined,
         max_users: payload.max_users as string | number | null | undefined,
+        max_agents: payload.max_agents as string | number | null | undefined,
         tasks_day: payload.tasks_day as string | number | null | undefined,
         tasks_month: payload.tasks_month as string | number | null | undefined,
         uploads_day: payload.uploads_day as string | number | null | undefined,
@@ -95,7 +96,12 @@ function PlanRoutePage() {
   }, [slug]);
 
   const plan = useMemo(() => (staticPlan ? mergePlanDynamic(slug, dynamic) : null), [slug, dynamic, staticPlan]);
-  const planAgentCount = PLAN_AGENT_COUNT[slug] ?? 0;
+  const hasDynamicAgentCount = dynamic.max_agents !== null && dynamic.max_agents !== undefined && dynamic.max_agents !== "";
+  const parsedAgentCount = Number(dynamic.max_agents);
+  const planAgentCount =
+    hasDynamicAgentCount && Number.isFinite(parsedAgentCount)
+      ? Math.trunc(parsedAgentCount)
+      : PLAN_AGENT_COUNT[slug] ?? 0;
   const planJsonLd = useMemo(() => {
     if (!plan) return null;
     return {

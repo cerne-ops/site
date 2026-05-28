@@ -8,6 +8,7 @@ export type PlanSlug = "start" | "boost" | "scale" | "dominus";
 export type PlanDynamic = {
   price_monthly?: string | number | null;
   max_users?: string | number | null;
+  max_agents?: string | number | null;
   tasks_day?: string | number | null;
   tasks_month?: string | number | null;
   uploads_day?: string | number | null;
@@ -37,6 +38,7 @@ type LandingApiPlan = {
   label?: string;
   price?: string | number | null;
   maxUsers?: string | number | null;
+  maxAgents?: string | number | null;
   tasksDay?: string | number | null;
   tasksMonth?: string | number | null;
   uploadsDay?: string | number | null;
@@ -210,6 +212,7 @@ function mapApiPlanToLegacy(plan: LandingApiPlan): Record<string, unknown> {
     label: plan.label,
     price_monthly: plan.price ?? null,
     max_users: plan.maxUsers ?? null,
+    max_agents: plan.maxAgents ?? null,
     tasks_day: plan.tasksDay ?? null,
     tasks_month: plan.tasksMonth ?? null,
     uploads_day: plan.uploadsDay ?? null,
