@@ -220,7 +220,8 @@ function PlanRoutePage() {
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
-                Agentes CerneOps inclusos nesse plano: {planAgentCount} agentes
+                Agentes CerneOps inclusos nesse plano:{" "}
+                <span className="text-ember">{planAgentCount} agentes</span>
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 Contrate o time de agentes conforme sua necessidade
