@@ -8,6 +8,7 @@ const nav = [
   { label: "Plataforma", to: "/#plataforma" },
   { label: "Agentes", to: "/agentes-cerneops" },
   { label: "Planos", to: "/#planos" },
+  { label: "Porque?", to: "/porque" },
   { label: "Como funciona", to: "/#como-funciona" },
   { label: "Setores", to: "/#setores" },
   { label: "Contato", to: "/#contato" },
@@ -19,6 +20,7 @@ const desktopNav = [
   { label: "Core", to: "/#como-o-core-funciona" },
   { label: "Supra", to: "/#como-funciona" },
   { label: "Planos", to: "/#planos" },
+  { label: "Porque?", to: "/porque" },
 ];
 
 export function Header() {
@@ -57,7 +59,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-8 text-sm text-muted-foreground">
             {desktopNav.map((item) => (
               <a
                 key={item.label}
