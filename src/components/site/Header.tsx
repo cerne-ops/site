@@ -73,7 +73,7 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <a
-              href="https://core.cerneops.com.br"
+              href="/#planos"
               className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
             >
               Entrar

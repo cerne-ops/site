@@ -54,10 +54,10 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <a
-                  href="https://core.cerneops.com.br"
+                  href="/#planos"
                   className="hover:text-foreground transition"
                 >
-                  core.cerneops.com.br
+                  Planos do Core
                 </a>
               </li>
               <li>

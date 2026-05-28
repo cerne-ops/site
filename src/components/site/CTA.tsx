@@ -28,7 +28,7 @@ export function CTA() {
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <a
-                href="https://core.cerneops.com.br"
+                href="/#planos"
                 className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-7 py-4 shadow-ember hover:brightness-110 transition"
               >
                 Entrar no CerneOps Core
