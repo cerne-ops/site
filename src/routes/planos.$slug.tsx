@@ -3,6 +3,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   fetchPlanBySlug,
   formatPlanPriceBRL,
   formatPlanValue,
@@ -12,12 +19,9 @@ import {
 } from "@/lib/plans";
 
 const SITE_URL = "https://cerneops.com.br";
-
-declare global {
-  interface Window {
-    openCheckout?: (priceId: string) => void;
-  }
-}
+const CORE_SIGNUP_BASE =
+  (import.meta.env.VITE_CORE_SIGNUP_BASE as string | undefined)?.replace(/\/+$/, "") ||
+  "https://core.cerneops.com.br";
 
 function getPlanMeta(slug: string) {
   const plan = getStaticPlanBySlug(slug);
@@ -70,6 +74,7 @@ function PlanRoutePage() {
   const { slug } = Route.useParams();
   const staticPlan = useMemo(() => getStaticPlanBySlug(slug), [slug]);
   const [dynamic, setDynamic] = useState<PlanDynamic>({});
+  const [subscribeOpen, setSubscribeOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -120,11 +125,14 @@ function PlanRoutePage() {
   }, [plan, slug]);
 
   const handleSubscribe = () => {
-    const priceId = dynamic.stripe_price_id;
-    if (!priceId) return;
-    if (typeof window !== "undefined" && typeof window.openCheckout === "function") {
-      window.openCheckout(priceId);
-    }
+    setSubscribeOpen(true);
+  };
+
+  const handleConfirmSubscribe = () => {
+    if (typeof window === "undefined") return;
+    const target = new URL("/signup", CORE_SIGNUP_BASE);
+    target.searchParams.set("plan", slug);
+    window.location.assign(target.toString());
   };
 
   if (!plan) {
@@ -288,6 +296,84 @@ function PlanRoutePage() {
           </div>
         </section>
       </main>
+      <Dialog open={subscribeOpen} onOpenChange={setSubscribeOpen}>
+        <DialogContent className="max-w-2xl rounded-2xl border-border bg-surface-elevated p-0 overflow-hidden">
+          <div className="relative p-7 sm:p-8 lg:p-9">
+            <div
+              className="absolute inset-0 pointer-events-none opacity-35"
+              style={{ background: "var(--gradient-radial-ember)" }}
+            />
+            <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
+
+            <div className="relative">
+              <DialogHeader className="space-y-3 text-left">
+                <div className="font-mono text-xs uppercase tracking-widest text-ember">
+                  / Assinatura Core
+                </div>
+                <DialogTitle className="font-display text-3xl leading-tight">
+                  Assinar plano {plan.name}
+                </DialogTitle>
+                <DialogDescription className="text-base text-foreground/80 leading-relaxed">
+                  Você está iniciando a contratação do CerneOps Core. O cadastro
+                  da sua empresa e a criação da sua conta acontecem no ambiente
+                  seguro do Core antes da etapa de pagamento.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="mt-7 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
+                  <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                    Plano
+                  </div>
+                  <div className="mt-2 font-display text-xl leading-none">{plan.name}</div>
+                </div>
+                <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
+                  <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                    Valor
+                  </div>
+                  <div className="mt-2 font-display text-xl leading-none">
+                    {formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
+                  <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                    Capacidade
+                  </div>
+                  <div className="mt-2 text-sm leading-relaxed text-foreground/85">
+                    {formatPlanValue(plan.dynamic.max_users)} usuários
+                    <br />
+                    {planAgentCount} agentes
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-xl border border-ember/25 bg-ember/10 px-4 py-3 text-sm leading-relaxed text-foreground/85">
+                Ao continuar, você será direcionado para o Core para criar sua
+                conta, confirmar seu email e seguir para o pagamento em ambiente
+                seguro. Nenhum checkout é criado nesta página.
+              </div>
+
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleConfirmSubscribe}
+                  className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                >
+                  Continuar cadastro
+                  <span aria-hidden>→</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSubscribeOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
+                >
+                  Voltar ao plano
+                </button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       <Footer />
     </div>
   );
