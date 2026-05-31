@@ -77,63 +77,68 @@ export function Plans() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-          {plans.map((plan) => (
-            <div
-              key={plan.id}
-              className={`relative rounded-2xl p-7 border transition-all hover:-translate-y-1 hover:shadow-ember ${
-                plan.id === "dominus"
-                  ? "border-ember/55 bg-surface-elevated ring-1 ring-ember/30"
-                  : "border-border bg-surface/60 hover:border-ember/35"
-              }`}
-            >
-              {plan.id === "dominus" ? (
-                <div className="absolute -top-3 left-7 font-mono text-[10px] uppercase tracking-widest gradient-ember text-primary-foreground px-2 py-1 rounded">
-                  Mais completo
-                </div>
-              ) : null}
-              <div className="font-mono text-xs text-ember uppercase tracking-widest mb-2">
-                {plan.label}
-              </div>
-              <div className="mb-2 flex justify-center">
-                <img
-                  src={plan.logo}
-                  alt={`${plan.name} logo`}
-                  className={`w-auto object-contain opacity-95 pointer-events-none ${
-                    plan.id === "dominus"
-                      ? "h-[63px]"
-                      : plan.id === "scale"
-                        ? "h-[51px]"
-                        : plan.id === "boost"
-                          ? "h-12"
-                          : "h-11"
-                  }`}
-                />
-              </div>
-              <div className="font-mono text-[13px] text-foreground/70 mb-4">
-                {plan.id === "trial"
-                  ? "Gratuito"
-                  : formatPlanPriceBRL(plan.dynamic.price_monthly)}
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                {plan.dynamic.short_description || plan.teaser}
-              </p>
-              <ul className="space-y-2.5 text-sm mb-6">
-                {plan.bullets.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <span className="mt-1.5 h-1 w-1 rounded-full bg-ember shrink-0" />
-                    <span className="text-foreground/90">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/planos/$slug"
-                params={{ slug: plan.id }}
-                className="inline-flex items-center gap-1 text-sm text-ember font-medium"
+          {plans.map((plan) => {
+            const isFeaturedPlan = plan.id === "boost" || plan.id === "dominus";
+            return (
+              <div
+                key={plan.id}
+                className={`relative rounded-2xl p-7 border transition-all hover:-translate-y-1 hover:shadow-ember ${
+                  isFeaturedPlan
+                    ? "border-ember/55 bg-surface-elevated ring-1 ring-ember/30"
+                    : "border-border bg-surface/60 hover:border-ember/35"
+                } ${plan.id === "boost" ? "xl:z-10 xl:scale-[1.06]" : ""}`}
               >
-                Ver detalhes <span aria-hidden>→</span>
-              </Link>
-            </div>
-          ))}
+                {isFeaturedPlan ? (
+                  <div className="absolute -top-3 left-7 font-mono text-[10px] uppercase tracking-widest gradient-ember text-primary-foreground px-2 py-1 rounded">
+                    {plan.id === "boost" ? "MAIS ESCOLHIDO" : "Mais completo"}
+                  </div>
+                ) : null}
+                <div className="font-mono text-xs text-ember uppercase tracking-widest mb-2">
+                  {plan.label}
+                </div>
+                <div className="mb-2 flex justify-center">
+                  <img
+                    src={plan.logo}
+                    alt={`${plan.name} logo`}
+                    className={`w-auto object-contain opacity-95 pointer-events-none ${
+                      plan.id === "dominus"
+                        ? "h-[63px]"
+                        : plan.id === "scale"
+                          ? "h-[51px]"
+                          : plan.id === "boost"
+                            ? "h-12"
+                            : plan.id === "trial"
+                              ? "h-[53px]"
+                              : "h-11"
+                    }`}
+                  />
+                </div>
+                <div className="font-mono text-[13px] text-foreground/70 mb-4">
+                  {plan.id === "trial"
+                    ? "Gratuito"
+                    : formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                  {plan.dynamic.short_description || plan.teaser}
+                </p>
+                <ul className="space-y-2.5 text-sm mb-6">
+                  {plan.bullets.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5">
+                      <span className="mt-1.5 h-1 w-1 rounded-full bg-ember shrink-0" />
+                      <span className="text-foreground/90">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/planos/$slug"
+                  params={{ slug: plan.id }}
+                  className="inline-flex items-center gap-1 text-sm text-ember font-medium"
+                >
+                  Ver detalhes <span aria-hidden>→</span>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

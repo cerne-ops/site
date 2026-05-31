@@ -249,7 +249,11 @@ function PlanRoutePage() {
                     <img
                       src={plan.logo}
                       alt={`${plan.name} logo`}
-                      className="relative w-[250px] sm:w-[320px] lg:w-[360px] xl:w-[400px] h-auto object-contain opacity-95"
+                      className={`relative h-auto object-contain opacity-95 ${
+                        isTrialPlan
+                          ? "w-[300px] sm:w-[384px] lg:w-[432px] xl:w-[480px]"
+                          : "w-[250px] sm:w-[320px] lg:w-[360px] xl:w-[400px]"
+                      }`}
                     />
                   </div>
                 </div>
