@@ -2,8 +2,9 @@ import startLogo from "@/assets/planos/START.png";
 import boostLogo from "@/assets/planos/BOOST.png";
 import scaleLogo from "@/assets/planos/SCALE.png";
 import dominusLogo from "@/assets/planos/DOMINUS.png";
+import trialLogo from "@/assets/planos/TRIAL.png";
 
-export type PlanSlug = "start" | "boost" | "scale" | "dominus";
+export type PlanSlug = "trial" | "start" | "boost" | "scale" | "dominus";
 
 export type PlanDynamic = {
   price_monthly?: string | number | null;
@@ -76,6 +77,27 @@ export type PlanStatic = {
 
 export const planCatalog: PlanStatic[] = [
   {
+    id: "trial",
+    name: "Trial",
+    label: "Sem cartão",
+    logo: trialLogo,
+    teaser: "Destrave sua operação. Descubra o poder da CerneOps.",
+    bullets: ["Todos os agentes", "Sem cartão", "10 tarefas Trial"],
+    heroIntent:
+      "Teste a CerneOps sem cobrança inicial e faça upgrade quando precisar continuar.",
+    audience:
+      "Para empresas que querem experimentar o Core antes de contratar um plano pago.",
+    whatCanDo: [
+      "Acessar todos os agentes",
+      "Executar tarefas dentro do saldo Trial",
+      "Conhecer o Core sem cartão",
+      "Fazer upgrade ao final do teste",
+    ],
+    impact: ["Sem cobrança inicial", "Validação rápida", "Upgrade guiado"],
+    evolution:
+      "Ao consumir o saldo do Trial, escolha um plano pago em Configurações / Geral para continuar operando.",
+  },
+  {
     id: "start",
     name: "Start",
     label: "Entrada",
@@ -110,7 +132,8 @@ export const planCatalog: PlanStatic[] = [
       "Ajustar comunicação",
     ],
     impact: ["Menos retrabalho", "Mais consistência", "Equipe mais produtiva"],
-    evolution: "Suba para Scale quando precisar de mais controle e previsibilidade.",
+    evolution:
+      "Suba para Scale quando precisar de mais controle e previsibilidade.",
   },
   {
     id: "scale",
@@ -118,7 +141,11 @@ export const planCatalog: PlanStatic[] = [
     label: "Escala",
     logo: scaleLogo,
     teaser: "Para empresas que estruturam a operação.",
-    bullets: ["Processos organizados", "Mais controle", "Produtividade por equipe"],
+    bullets: [
+      "Processos organizados",
+      "Mais controle",
+      "Produtividade por equipe",
+    ],
     heroIntent: "A operação começa a escalar.",
     audience: "Para empresas que precisam estruturar a operação para crescer.",
     whatCanDo: [
@@ -128,7 +155,8 @@ export const planCatalog: PlanStatic[] = [
       "Melhorar atendimento",
     ],
     impact: ["Mais controle", "Mais visibilidade", "Decisão mais rápida"],
-    evolution: "Suba para Dominus quando precisar de capacidade máxima da plataforma.",
+    evolution:
+      "Suba para Dominus quando precisar de capacidade máxima da plataforma.",
   },
   {
     id: "dominus",
@@ -136,7 +164,11 @@ export const planCatalog: PlanStatic[] = [
     label: "Topo do Core",
     logo: dominusLogo,
     teaser: "Capacidade máxima da plataforma.",
-    bullets: ["Todos os agentes", "Máxima capacidade", "Prioridade operacional"],
+    bullets: [
+      "Todos os agentes",
+      "Máxima capacidade",
+      "Prioridade operacional",
+    ],
     heroIntent: "Capacidade máxima do Core.",
     audience: "Para operações que exigem máxima capacidade e controle total.",
     whatCanDo: [
@@ -172,7 +204,10 @@ export function formatPlanPriceBRL(value: string | number | null | undefined) {
   }
 
   const raw = String(value).trim();
-  const normalized = raw.replace(/\./g, "").replace(",", ".").replace(/[^\d.-]/g, "");
+  const normalized = raw
+    .replace(/\./g, "")
+    .replace(",", ".")
+    .replace(/[^\d.-]/g, "");
   const parsed = Number(normalized);
 
   if (Number.isFinite(parsed)) {
@@ -242,7 +277,8 @@ export async function fetchLandingPlans() {
     const response = await fetch(`${getPlansApiBase()}/api/plans/landing`);
     if (!response.ok) throw new Error("landing plans unavailable");
     const payload = (await response.json()) as { plans?: LandingApiPlan[] };
-    if (!Array.isArray(payload?.plans)) throw new Error("invalid landing payload");
+    if (!Array.isArray(payload?.plans))
+      throw new Error("invalid landing payload");
     return payload.plans.map(mapApiPlanToLegacy);
   } catch {
     return null;

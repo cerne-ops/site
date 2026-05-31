@@ -20,8 +20,10 @@ import {
 
 const SITE_URL = "https://cerneops.com.br";
 const CORE_SIGNUP_BASE =
-  (import.meta.env.VITE_CORE_SIGNUP_BASE as string | undefined)?.replace(/\/+$/, "") ||
-  "https://core.cerneops.com.br";
+  (import.meta.env.VITE_CORE_SIGNUP_BASE as string | undefined)?.replace(
+    /\/+$/,
+    "",
+  ) || "https://core.cerneops.com.br";
 
 function getPlanMeta(slug: string) {
   const plan = getStaticPlanBySlug(slug);
@@ -44,6 +46,8 @@ const PLAN_AGENT_COUNT: Record<string, number> = {
   dominus: 20,
 };
 
+const TRIAL_TASK_LIMIT_FALLBACK = 10;
+
 export const Route = createFileRoute("/planos/$slug")({
   head: ({ params }) => {
     const meta = getPlanMeta(params.slug);
@@ -62,9 +66,7 @@ export const Route = createFileRoute("/planos/$slug")({
         { name: "twitter:title", content: meta.title },
         { name: "twitter:description", content: meta.description },
       ],
-      links: [
-        { rel: "canonical", href: canonical },
-      ],
+      links: [{ rel: "canonical", href: canonical }],
     };
   },
   component: PlanRoutePage,
@@ -75,23 +77,35 @@ function PlanRoutePage() {
   const staticPlan = useMemo(() => getStaticPlanBySlug(slug), [slug]);
   const [dynamic, setDynamic] = useState<PlanDynamic>({});
   const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const isTrialPlan = slug === "trial";
 
   useEffect(() => {
     let mounted = true;
     fetchPlanBySlug(slug).then((payload) => {
       if (!mounted || !payload) return;
       setDynamic({
-        price_monthly: payload.price_monthly as string | number | null | undefined,
+        price_monthly: payload.price_monthly as
+          | string
+          | number
+          | null
+          | undefined,
         max_users: payload.max_users as string | number | null | undefined,
         max_agents: payload.max_agents as string | number | null | undefined,
         tasks_day: payload.tasks_day as string | number | null | undefined,
         tasks_month: payload.tasks_month as string | number | null | undefined,
         uploads_day: payload.uploads_day as string | number | null | undefined,
         upload_size: payload.upload_size as string | number | null | undefined,
-        retention_days: payload.retention_days as string | number | null | undefined,
+        retention_days: payload.retention_days as
+          | string
+          | number
+          | null
+          | undefined,
         support_level: payload.support_level as string | null | undefined,
         priority: payload.priority as string | null | undefined,
-        short_description: payload.short_description as string | null | undefined,
+        short_description: payload.short_description as
+          | string
+          | null
+          | undefined,
         stripe_price_id: payload.stripe_price_id as string | null | undefined,
       });
     });
@@ -100,13 +114,30 @@ function PlanRoutePage() {
     };
   }, [slug]);
 
-  const plan = useMemo(() => (staticPlan ? mergePlanDynamic(slug, dynamic) : null), [slug, dynamic, staticPlan]);
-  const hasDynamicAgentCount = dynamic.max_agents !== null && dynamic.max_agents !== undefined && dynamic.max_agents !== "";
+  const plan = useMemo(
+    () => (staticPlan ? mergePlanDynamic(slug, dynamic) : null),
+    [slug, dynamic, staticPlan],
+  );
+  const hasDynamicAgentCount =
+    dynamic.max_agents !== null &&
+    dynamic.max_agents !== undefined &&
+    dynamic.max_agents !== "";
   const parsedAgentCount = Number(dynamic.max_agents);
   const planAgentCount =
     hasDynamicAgentCount && Number.isFinite(parsedAgentCount)
       ? Math.trunc(parsedAgentCount)
-      : PLAN_AGENT_COUNT[slug] ?? 0;
+      : (PLAN_AGENT_COUNT[slug] ?? 0);
+  const agentCountLabel =
+    isTrialPlan && !hasDynamicAgentCount
+      ? "Todos os agentes disponíveis no Core"
+      : `${planAgentCount} agentes`;
+  const trialTaskLimit =
+    isTrialPlan &&
+    (dynamic.tasks_month === null ||
+      dynamic.tasks_month === undefined ||
+      dynamic.tasks_month === "")
+      ? TRIAL_TASK_LIMIT_FALLBACK
+      : dynamic.tasks_month;
   const planJsonLd = useMemo(() => {
     if (!plan) return null;
     return {
@@ -125,6 +156,10 @@ function PlanRoutePage() {
   }, [plan, slug]);
 
   const handleSubscribe = () => {
+    if (isTrialPlan) {
+      handleConfirmSubscribe();
+      return;
+    }
     setSubscribeOpen(true);
   };
 
@@ -141,7 +176,9 @@ function PlanRoutePage() {
         <Header />
         <main className="pt-40 pb-24">
           <div className="mx-auto max-w-4xl px-6">
-            <h1 className="font-display text-4xl font-bold">Plano não encontrado</h1>
+            <h1 className="font-display text-4xl font-bold">
+              Plano não encontrado
+            </h1>
             <p className="mt-4 text-muted-foreground">
               Esse plano não está disponível no momento.
             </p>
@@ -181,7 +218,9 @@ function PlanRoutePage() {
                     {plan.name}
                   </h1>
                   <div className="mt-4 font-mono text-[15px] text-foreground/80">
-                    {formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                    {isTrialPlan
+                      ? "Gratuito"
+                      : formatPlanPriceBRL(plan.dynamic.price_monthly)}
                   </div>
                   <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
                     {plan.dynamic.short_description || plan.teaser}
@@ -193,7 +232,7 @@ function PlanRoutePage() {
                       onClick={handleSubscribe}
                       className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                     >
-                      Assinar plano
+                      {isTrialPlan ? "Começar Trial" : "Assinar plano"}
                     </button>
                     <a
                       href="/#contato"
@@ -222,17 +261,23 @@ function PlanRoutePage() {
         <section className="mt-8">
           <div className="mx-auto max-w-7xl px-6 grid gap-6">
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <h2 className="font-display text-2xl font-semibold">Para quem é este plano</h2>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{plan.audience}</p>
+              <h2 className="font-display text-2xl font-semibold">
+                Para quem é este plano
+              </h2>
+              <p className="mt-3 text-muted-foreground leading-relaxed">
+                {plan.audience}
+              </p>
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
                 Agentes CerneOps inclusos nesse plano:{" "}
-                <span className="text-ember">{planAgentCount} agentes</span>
+                <span className="text-ember">{agentCountLabel}</span>
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                Contrate o time de agentes conforme sua necessidade
+                {isTrialPlan
+                  ? "Experimente todos os agentes disponíveis no Core enquanto houver saldo Trial."
+                  : "Contrate o time de agentes conforme sua necessidade"}
               </p>
               <div className="mt-5">
                 <a
@@ -246,24 +291,55 @@ function PlanRoutePage() {
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <h2 className="font-display text-2xl font-semibold mb-4">Capacidade do plano</h2>
+              <h2 className="font-display text-2xl font-semibold mb-4">
+                Capacidade do plano
+              </h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <StatCard value={formatPlanValue(plan.dynamic.max_users)} label="usuários" />
-                <StatCard value={formatPlanValue(plan.dynamic.tasks_day)} label="tarefas/dia" />
-                <StatCard value={formatPlanValue(plan.dynamic.tasks_month)} label="tarefas/mês" />
-                <StatCard value={formatPlanValue(plan.dynamic.uploads_day)} label="uploads/dia" />
-                <StatCard value={formatPlanValue(plan.dynamic.upload_size)} label="upload size" />
-                <StatCard value={formatPlanValue(plan.dynamic.retention_days)} label="retenção dias" />
-                <StatCard value={formatPlanValue(plan.dynamic.support_level)} label="suporte" />
-                <StatCard value={formatPlanValue(plan.dynamic.priority)} label="prioridade" />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.max_users)}
+                  label="usuários"
+                />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.tasks_day)}
+                  label="tarefas/dia"
+                />
+                <StatCard
+                  value={formatPlanValue(trialTaskLimit)}
+                  label={isTrialPlan ? "tarefas Trial" : "tarefas/mês"}
+                />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.uploads_day)}
+                  label="uploads/dia"
+                />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.upload_size)}
+                  label="upload size"
+                />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.retention_days)}
+                  label="retenção dias"
+                />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.support_level)}
+                  label="suporte"
+                />
+                <StatCard
+                  value={formatPlanValue(plan.dynamic.priority)}
+                  label="prioridade"
+                />
               </div>
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <h2 className="font-display text-2xl font-semibold mb-4">O que muda na prática</h2>
+              <h2 className="font-display text-2xl font-semibold mb-4">
+                O que muda na prática
+              </h2>
               <div className="flex flex-wrap gap-2">
                 {plan.impact.map((item) => (
-                  <span key={item} className="inline-flex items-center rounded-full border border-border/80 bg-background/35 px-3 py-1.5 text-xs">
+                  <span
+                    key={item}
+                    className="inline-flex items-center rounded-full border border-border/80 bg-background/35 px-3 py-1.5 text-xs"
+                  >
                     {item}
                   </span>
                 ))}
@@ -271,19 +347,25 @@ function PlanRoutePage() {
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <h2 className="font-display text-2xl font-semibold">Quando subir de plano</h2>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{plan.evolution}</p>
+              <h2 className="font-display text-2xl font-semibold">
+                Quando subir de plano
+              </h2>
+              <p className="mt-3 text-muted-foreground leading-relaxed">
+                {plan.evolution}
+              </p>
             </div>
 
             <div className="rounded-2xl border border-ember/35 bg-surface-elevated p-7">
-              <h2 className="font-display text-3xl font-semibold">Pronto para operar melhor?</h2>
+              <h2 className="font-display text-3xl font-semibold">
+                Pronto para operar melhor?
+              </h2>
               <div className="mt-5 flex flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={handleSubscribe}
                   className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                 >
-                  Assinar plano
+                  {isTrialPlan ? "Começar Trial" : "Assinar plano"}
                 </button>
                 <a
                   href="/#contato"
@@ -325,7 +407,9 @@ function PlanRoutePage() {
                   <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
                     Plano
                   </div>
-                  <div className="mt-2 font-display text-xl leading-none">{plan.name}</div>
+                  <div className="mt-2 font-display text-xl leading-none">
+                    {plan.name}
+                  </div>
                 </div>
                 <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                   <div className="font-mono text-[11px] uppercase tracking-widest text-ember">

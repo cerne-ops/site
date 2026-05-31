@@ -1,7 +1,14 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
 import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
+import { SITE_RELEASE_VERSION } from "@/lib/release";
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -27,7 +34,9 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          Page not found
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -57,6 +66,7 @@ export const Route = createRootRoute({
       },
       { name: "robots", content: "index, follow" },
       { name: "author", content: "CerneOps" },
+      { name: "cerneops-site-version", content: SITE_RELEASE_VERSION },
       { name: "theme-color", content: "#0E0F12" },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://cerneops.com.br" },
@@ -66,7 +76,10 @@ export const Route = createRootRoute({
         content:
           "Automatize, organize e escale sua operação com agentes inteligentes. Mais performance, menos retrabalho.",
       },
-      { property: "og:image", content: "https://cerneops.com.br/og-whatsapp-v2.jpg" },
+      {
+        property: "og:image",
+        content: "https://cerneops.com.br/og-whatsapp-v2.jpg",
+      },
       { property: "og:image:width", content: "1024" },
       { property: "og:image:height", content: "1024" },
       { property: "og:image:type", content: "image/jpeg" },
@@ -78,7 +91,10 @@ export const Route = createRootRoute({
         content:
           "Sistema operacional de agentes para empresas. Automatize e escale sua operação.",
       },
-      { name: "twitter:image", content: "https://cerneops.com.br/og-whatsapp-v2.jpg" },
+      {
+        name: "twitter:image",
+        content: "https://cerneops.com.br/og-whatsapp-v2.jpg",
+      },
     ],
     links: [
       {
