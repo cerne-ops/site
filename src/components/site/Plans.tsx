@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { fetchLandingPlans, formatPlanPriceBRL, formatPlanValue, planCatalog, type PlanDynamic } from "@/lib/plans";
+import {
+  fetchLandingPlans,
+  formatPlanPriceBRL,
+  planCatalog,
+  type PlanDynamic,
+} from "@/lib/plans";
 
 type PlanView = (typeof planCatalog)[number] & { dynamic: PlanDynamic };
 
 export function Plans() {
-  const [landingData, setLandingData] = useState<Array<Record<string, unknown>> | null>(null);
+  const [landingData, setLandingData] = useState<Array<
+    Record<string, unknown>
+  > | null>(null);
 
   const plans = useMemo<PlanView[]>(() => {
     return planCatalog.map((plan) => {
@@ -14,16 +21,28 @@ export function Plans() {
         return slug === plan.id;
       });
       const dynamic: PlanDynamic = {
-        price_monthly: fromApi?.price_monthly as string | number | null | undefined,
+        price_monthly: fromApi?.price_monthly as
+          | string
+          | number
+          | null
+          | undefined,
         max_users: fromApi?.max_users as string | number | null | undefined,
+        max_agents: fromApi?.max_agents as string | number | null | undefined,
         tasks_day: fromApi?.tasks_day as string | number | null | undefined,
         tasks_month: fromApi?.tasks_month as string | number | null | undefined,
         uploads_day: fromApi?.uploads_day as string | number | null | undefined,
         upload_size: fromApi?.upload_size as string | number | null | undefined,
-        retention_days: fromApi?.retention_days as string | number | null | undefined,
+        retention_days: fromApi?.retention_days as
+          | string
+          | number
+          | null
+          | undefined,
         support_level: fromApi?.support_level as string | null | undefined,
         priority: fromApi?.priority as string | null | undefined,
-        short_description: fromApi?.short_description as string | null | undefined,
+        short_description: fromApi?.short_description as
+          | string
+          | null
+          | undefined,
       };
       return { ...plan, dynamic };
     });
@@ -57,7 +76,7 @@ export function Plans() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
           {plans.map((plan) => (
             <div
               key={plan.id}
@@ -91,7 +110,9 @@ export function Plans() {
                 />
               </div>
               <div className="font-mono text-[13px] text-foreground/70 mb-4">
-                {formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                {plan.id === "trial"
+                  ? "Gratuito"
+                  : formatPlanPriceBRL(plan.dynamic.price_monthly)}
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 {plan.dynamic.short_description || plan.teaser}
