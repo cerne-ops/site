@@ -138,6 +138,11 @@ function PlanRoutePage() {
       dynamic.tasks_month === "")
       ? TRIAL_TASK_LIMIT_FALLBACK
       : dynamic.tasks_month;
+  const signupHref = useMemo(() => {
+    const target = new URL("/signup", CORE_SIGNUP_BASE);
+    target.searchParams.set("plan", slug);
+    return target.toString();
+  }, [slug]);
   const planJsonLd = useMemo(() => {
     if (!plan) return null;
     return {
@@ -161,9 +166,7 @@ function PlanRoutePage() {
 
   const handleConfirmSubscribe = () => {
     if (typeof window === "undefined") return;
-    const target = new URL("/signup", CORE_SIGNUP_BASE);
-    target.searchParams.set("plan", slug);
-    window.location.assign(target.toString());
+    window.location.assign(signupHref);
   };
 
   if (!plan) {
@@ -223,13 +226,22 @@ function PlanRoutePage() {
                   </p>
                   <p className="mt-3 text-foreground/90">{plan.heroIntent}</p>
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={handleSubscribe}
-                      className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
-                    >
-                      {isTrialPlan ? "Começar Trial" : "Assinar plano"}
-                    </button>
+                    {isTrialPlan ? (
+                      <a
+                        href="#trial-signup-modal"
+                        className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                      >
+                        Começar Trial
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleSubscribe}
+                        className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                      >
+                        Assinar plano
+                      </button>
+                    )}
                     <a
                       href="/#contato"
                       className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
@@ -360,13 +372,22 @@ function PlanRoutePage() {
                 Pronto para operar melhor?
               </h2>
               <div className="mt-5 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={handleSubscribe}
-                  className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
-                >
-                  {isTrialPlan ? "Começar Trial" : "Assinar plano"}
-                </button>
+                {isTrialPlan ? (
+                  <a
+                    href="#trial-signup-modal"
+                    className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                  >
+                    Começar Trial
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSubscribe}
+                    className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+                  >
+                    Assinar plano
+                  </button>
+                )}
                 <a
                   href="/#contato"
                   className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
@@ -378,6 +399,14 @@ function PlanRoutePage() {
           </div>
         </section>
       </main>
+      {isTrialPlan ? (
+        <TrialSignupAnchorModal
+          agentCountLabel={agentCountLabel}
+          signupHref={signupHref}
+          slug={slug}
+          taskLimit={formatPlanValue(trialTaskLimit)}
+        />
+      ) : null}
       <Dialog open={subscribeOpen} onOpenChange={setSubscribeOpen}>
         <DialogContent className="max-w-2xl rounded-2xl border-border bg-surface-elevated p-0 overflow-hidden">
           <div className="relative p-7 sm:p-8 lg:p-9">
@@ -481,5 +510,114 @@ function StatCard({ value, label }: { value: string; label: string }) {
       <div className="font-display text-xl leading-none">{value}</div>
       <div className="mt-1 text-xs text-muted-foreground">{label}</div>
     </div>
+  );
+}
+
+function TrialSignupAnchorModal({
+  agentCountLabel,
+  signupHref,
+  slug,
+  taskLimit,
+}: {
+  agentCountLabel: string;
+  signupHref: string;
+  slug: string;
+  taskLimit: string;
+}) {
+  return (
+    <>
+      <style>{`
+        #trial-signup-modal {
+          display: none;
+        }
+        #trial-signup-modal:target {
+          display: flex;
+        }
+      `}</style>
+      <div
+        id="trial-signup-modal"
+        className="fixed inset-0 z-50 items-center justify-center bg-background/80 px-4 py-8 backdrop-blur-sm"
+      >
+        <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-surface-elevated">
+          <div
+            className="absolute inset-0 pointer-events-none opacity-35"
+            style={{ background: "var(--gradient-radial-ember)" }}
+          />
+          <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
+          <div className="relative p-7 sm:p-8 lg:p-9">
+            <div className="font-mono text-xs uppercase tracking-widest text-ember">
+              / Assinatura Core
+            </div>
+            <h2 className="mt-3 font-display text-3xl leading-tight">
+              Começar Trial
+            </h2>
+            <p className="mt-3 text-base text-foreground/80 leading-relaxed">
+              Você está iniciando o cadastro Trial da CerneOps. A criação da
+              empresa, da conta no Core e a confirmação de email acontecem no
+              ambiente seguro do Core, sem cartão ou cobrança.
+            </p>
+
+            <div className="mt-7 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
+                <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                  Plano
+                </div>
+                <div className="mt-2 font-display text-xl leading-none">
+                  Trial
+                </div>
+              </div>
+              <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
+                <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                  Valor
+                </div>
+                <div className="mt-2 font-display text-xl leading-none">
+                  Gratuito
+                </div>
+              </div>
+              <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
+                <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
+                  Capacidade
+                </div>
+                <div className="mt-2 text-sm leading-relaxed text-foreground/85">
+                  {agentCountLabel}
+                  <br />
+                  {taskLimit} tarefas Trial
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl border border-ember/25 bg-ember/10 px-4 py-3 text-sm leading-relaxed text-foreground/85">
+              Ao continuar, você será direcionado para o Core para criar sua
+              conta, confirmar seu email e ativar o Trial. Nenhum checkout,
+              cartão ou cobrança é solicitado nesta página.
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                href={signupHref}
+                className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+              >
+                Continuar cadastro
+                <span aria-hidden>→</span>
+              </a>
+              <a
+                href={`/planos/${slug}`}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
+              >
+                Voltar ao plano
+              </a>
+            </div>
+
+            <a
+              href={`/planos/${slug}`}
+              aria-label="Fechar modal Trial"
+              className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/60 text-foreground/75 hover:bg-surface"
+            >
+              ×
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
