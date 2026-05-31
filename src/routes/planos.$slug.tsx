@@ -40,7 +40,6 @@ function getPlanMeta(slug: string) {
 }
 
 const PLAN_AGENT_COUNT: Record<string, number> = {
-  trial: 20,
   start: 5,
   boost: 9,
   scale: 14,
@@ -128,6 +127,10 @@ function PlanRoutePage() {
     hasDynamicAgentCount && Number.isFinite(parsedAgentCount)
       ? Math.trunc(parsedAgentCount)
       : (PLAN_AGENT_COUNT[slug] ?? 0);
+  const agentCountLabel =
+    isTrialPlan && !hasDynamicAgentCount
+      ? "Todos os agentes disponíveis no Core"
+      : `${planAgentCount} agentes`;
   const trialTaskLimit =
     isTrialPlan &&
     (dynamic.tasks_month === null ||
@@ -269,7 +272,7 @@ function PlanRoutePage() {
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
                 Agentes CerneOps inclusos nesse plano:{" "}
-                <span className="text-ember">{planAgentCount} agentes</span>
+                <span className="text-ember">{agentCountLabel}</span>
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 {isTrialPlan
