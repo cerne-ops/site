@@ -156,10 +156,6 @@ function PlanRoutePage() {
   }, [plan, slug]);
 
   const handleSubscribe = () => {
-    if (isTrialPlan) {
-      handleConfirmSubscribe();
-      return;
-    }
     setSubscribeOpen(true);
   };
 
@@ -397,12 +393,12 @@ function PlanRoutePage() {
                   / Assinatura Core
                 </div>
                 <DialogTitle className="font-display text-3xl leading-tight">
-                  Assinar plano {plan.name}
+                  {isTrialPlan ? "Começar Trial" : `Assinar plano ${plan.name}`}
                 </DialogTitle>
                 <DialogDescription className="text-base text-foreground/80 leading-relaxed">
-                  Você está iniciando a contratação do CerneOps Core. O cadastro
-                  da sua empresa e a criação da sua conta acontecem no ambiente
-                  seguro do Core antes da etapa de pagamento.
+                  {isTrialPlan
+                    ? "Você está iniciando o cadastro Trial da CerneOps. A criação da empresa, da conta no Core e a confirmação de email acontecem no ambiente seguro do Core, sem cartão ou cobrança."
+                    : "Você está iniciando a contratação do CerneOps Core. O cadastro da sua empresa e a criação da sua conta acontecem no ambiente seguro do Core antes da etapa de pagamento."}
                 </DialogDescription>
               </DialogHeader>
 
@@ -420,7 +416,9 @@ function PlanRoutePage() {
                     Valor
                   </div>
                   <div className="mt-2 font-display text-xl leading-none">
-                    {formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                    {isTrialPlan
+                      ? "Gratuito"
+                      : formatPlanPriceBRL(plan.dynamic.price_monthly)}
                   </div>
                 </div>
                 <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
@@ -428,17 +426,27 @@ function PlanRoutePage() {
                     Capacidade
                   </div>
                   <div className="mt-2 text-sm leading-relaxed text-foreground/85">
-                    {formatPlanValue(plan.dynamic.max_users)} usuários
-                    <br />
-                    {planAgentCount} agentes
+                    {isTrialPlan ? (
+                      <>
+                        {agentCountLabel}
+                        <br />
+                        {formatPlanValue(trialTaskLimit)} tarefas Trial
+                      </>
+                    ) : (
+                      <>
+                        {formatPlanValue(plan.dynamic.max_users)} usuários
+                        <br />
+                        {planAgentCount} agentes
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className="mt-5 rounded-xl border border-ember/25 bg-ember/10 px-4 py-3 text-sm leading-relaxed text-foreground/85">
-                Ao continuar, você será direcionado para o Core para criar sua
-                conta, confirmar seu email e seguir para o pagamento em ambiente
-                seguro. Nenhum checkout é criado nesta página.
+                {isTrialPlan
+                  ? "Ao continuar, você será direcionado para o Core para criar sua conta, confirmar seu email e ativar o Trial. Nenhum checkout, cartão ou cobrança é solicitado nesta página."
+                  : "Ao continuar, você será direcionado para o Core para criar sua conta, confirmar seu email e seguir para o pagamento em ambiente seguro. Nenhum checkout é criado nesta página."}
               </div>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
