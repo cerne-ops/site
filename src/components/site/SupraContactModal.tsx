@@ -1,5 +1,17 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -7,11 +19,20 @@ type SupraContactContextValue = {
   openModal: (source?: string) => void;
 };
 
-const SupraContactModalContext = createContext<SupraContactContextValue | null>(null);
+const SupraContactModalContext = createContext<SupraContactContextValue | null>(
+  null,
+);
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
-export function SupraContactModalProvider({ children }: { children: ReactNode }) {
+const SUPRA_CONTACT_ENDPOINT =
+  "https://formsubmit.co/ajax/supra@cerneops.com.br";
+
+export function SupraContactModalProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [source, setSource] = useState("site");
   const [status, setStatus] = useState<FormStatus>("idle");
@@ -33,13 +54,16 @@ export function SupraContactModalProvider({ children }: { children: ReactNode })
 
     const form = event.currentTarget;
     const data = new FormData(form);
+    const email = String(data.get("email") || "").trim();
 
     data.set("_subject", `Novo contato Supra (${source})`);
     data.set("_captcha", "false");
     data.set("_template", "table");
+    data.set("_replyto", email);
+    data.set("destino", "supra@cerneops.com.br");
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/contato@cerneops.com.br", {
+      const response = await fetch(SUPRA_CONTACT_ENDPOINT, {
         method: "POST",
         body: data,
         headers: { Accept: "application/json" },
@@ -77,8 +101,8 @@ export function SupraContactModalProvider({ children }: { children: ReactNode })
                   Fale com um especialista
                 </DialogTitle>
                 <DialogDescription className="text-base text-foreground/80 leading-relaxed">
-                  Conte como sua operação roda hoje. Nosso time entra em contato para
-                  estruturar a melhor implementação Supra para sua empresa.
+                  Conte como sua operação roda hoje. Nosso time entra em contato
+                  para estruturar a melhor implementação Supra para sua empresa.
                 </DialogDescription>
               </DialogHeader>
 
@@ -140,7 +164,9 @@ export function SupraContactModalProvider({ children }: { children: ReactNode })
                     disabled={status === "loading"}
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    {status === "loading" ? "Enviando..." : "Enviar para especialista"}
+                    {status === "loading"
+                      ? "Enviando..."
+                      : "Enviar para especialista"}
                   </button>
                   <button
                     type="button"
@@ -162,7 +188,9 @@ export function SupraContactModalProvider({ children }: { children: ReactNode })
 export function useSupraContactModal() {
   const context = useContext(SupraContactModalContext);
   if (!context) {
-    throw new Error("useSupraContactModal deve ser usado dentro de SupraContactModalProvider");
+    throw new Error(
+      "useSupraContactModal deve ser usado dentro de SupraContactModalProvider",
+    );
   }
   return context;
 }

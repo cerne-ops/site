@@ -161,7 +161,7 @@ export const planCatalog: PlanStatic[] = [
   {
     id: "dominus",
     name: "Dominus",
-    label: "Topo do Core",
+    label: "Domínio",
     logo: dominusLogo,
     teaser: "Capacidade máxima da plataforma.",
     bullets: [
