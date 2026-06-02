@@ -80,13 +80,16 @@ export function Plans() {
           {plans.map((plan) => {
             const isFeaturedPlan = plan.id === "boost" || plan.id === "dominus";
             return (
-              <div
+              <Link
                 key={plan.id}
-                className={`relative rounded-2xl p-7 border transition-all hover:-translate-y-1 hover:shadow-ember ${
+                to="/planos/$slug"
+                params={{ slug: plan.id }}
+                className={`group relative rounded-2xl p-7 border transition-all hover:-translate-y-1 hover:shadow-ember ${
                   isFeaturedPlan
                     ? "border-ember/55 bg-surface-elevated ring-1 ring-ember/30"
                     : "border-border bg-surface/60 hover:border-ember/35"
                 } ${plan.id === "boost" ? "xl:z-10 xl:scale-[1.06]" : ""}`}
+                aria-label={`Ver detalhes do plano ${plan.name}`}
               >
                 {isFeaturedPlan ? (
                   <div className="absolute -top-3 left-7 font-mono text-[10px] uppercase tracking-widest gradient-ember text-primary-foreground px-2 py-1 rounded">
@@ -129,14 +132,10 @@ export function Plans() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  to="/planos/$slug"
-                  params={{ slug: plan.id }}
-                  className="inline-flex items-center gap-1 text-sm text-ember font-medium"
-                >
+                <span className="inline-flex items-center gap-1 text-sm text-ember font-medium transition group-hover:translate-x-0.5">
                   Ver detalhes <span aria-hidden>→</span>
-                </Link>
-              </div>
+                </span>
+              </Link>
             );
           })}
         </div>

@@ -48,6 +48,12 @@ const PLAN_AGENT_COUNT: Record<string, number> = {
 
 const TRIAL_TASK_LIMIT_FALLBACK = 10;
 
+function formatUploadSize(value: string | number | null | undefined) {
+  const formatted = formatPlanValue(value);
+  if (formatted === "—") return formatted;
+  return /[a-zA-Z]/.test(formatted) ? formatted : `${formatted} MB`;
+}
+
 export const Route = createFileRoute("/planos/$slug")({
   head: ({ params }) => {
     const meta = getPlanMeta(params.slug);
@@ -324,7 +330,7 @@ function PlanRoutePage() {
                   label="uploads/dia"
                 />
                 <StatCard
-                  value={formatPlanValue(plan.dynamic.upload_size)}
+                  value={formatUploadSize(plan.dynamic.upload_size)}
                   label="upload size"
                 />
                 <StatCard

@@ -3,6 +3,10 @@ import { Link } from "@tanstack/react-router";
 import logo from "@/assets/cerne-logo.png";
 import { useSupraContactModal } from "@/components/site/SupraContactModal";
 
+const CORE_LOGIN_URL =
+  (import.meta.env.VITE_CORE_LOGIN_URL as string | undefined) ||
+  "https://core.cerneops.com.br/login";
+
 const nav = [
   { label: "Início", to: "/#topo" },
   { label: "Plataforma", to: "/#plataforma" },
@@ -73,7 +77,7 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <a
-              href="/#planos"
+              href={CORE_LOGIN_URL}
               className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
             >
               Entrar

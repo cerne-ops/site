@@ -79,7 +79,7 @@ export const planCatalog: PlanStatic[] = [
   {
     id: "trial",
     name: "Trial",
-    label: "Sem cartão",
+    label: "Descoberta",
     logo: trialLogo,
     teaser: "Destrave sua operação. Descubra o poder da CerneOps.",
     bullets: ["Todos os agentes", "Sem cartão", "10 tarefas Trial"],
