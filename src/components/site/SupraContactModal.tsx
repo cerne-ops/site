@@ -25,9 +25,6 @@ const SupraContactModalContext = createContext<SupraContactContextValue | null>(
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
-const SUPRA_CONTACT_ENDPOINT =
-  "https://formsubmit.co/ajax/supra@cerneops.com.br";
-
 export function SupraContactModalProvider({
   children,
 }: {
@@ -54,19 +51,22 @@ export function SupraContactModalProvider({
 
     const form = event.currentTarget;
     const data = new FormData(form);
-    const email = String(data.get("email") || "").trim();
-
-    data.set("_subject", `Novo contato Supra (${source})`);
-    data.set("_captcha", "false");
-    data.set("_template", "table");
-    data.set("_replyto", email);
-    data.set("destino", "supra@cerneops.com.br");
 
     try {
-      const response = await fetch(SUPRA_CONTACT_ENDPOINT, {
+      const response = await fetch("/api/contact/supra", {
         method: "POST",
-        body: data,
-        headers: { Accept: "application/json" },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: data.get("nome"),
+          empresa: data.get("empresa"),
+          email: data.get("email"),
+          telefone: data.get("telefone"),
+          origem: source,
+          mensagem: data.get("mensagem"),
+        }),
       });
 
       if (!response.ok) {
@@ -154,7 +154,8 @@ export function SupraContactModalProvider({
 
                 {status === "error" ? (
                   <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                    Não foi possível enviar agora. Tente novamente em instantes.
+                    Não foi possível enviar agora. Tente novamente ou escreva
+                    para supra@cerneops.com.br.
                   </div>
                 ) : null}
 

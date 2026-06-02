@@ -12,6 +12,14 @@ Publicar o Site `cerneops.com.br` com seguranca operacional, usando o caminho re
 - Processo PM2: `cerne-site`
 - Comando PM2 atual: `npm run dev -- --host 127.0.0.1 --port 4173`
 
+## Variaveis obrigatorias
+Para funcionalidades server-side de contato/email, o processo `cerne-site` deve ter:
+
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL` ou `RESEND_FROM`
+
+Nunca imprimir esses valores em logs ou no chat. Validar apenas presenca/ausencia.
+
 ## Regra critica
 Mesmo que o repositorio contenha `wrangler.jsonc` ou artefatos Cloudflare, nao assumir deploy por Wrangler/Cloudflare sem validar a topologia ativa. A producao atual do Site responde via Nginx no VPS.
 
@@ -25,6 +33,7 @@ Mesmo que o repositorio contenha `wrangler.jsonc` ou artefatos Cloudflare, nao a
    - `ssh -o BatchMode=yes root@187.127.14.97 "sed -n '1,80p' /etc/nginx/sites-enabled/cerneops.com.br && pm2 list | grep cerne-site"`
 4. Confirmar versao atualmente servida:
    - `curl -sS --compressed https://cerneops.com.br | strings | rg -n 'cerneops-site-version'`
+5. Quando a entrega envolver email/contato, confirmar presenca das variaveis Resend no ambiente do processo sem expor valores.
 
 ## Deploy
 Executar no VPS:
@@ -49,6 +58,7 @@ pm2 restart cerne-site --update-env
    - `curl -sSI https://cerneops.com.br/planos/trial`
    - `curl -sSI https://cerneops.com.br/planos/boost`
 5. Confirmar conteudo alterado da entrega atual com buscas especificas.
+6. Quando a entrega envolver email/contato, executar teste real controlado de envio e confirmar recebimento.
 
 ## Rollback
 Se o smoke falhar:
