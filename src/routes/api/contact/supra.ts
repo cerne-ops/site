@@ -104,10 +104,6 @@ function normalizePayload(
     return { error: "Email invalido." };
   }
 
-  if (mensagem.length < 10) {
-    return { error: "Mensagem muito curta." };
-  }
-
   return { nome, empresa, email, telefone, origem, mensagem };
 }
 

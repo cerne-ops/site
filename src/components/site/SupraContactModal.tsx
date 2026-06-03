@@ -33,12 +33,14 @@ export function SupraContactModalProvider({
   const [open, setOpen] = useState(false);
   const [source, setSource] = useState("site");
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const ctx = useMemo<SupraContactContextValue>(
     () => ({
       openModal: (nextSource = "site") => {
         setSource(nextSource);
         setStatus("idle");
+        setErrorMessage("");
         setOpen(true);
       },
     }),
@@ -48,6 +50,7 @@ export function SupraContactModalProvider({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus("loading");
+    setErrorMessage("");
 
     const form = event.currentTarget;
     const data = new FormData(form);
@@ -70,12 +73,20 @@ export function SupraContactModalProvider({
       });
 
       if (!response.ok) {
-        throw new Error("Falha no envio do formulário.");
+        const payload = (await response.json().catch(() => null)) as {
+          message?: string;
+        } | null;
+        throw new Error(payload?.message || "Falha no envio do formulário.");
       }
 
       setStatus("success");
       form.reset();
-    } catch {
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error && error.message
+          ? error.message
+          : "Não foi possível enviar agora.",
+      );
       setStatus("error");
     }
   };
@@ -154,8 +165,8 @@ export function SupraContactModalProvider({
 
                 {status === "error" ? (
                   <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                    Não foi possível enviar agora. Tente novamente ou escreva
-                    para supra@cerneops.com.br.
+                    {errorMessage} Tente novamente ou escreva para
+                    supra@cerneops.com.br.
                   </div>
                 ) : null}
 
