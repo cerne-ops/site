@@ -3,11 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Bot, ChevronDown, ChevronRight } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
 import { fetchLandingPlans } from "@/lib/plans";
 
 type Agent = {
   id: string;
   title: string;
+  slug?: string;
   description: string;
   group: string;
   problem: string;
@@ -64,16 +66,22 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
       if (!title) continue;
 
       const groupNameRaw = String(rawAgent?.group_name ?? "").trim();
-      const groupRaw = String(rawAgent?.group ?? "Sem grupo").trim() || "Sem grupo";
+      const groupRaw =
+        String(rawAgent?.group ?? "Sem grupo").trim() || "Sem grupo";
       const group = groupNameRaw || normalizeGroupLabel(groupRaw);
       const description =
         String(rawAgent?.description ?? "").trim() ||
         "Descrição em atualização no painel administrativo.";
-      const problem = String(rawAgent?.problem ?? "").trim() || "Em atualização no Admin.";
-      const operation = String(rawAgent?.operation ?? "").trim() || "Em atualização no Admin.";
-      const delivery = String(rawAgent?.delivery ?? "").trim() || "Em atualização no Admin.";
+      const problem =
+        String(rawAgent?.problem ?? "").trim() || "Em atualização no Admin.";
+      const operation =
+        String(rawAgent?.operation ?? "").trim() || "Em atualização no Admin.";
+      const delivery =
+        String(rawAgent?.delivery ?? "").trim() || "Em atualização no Admin.";
       const key = `${title.toLowerCase()}::${group.toLowerCase()}`;
-      const rawStatus = String(rawAgent?.status ?? "ativo").trim().toLowerCase();
+      const rawStatus = String(rawAgent?.status ?? "ativo")
+        .trim()
+        .toLowerCase();
       const status: Agent["status"] =
         rawStatus === "inativo" ||
         rawStatus === "manutencao" ||
@@ -85,6 +93,7 @@ function normalizeAgentsFromPlans(plans: Array<Record<string, unknown>>) {
         byKey.set(key, {
           id: key,
           title,
+          slug: getAgentSlugByName(title),
           group,
           description,
           problem,
@@ -109,12 +118,15 @@ export const Route = createFileRoute("/agentes-cerneops")({
           "Conheça os agentes Core da CerneOps para eliminar burocracia com zero código e acelerar a operação da sua empresa.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://cerneops.com.br/agentes-cerneops" }],
+    links: [
+      { rel: "canonical", href: "https://cerneops.com.br/agentes-cerneops" },
+    ],
   }),
   component: AgentsPage,
 });
 
 function AgentsPage() {
+  const publicAgentPages = useMemo(() => getAgentPages(), []);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -156,7 +168,10 @@ function AgentsPage() {
   }, []);
 
   const groups = useMemo(
-    () => Array.from(new Set(agents.map((agent) => agent.group))).sort((a, b) => a.localeCompare(b)),
+    () =>
+      Array.from(new Set(agents.map((agent) => agent.group))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
     [agents],
   );
 
@@ -169,7 +184,8 @@ function AgentsPage() {
         return {
           group,
           agents: groupAgents,
-          activeCount: groupAgents.filter((agent) => agent.status === "ativo").length,
+          activeCount: groupAgents.filter((agent) => agent.status === "ativo")
+            .length,
         };
       }),
     [agents, groups],
@@ -231,13 +247,22 @@ function AgentsPage() {
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.03]">
                 Agentes Core da CerneOps,
                 <br />
-                <span className="text-muted-foreground">Eliminação de Burocracia com zero código.</span>
+                <span className="text-muted-foreground">
+                  Eliminação de Burocracia com zero código.
+                </span>
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-                O plano Core da CerneOps foi desenhado para atacar a raiz da ineficiência nas pequenas e médias empresas: o trabalho manual e burocrático. O objetivo não é criar sistemas complexos, mas sim fornecer ferramentas práticas que o empresário ou operador possa usar imediatamente, sem necessidade de integrações de TI, treinamentos longos ou mudanças drásticas na infraestrutura atual.
+                O plano Core da CerneOps foi desenhado para atacar a raiz da
+                ineficiência nas pequenas e médias empresas: o trabalho manual e
+                burocrático. O objetivo não é criar sistemas complexos, mas sim
+                fornecer ferramentas práticas que o empresário ou operador possa
+                usar imediatamente, sem necessidade de integrações de TI,
+                treinamentos longos ou mudanças drásticas na infraestrutura
+                atual.
               </p>
               <p className="mt-4 text-foreground/90 leading-relaxed">
-                Esses agentes materializam o lema da CerneOps: "Uma pessoa com a CerneOps opera com a performance de dez."
+                Esses agentes materializam o lema da CerneOps: "Uma pessoa com a
+                CerneOps opera com a performance de dez."
               </p>
             </div>
           </div>
@@ -245,12 +270,21 @@ function AgentsPage() {
 
         <section className="mt-4">
           <div className="mx-auto max-w-7xl px-6">
-            <h2 className="font-display text-3xl font-semibold">Contexto e Princípios de Design</h2>
+            <h2 className="font-display text-3xl font-semibold">
+              Contexto e Princípios de Design
+            </h2>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               {principles.map((item) => (
-                <article key={item.title} className="rounded-2xl border border-border bg-surface/55 p-6">
-                  <h3 className="font-display text-2xl font-semibold">{item.title}</h3>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+                <article
+                  key={item.title}
+                  className="rounded-2xl border border-border bg-surface/55 p-6"
+                >
+                  <h3 className="font-display text-2xl font-semibold">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                    {item.body}
+                  </p>
                 </article>
               ))}
             </div>
@@ -261,10 +295,13 @@ function AgentsPage() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
-                <h2 className="font-display text-3xl font-semibold">Catálogo de Agentes Core</h2>
+                <h2 className="font-display text-3xl font-semibold">
+                  Catálogo de Agentes Core
+                </h2>
                 {!isLoading && !hasError && agents.length > 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {agents.length} agentes em {groups.length} grupo{groups.length === 1 ? "" : "s"}.
+                    {agents.length} agentes em {groups.length} grupo
+                    {groups.length === 1 ? "" : "s"}.
                   </p>
                 ) : null}
               </div>
@@ -286,7 +323,8 @@ function AgentsPage() {
             )}
             {hasError && !isLoading && (
               <p className="mt-4 text-sm text-amber-300">
-                Não foi possível carregar o catálogo em tempo real agora. Tente novamente em instantes.
+                Não foi possível carregar o catálogo em tempo real agora. Tente
+                novamente em instantes.
               </p>
             )}
             {!isLoading && !hasError && groups.length === 0 && (
@@ -304,7 +342,7 @@ function AgentsPage() {
                       onClick={() => toggleGroup(group.group)}
                       aria-expanded={expanded}
                       aria-controls={`agent-group-${group.group.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`}
-                      className="flex w-full items-center justify-between gap-4 rounded-2xl border border-border bg-surface/55 p-5 text-left transition hover:border-ember/45 hover:bg-surface-elevated focus:outline-none"
+                      className="flex w-full items-center justify-between gap-4 rounded-2xl border border-border bg-surface/55 p-5 text-left transition hover:border-ember/45 hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                     >
                       <span className="flex min-w-0 items-center gap-3">
                         {expanded ? (
@@ -333,10 +371,11 @@ function AgentsPage() {
                       >
                         {group.agents.map((agent) => {
                           const badge = statusBadge(agent.status);
-                          return (
+                          const card = (
                             <article
-                              key={agent.id}
-                              className="rounded-2xl border border-border bg-surface/55 p-6 transition hover:border-ember/45"
+                              className={`h-full rounded-2xl border border-border bg-surface/55 p-6 transition ${
+                                agent.slug ? "hover:border-ember/45" : ""
+                              }`}
                             >
                               <div className="flex items-center gap-2">
                                 <div className="font-mono text-xs uppercase tracking-widest text-ember">
@@ -358,19 +397,42 @@ function AgentsPage() {
                               </p>
                               <div className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
                                 <p>
-                                  <span className="text-foreground font-medium">Problema:</span>{" "}
+                                  <span className="text-foreground font-medium">
+                                    Problema:
+                                  </span>{" "}
                                   {agent.problem}
                                 </p>
                                 <p>
-                                  <span className="text-foreground font-medium">Operação:</span>{" "}
+                                  <span className="text-foreground font-medium">
+                                    Operação:
+                                  </span>{" "}
                                   {agent.operation}
                                 </p>
                                 <p>
-                                  <span className="text-foreground font-medium">Entrega:</span>{" "}
+                                  <span className="text-foreground font-medium">
+                                    Entrega:
+                                  </span>{" "}
                                   {agent.delivery}
                                 </p>
                               </div>
+                              {agent.slug ? (
+                                <span className="mt-5 inline-flex text-sm font-medium text-ember transition group-hover:text-ember-light">
+                                  Saiba mais →
+                                </span>
+                              ) : null}
                             </article>
+                          );
+                          return agent.slug ? (
+                            <a
+                              key={agent.id}
+                              href={`/agentes/${agent.slug}`}
+                              aria-label={`Abrir página pública do agente ${agent.title}`}
+                              className="group block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
+                            >
+                              {card}
+                            </a>
+                          ) : (
+                            <div key={agent.id}>{card}</div>
                           );
                         })}
                       </div>
@@ -384,13 +446,60 @@ function AgentsPage() {
 
         <section className="mt-10">
           <div className="mx-auto max-w-7xl px-6">
+            <div className="rounded-2xl border border-border bg-surface/55 p-7">
+              <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <h2 className="font-display text-3xl font-semibold">
+                    Páginas públicas dos agentes
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Acesse as páginas individuais dos agentes Core da CerneOps.
+                  </p>
+                </div>
+                <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+                  {publicAgentPages.length} páginas
+                </span>
+              </div>
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {publicAgentPages.map((agent) => (
+                  <a
+                    key={agent.slug}
+                    href={`/agentes/${agent.slug}`}
+                    className="rounded-xl border border-border bg-background/35 p-4 transition hover:border-ember/45 hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
+                  >
+                    <span className="block font-display text-lg leading-tight">
+                      {agent.agentName}
+                    </span>
+                    <span className="mt-2 block text-xs text-muted-foreground">
+                      {agent.agentGroup}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <div className="mx-auto max-w-7xl px-6">
             <div className="rounded-2xl border border-ember/35 bg-surface-elevated p-7">
-              <h2 className="font-display text-3xl font-semibold">Conclusão, O Impacto do Core</h2>
+              <h2 className="font-display text-3xl font-semibold">
+                Conclusão, O Impacto do Core
+              </h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                A beleza destes agentes reside na sua simplicidade operacional. Eles não exigem que o empresário mude seu software de gestão ou contrate uma equipe de TI. Eles atuam exatamente onde a dor é mais aguda: na interface entre o mundo físico (papéis, fotos, áudios, planilhas desorganizadas) e a necessidade de informação estruturada.
+                A beleza destes agentes reside na sua simplicidade operacional.
+                Eles não exigem que o empresário mude seu software de gestão ou
+                contrate uma equipe de TI. Eles atuam exatamente onde a dor é
+                mais aguda: na interface entre o mundo físico (papéis, fotos,
+                áudios, planilhas desorganizadas) e a necessidade de informação
+                estruturada.
               </p>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Ao adotar o plano Core da CerneOps, o empresário transforma horas de trabalho braçal e burocrático em minutos de supervisão inteligente, liberando seu tempo e o de sua equipe para focar no que realmente importa: atender bem o cliente e crescer o negócio.
+                Ao adotar o plano Core da CerneOps, o empresário transforma
+                horas de trabalho braçal e burocrático em minutos de supervisão
+                inteligente, liberando seu tempo e o de sua equipe para focar no
+                que realmente importa: atender bem o cliente e crescer o
+                negócio.
               </p>
             </div>
           </div>
