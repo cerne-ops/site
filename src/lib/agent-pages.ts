@@ -149,6 +149,16 @@ function hasLiteralTruncation(value: string) {
   return value.includes("…") || value.includes("...");
 }
 
+function normalizeAgentLookupKey(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
 const agentPages = Object.values(rawAgentModules)
   .map((markdown) => {
     const { frontmatter, content } = parseFrontmatter(markdown);
@@ -182,7 +192,10 @@ const agentPages = Object.values(rawAgentModules)
 
 const agentsBySlug = new Map(agentPages.map((agent) => [agent.slug, agent]));
 const slugsByAgentName = new Map(
-  agentPages.map((agent) => [agent.agentName.toLowerCase(), agent.slug]),
+  agentPages.map((agent) => [
+    normalizeAgentLookupKey(agent.agentName),
+    agent.slug,
+  ]),
 );
 
 export function getAgentPages() {
@@ -194,5 +207,5 @@ export function getAgentPageBySlug(slug: string) {
 }
 
 export function getAgentSlugByName(agentName: string) {
-  return slugsByAgentName.get(agentName.trim().toLowerCase());
+  return slugsByAgentName.get(normalizeAgentLookupKey(agentName));
 }
