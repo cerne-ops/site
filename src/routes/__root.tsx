@@ -29,6 +29,14 @@ const websiteJsonLd = {
   inLanguage: "pt-BR",
 };
 
+function getGtmId() {
+  return (
+    import.meta.env.VITE_GTM_ID ||
+    import.meta.env.NEXT_PUBLIC_GTM_ID ||
+    ""
+  ).trim();
+}
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -88,10 +96,19 @@ export const Route = createRootRoute({
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const gtmId = getGtmId();
+
   return (
     <html lang="pt-BR">
       <head>
         <HeadContent />
+        {gtmId ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`,
+            }}
+          />
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -106,6 +123,17 @@ function RootShell({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body>
+        {gtmId ? (
+          <noscript>
+            <iframe
+              title="Google Tag Manager"
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        ) : null}
         {children}
         <Scripts />
       </body>
