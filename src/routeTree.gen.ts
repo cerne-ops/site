@@ -13,6 +13,7 @@ import { Route as PorqueRouteImport } from './routes/porque'
 import { Route as AgentesCerneopsRouteImport } from './routes/agentes-cerneops'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlanosSlugRouteImport } from './routes/planos.$slug'
+import { Route as AgentesSlugRouteImport } from './routes/agentes.$slug'
 import { Route as ApiContactSupraRouteImport } from './routes/api/contact/supra'
 
 const PorqueRoute = PorqueRouteImport.update({
@@ -35,6 +36,11 @@ const PlanosSlugRoute = PlanosSlugRouteImport.update({
   path: '/planos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgentesSlugRoute = AgentesSlugRouteImport.update({
+  id: '/agentes/$slug',
+  path: '/agentes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiContactSupraRoute = ApiContactSupraRouteImport.update({
   id: '/api/contact/supra',
   path: '/api/contact/supra',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agentes-cerneops': typeof AgentesCerneopsRoute
   '/porque': typeof PorqueRoute
+  '/agentes/$slug': typeof AgentesSlugRoute
   '/planos/$slug': typeof PlanosSlugRoute
   '/api/contact/supra': typeof ApiContactSupraRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agentes-cerneops': typeof AgentesCerneopsRoute
   '/porque': typeof PorqueRoute
+  '/agentes/$slug': typeof AgentesSlugRoute
   '/planos/$slug': typeof PlanosSlugRoute
   '/api/contact/supra': typeof ApiContactSupraRoute
 }
@@ -60,6 +68,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/agentes-cerneops': typeof AgentesCerneopsRoute
   '/porque': typeof PorqueRoute
+  '/agentes/$slug': typeof AgentesSlugRoute
   '/planos/$slug': typeof PlanosSlugRoute
   '/api/contact/supra': typeof ApiContactSupraRoute
 }
@@ -69,6 +78,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agentes-cerneops'
     | '/porque'
+    | '/agentes/$slug'
     | '/planos/$slug'
     | '/api/contact/supra'
   fileRoutesByTo: FileRoutesByTo
@@ -76,6 +86,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agentes-cerneops'
     | '/porque'
+    | '/agentes/$slug'
     | '/planos/$slug'
     | '/api/contact/supra'
   id:
@@ -83,6 +94,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agentes-cerneops'
     | '/porque'
+    | '/agentes/$slug'
     | '/planos/$slug'
     | '/api/contact/supra'
   fileRoutesById: FileRoutesById
@@ -91,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AgentesCerneopsRoute: typeof AgentesCerneopsRoute
   PorqueRoute: typeof PorqueRoute
+  AgentesSlugRoute: typeof AgentesSlugRoute
   PlanosSlugRoute: typeof PlanosSlugRoute
   ApiContactSupraRoute: typeof ApiContactSupraRoute
 }
@@ -125,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agentes/$slug': {
+      id: '/agentes/$slug'
+      path: '/agentes/$slug'
+      fullPath: '/agentes/$slug'
+      preLoaderRoute: typeof AgentesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/contact/supra': {
       id: '/api/contact/supra'
       path: '/api/contact/supra'
@@ -139,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AgentesCerneopsRoute: AgentesCerneopsRoute,
   PorqueRoute: PorqueRoute,
+  AgentesSlugRoute: AgentesSlugRoute,
   PlanosSlugRoute: PlanosSlugRoute,
   ApiContactSupraRoute: ApiContactSupraRoute,
 }

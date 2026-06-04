@@ -12,6 +12,44 @@ import { CTA } from "@/components/site/CTA";
 import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "CerneOps | Integração Inteligente de Operações" },
+      {
+        name: "description",
+        content:
+          "Transforme processos manuais em uma operação inteligente com automação, integração e agentes que executam tarefas por você.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://cerneops.com.br" },
+      { property: "og:title", content: "Integração inteligente de operações" },
+      {
+        property: "og:description",
+        content:
+          "Automatize, organize e escale sua operação com agentes inteligentes. Mais performance, menos retrabalho.",
+      },
+      {
+        property: "og:image",
+        content: "https://cerneops.com.br/og-whatsapp-v2.jpg",
+      },
+      { property: "og:image:width", content: "1024" },
+      { property: "og:image:height", content: "1024" },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:site_name", content: "CerneOps" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Integração inteligente de operações" },
+      {
+        name: "twitter:description",
+        content:
+          "Sistema operacional de agentes para empresas. Automatize e escale sua operação.",
+      },
+      {
+        name: "twitter:image",
+        content: "https://cerneops.com.br/og-whatsapp-v2.jpg",
+      },
+    ],
+    links: [{ rel: "canonical", href: "https://cerneops.com.br" }],
+  }),
   component: Index,
 });
 
