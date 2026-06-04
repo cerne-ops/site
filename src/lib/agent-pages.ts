@@ -191,11 +191,12 @@ const agentPages = Object.values(rawAgentModules)
   .sort((a, b) => a.agentName.localeCompare(b.agentName, "pt-BR"));
 
 const agentsBySlug = new Map(agentPages.map((agent) => [agent.slug, agent]));
+const searchableAgentNames = agentPages.map((agent) => ({
+  key: normalizeAgentLookupKey(agent.agentName),
+  slug: agent.slug,
+}));
 const slugsByAgentName = new Map(
-  agentPages.map((agent) => [
-    normalizeAgentLookupKey(agent.agentName),
-    agent.slug,
-  ]),
+  searchableAgentNames.map((agent) => [agent.key, agent.slug]),
 );
 
 export function getAgentPages() {
@@ -207,5 +208,17 @@ export function getAgentPageBySlug(slug: string) {
 }
 
 export function getAgentSlugByName(agentName: string) {
-  return slugsByAgentName.get(normalizeAgentLookupKey(agentName));
+  const normalized = normalizeAgentLookupKey(agentName);
+  const exactMatch = slugsByAgentName.get(normalized);
+  if (exactMatch) return exactMatch;
+
+  const tokens = normalized.split(" ").filter((token) => token.length > 2);
+  if (!tokens.length) return undefined;
+
+  const matches = searchableAgentNames.filter((agent) => {
+    const agentTokens = new Set(agent.key.split(" "));
+    return tokens.every((token) => agentTokens.has(token));
+  });
+
+  return matches.length === 1 ? matches[0].slug : undefined;
 }
