@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { trackCheckoutStarted, trackPlanSelected } from "@/lib/analytics";
 import {
   fetchPlanBySlug,
   formatPlanPriceBRL,
@@ -167,11 +168,27 @@ function PlanRoutePage() {
   }, [plan, slug]);
 
   const handleSubscribe = () => {
+    if (plan) {
+      trackPlanSelected({
+        plan_slug: slug,
+        plan_name: plan.name,
+        plan_price_monthly: plan.dynamic.price_monthly,
+        source: "plan_detail_primary",
+      });
+    }
     setSubscribeOpen(true);
   };
 
   const handleConfirmSubscribe = () => {
     if (typeof window === "undefined") return;
+    if (plan) {
+      trackCheckoutStarted({
+        plan_slug: slug,
+        plan_name: plan.name,
+        plan_price_monthly: plan.dynamic.price_monthly,
+        checkout_type: isTrialPlan ? "trial" : "paid",
+      });
+    }
     window.location.assign(signupHref);
   };
 
@@ -235,6 +252,14 @@ function PlanRoutePage() {
                     {isTrialPlan ? (
                       <a
                         href="#trial-signup-modal"
+                        onClick={() =>
+                          trackPlanSelected({
+                            plan_slug: slug,
+                            plan_name: plan.name,
+                            plan_price_monthly: plan.dynamic.price_monthly,
+                            source: "plan_detail_primary",
+                          })
+                        }
                         className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                       >
                         Começar Trial
@@ -300,6 +325,14 @@ function PlanRoutePage() {
               <div className="mt-5">
                 <a
                   href="/agentes-cerneops"
+                  onClick={() =>
+                    trackPlanSelected({
+                      plan_slug: slug,
+                      plan_name: plan.name,
+                      plan_price_monthly: plan.dynamic.price_monthly,
+                      source: "plan_detail_agents_cta",
+                    })
+                  }
                   className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-5 py-3 shadow-ember hover:brightness-110 transition"
                 >
                   Confira nossos agentes disponíveis
@@ -381,6 +414,14 @@ function PlanRoutePage() {
                 {isTrialPlan ? (
                   <a
                     href="#trial-signup-modal"
+                    onClick={() =>
+                      trackPlanSelected({
+                        plan_slug: slug,
+                        plan_name: plan.name,
+                        plan_price_monthly: plan.dynamic.price_monthly,
+                        source: "plan_detail_footer",
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                   >
                     Começar Trial
@@ -601,6 +642,13 @@ function TrialSignupAnchorModal({
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <a
                 href={signupHref}
+                onClick={() =>
+                  trackCheckoutStarted({
+                    plan_slug: slug,
+                    plan_name: "Trial",
+                    checkout_type: "trial",
+                  })
+                }
                 className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
               >
                 Continuar cadastro

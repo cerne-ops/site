@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { trackPlanSelected, trackPricingViewed } from "@/lib/analytics";
 import {
   fetchLandingPlans,
   formatPlanPriceBRL,
@@ -13,6 +14,7 @@ export function Plans() {
   const [landingData, setLandingData] = useState<Array<
     Record<string, unknown>
   > | null>(null);
+  const pricingViewedTracked = useRef(false);
 
   const plans = useMemo<PlanView[]>(() => {
     return planCatalog.map((plan) => {
@@ -59,6 +61,15 @@ export function Plans() {
     };
   }, []);
 
+  useEffect(() => {
+    if (pricingViewedTracked.current) return;
+    pricingViewedTracked.current = true;
+    trackPricingViewed({
+      plan_count: plans.length,
+      plan_slugs: plans.map((plan) => plan.id).join(","),
+    });
+  }, [plans]);
+
   return (
     <section id="planos" className="relative py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -84,6 +95,14 @@ export function Plans() {
                 key={plan.id}
                 to="/planos/$slug"
                 params={{ slug: plan.id }}
+                onClick={() =>
+                  trackPlanSelected({
+                    plan_slug: plan.id,
+                    plan_name: plan.name,
+                    plan_price_monthly: plan.dynamic.price_monthly,
+                    source: "home_pricing_card",
+                  })
+                }
                 className={`group relative rounded-2xl p-7 border transition-all hover:-translate-y-1 hover:shadow-ember ${
                   isFeaturedPlan
                     ? "border-ember/55 bg-surface-elevated ring-1 ring-ember/30"

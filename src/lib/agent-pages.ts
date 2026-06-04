@@ -15,7 +15,7 @@ export type AgentPage = {
   blocks: AgentMarkdownBlock[];
 };
 
-const rawAgentModules = import.meta.glob("../../Agentes/*.md", {
+const rawAgentModules = import.meta.glob("../../Agentes/[0-9][0-9]-*.md", {
   query: "?raw",
   import: "default",
   eager: true,

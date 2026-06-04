@@ -1,7 +1,13 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, Bot, CheckCircle2 } from "lucide-react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import {
+  trackAgentCatalogClicked,
+  trackAgentCtaClicked,
+  trackAgentPageView,
+} from "@/lib/analytics";
 import {
   getAgentPageBySlug,
   type AgentMarkdownBlock,
@@ -109,7 +115,7 @@ function MarkdownBlock({ block }: { block: AgentMarkdownBlock }) {
   );
 }
 
-function ConversionBand() {
+function ConversionBand({ agent }: { agent: AgentPage }) {
   return (
     <aside className="my-12 rounded-2xl border border-ember/35 bg-surface-elevated p-7 lg:p-8">
       <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -126,6 +132,14 @@ function ConversionBand() {
         <div className="flex flex-wrap gap-3">
           <a
             href="/#planos"
+            onClick={() =>
+              trackAgentCtaClicked({
+                agent_name: agent.agentName,
+                agent_slug: agent.slug,
+                cta_label: "Conhecer planos",
+                cta_position: "middle",
+              })
+            }
             className="inline-flex items-center gap-2 rounded-lg gradient-ember px-5 py-3 font-semibold text-primary-foreground shadow-ember transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
           >
             Conhecer planos
@@ -133,6 +147,7 @@ function ConversionBand() {
           </a>
           <a
             href="/agentes-cerneops"
+            onClick={() => trackAgentCatalogClicked(agent.slug)}
             className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-5 py-3 font-medium transition hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
           >
             Ver outros agentes
@@ -163,6 +178,14 @@ function AgentPageRoute() {
     operatingSystem: "Web",
   };
 
+  useEffect(() => {
+    trackAgentPageView({
+      agent_name: agent.agentName,
+      agent_slug: agent.slug,
+      agent_group: agent.agentGroup,
+    });
+  }, [agent.agentGroup, agent.agentName, agent.slug]);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -185,6 +208,7 @@ function AgentPageRoute() {
               <span>/</span>
               <a
                 href="/agentes-cerneops"
+                onClick={() => trackAgentCatalogClicked(agent.slug)}
                 className="transition hover:text-ember"
               >
                 Agentes
@@ -208,6 +232,14 @@ function AgentPageRoute() {
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="/planos/trial"
+                    onClick={() =>
+                      trackAgentCtaClicked({
+                        agent_name: agent.agentName,
+                        agent_slug: agent.slug,
+                        cta_label: "Começar agora",
+                        cta_position: "hero",
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember px-6 py-3.5 font-semibold text-primary-foreground shadow-ember transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                   >
                     Começar agora
@@ -215,6 +247,7 @@ function AgentPageRoute() {
                   </a>
                   <a
                     href="/agentes-cerneops"
+                    onClick={() => trackAgentCatalogClicked(agent.slug)}
                     className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium transition hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                   >
                     Ver todos os agentes
@@ -232,6 +265,7 @@ function AgentPageRoute() {
                 </p>
                 <a
                   href="/agentes-cerneops"
+                  onClick={() => trackAgentCatalogClicked(agent.slug)}
                   className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ember transition hover:text-ember-light focus:outline-none focus:ring-2 focus:ring-ember"
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -248,7 +282,7 @@ function AgentPageRoute() {
               {firstBlocks.map((block, index) => (
                 <MarkdownBlock key={`${block.type}-${index}`} block={block} />
               ))}
-              <ConversionBand />
+              <ConversionBand agent={agent} />
               {lastBlocks.map((block, index) => (
                 <MarkdownBlock
                   key={`${block.type}-tail-${index}`}
@@ -276,6 +310,14 @@ function AgentPageRoute() {
                 <div className="flex flex-wrap gap-3">
                   <a
                     href="/planos/trial"
+                    onClick={() =>
+                      trackAgentCtaClicked({
+                        agent_name: agent.agentName,
+                        agent_slug: agent.slug,
+                        cta_label: "Começar agora",
+                        cta_position: "footer",
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember px-6 py-3.5 font-semibold text-primary-foreground shadow-ember transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                   >
                     Começar agora
@@ -283,6 +325,14 @@ function AgentPageRoute() {
                   </a>
                   <a
                     href="/#planos"
+                    onClick={() =>
+                      trackAgentCtaClicked({
+                        agent_name: agent.agentName,
+                        agent_slug: agent.slug,
+                        cta_label: "Ver planos",
+                        cta_position: "footer",
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium transition hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                   >
                     Ver planos
