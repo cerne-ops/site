@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Bot, ChevronDown, ChevronRight } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
+import { getAgentSlugByName } from "@/lib/agent-pages";
 import { fetchLandingPlans } from "@/lib/plans";
 
 type Agent = {
@@ -126,7 +126,6 @@ export const Route = createFileRoute("/agentes-cerneops")({
 });
 
 function AgentsPage() {
-  const publicAgentPages = useMemo(() => getAgentPages(), []);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -440,42 +439,6 @@ function AgentsPage() {
                   </section>
                 );
               })}
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-10">
-          <div className="mx-auto max-w-7xl px-6">
-            <div className="rounded-2xl border border-border bg-surface/55 p-7">
-              <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className="font-display text-3xl font-semibold">
-                    Páginas públicas dos agentes
-                  </h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Acesse as páginas individuais dos agentes Core da CerneOps.
-                  </p>
-                </div>
-                <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-                  {publicAgentPages.length} páginas
-                </span>
-              </div>
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {publicAgentPages.map((agent) => (
-                  <a
-                    key={agent.slug}
-                    href={`/agentes/${agent.slug}`}
-                    className="rounded-xl border border-border bg-background/35 p-4 transition hover:border-ember/45 hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
-                  >
-                    <span className="block font-display text-lg leading-tight">
-                      {agent.agentName}
-                    </span>
-                    <span className="mt-2 block text-xs text-muted-foreground">
-                      {agent.agentGroup}
-                    </span>
-                  </a>
-                ))}
-              </div>
             </div>
           </div>
         </section>
