@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { trackPlanSelected, trackPricingViewed } from "@/lib/analytics";
 import {
   fetchLandingPlans,
   formatPlanPriceBRL,
@@ -10,6 +11,7 @@ import {
 type PlanView = (typeof planCatalog)[number] & { dynamic: PlanDynamic };
 
 export function Plans() {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [landingData, setLandingData] = useState<Array<
     Record<string, unknown>
   > | null>(null);
@@ -59,8 +61,38 @@ export function Plans() {
     };
   }, []);
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    let viewed = false;
+    const markViewed = () => {
+      if (viewed) return;
+      viewed = true;
+      trackPricingViewed();
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      markViewed();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          markViewed();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="planos" className="relative py-28">
+    <section id="planos" ref={sectionRef} className="relative py-28">
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-16">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
@@ -90,6 +122,14 @@ export function Plans() {
                     : "border-border bg-surface/60 hover:border-ember/35"
                 } ${plan.id === "boost" ? "xl:z-10 xl:scale-[1.06]" : ""}`}
                 aria-label={`Ver detalhes do plano ${plan.name}`}
+                onClick={() =>
+                  trackPlanSelected({
+                    planName: plan.name,
+                    planSlug: plan.id,
+                    billingCycle: "monthly",
+                    value: plan.dynamic.price_monthly,
+                  })
+                }
               >
                 {isFeaturedPlan ? (
                   <div className="absolute -top-3 left-7 font-mono text-[10px] uppercase tracking-widest gradient-ember text-primary-foreground px-2 py-1 rounded">

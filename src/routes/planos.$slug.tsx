@@ -3,6 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import {
+  trackPlanSelected,
+  trackPricingViewed,
+} from "@/lib/analytics";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -166,7 +170,19 @@ function PlanRoutePage() {
     };
   }, [plan, slug]);
 
+  useEffect(() => {
+    trackPricingViewed();
+  }, [slug]);
+
   const handleSubscribe = () => {
+    if (plan) {
+      trackPlanSelected({
+        planName: plan.name,
+        planSlug: plan.id,
+        billingCycle: "monthly",
+        value: plan.dynamic.price_monthly,
+      });
+    }
     setSubscribeOpen(true);
   };
 
@@ -235,6 +251,14 @@ function PlanRoutePage() {
                     {isTrialPlan ? (
                       <a
                         href="#trial-signup-modal"
+                        onClick={() =>
+                          trackPlanSelected({
+                            planName: plan.name,
+                            planSlug: plan.id,
+                            billingCycle: "monthly",
+                            value: plan.dynamic.price_monthly,
+                          })
+                        }
                         className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                       >
                         Começar Trial
@@ -381,6 +405,14 @@ function PlanRoutePage() {
                 {isTrialPlan ? (
                   <a
                     href="#trial-signup-modal"
+                    onClick={() =>
+                      trackPlanSelected({
+                        planName: plan.name,
+                        planSlug: plan.id,
+                        billingCycle: "monthly",
+                        value: plan.dynamic.price_monthly,
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                   >
                     Começar Trial
