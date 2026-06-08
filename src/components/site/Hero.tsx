@@ -52,6 +52,13 @@ export function Hero() {
 
             <div className="mt-10 flex flex-wrap items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
               <a
+                href="/agentes-cerneops#catalogo-agentes-core"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
+              >
+                Conheça os Agentes AI CerneOps
+                <span aria-hidden>→</span>
+              </a>
+              <a
                 href="#plataforma"
                 className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
               >

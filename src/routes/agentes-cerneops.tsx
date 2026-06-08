@@ -290,7 +290,7 @@ function AgentsPage() {
           </div>
         </section>
 
-        <section className="mt-10">
+        <section id="catalogo-agentes-core" className="mt-10 scroll-mt-28">
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
