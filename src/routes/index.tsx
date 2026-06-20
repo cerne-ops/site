@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
+import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { Hero } from "@/components/site/Hero";
 import { WhyCerneNotChat } from "@/components/site/WhyCerneNotChat";
 import { Pillars } from "@/components/site/Pillars";
@@ -58,6 +59,7 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main>
+        <HeroCarousel />
         <Hero />
         <WhyCerneNotChat />
         <Pillars />
