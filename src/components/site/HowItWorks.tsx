@@ -42,6 +42,8 @@ export function HowItWorks() {
               <img
                 src={supraLogo}
                 alt="Supra"
+                loading="lazy"
+                decoding="async"
                 className="w-[188px] sm:w-[232px] h-auto object-contain opacity-95"
               />
             </div>

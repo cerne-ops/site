@@ -143,6 +143,8 @@ export function Plans() {
                   <img
                     src={plan.logo}
                     alt={`${plan.name} logo`}
+                    loading="lazy"
+                    decoding="async"
                     className={`w-auto object-contain opacity-95 pointer-events-none ${
                       plan.id === "dominus"
                         ? "h-[63px]"
