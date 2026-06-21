@@ -87,7 +87,7 @@ export function SoroBlogEmbed() {
   return (
     <div
       ref={hostRef}
-      className="w-full"
+      className="academy-soro-shell w-full"
     >
       <div
         id={SORO_CONTAINER_ID}

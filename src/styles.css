@@ -251,6 +251,46 @@
     animation: scan 3s linear infinite;
   }
 
+  .academy-soro-shell #soro-blog,
+  .academy-soro-shell #soro-blog > *,
+  .academy-soro-shell #soro-blog .soro-blog {
+    width: 100% !important;
+    max-width: none !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    background: transparent !important;
+  }
+
+  .academy-soro-shell #soro-blog :is(
+    .soro-blog,
+    .soro-blog-list,
+    .soro-blog-post,
+    .soro-blog-content,
+    .soro-blog-container,
+    .soro-blog-wrapper,
+    .soro-blog-detail
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    background: transparent !important;
+  }
+
+  .academy-soro-shell #soro-blog .soro-blog-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    background: color-mix(in oklab, var(--surface) 72%, transparent) !important;
+    border-color: var(--border) !important;
+  }
+
+  .academy-soro-shell #soro-blog .soro-blog-card:hover {
+    background: var(--surface-elevated) !important;
+    border-color: oklch(0.71 0.20 42 / 0.35) !important;
+  }
+
   .reveal-up {
     opacity: 0;
     transform: translateY(18px);
