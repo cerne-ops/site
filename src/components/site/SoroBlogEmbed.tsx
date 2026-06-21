@@ -102,9 +102,8 @@ export function SoroBlogEmbed() {
 
       {status === "error" ? (
         <div className="mt-4 rounded-2xl border border-amber-500/35 bg-amber-500/10 p-4 text-sm text-amber-200">
-          A Academia está conectada ao Soro, mas o widget ainda não respondeu.
-          Atualize a página em instantes ou confirme se o blog foi ativado no
-          painel do Soro.
+          Não foi possível carregar os artigos agora. Atualize a página em
+          instantes.
         </div>
       ) : null}
     </div>

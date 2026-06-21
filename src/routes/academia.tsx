@@ -102,7 +102,7 @@ function AcademiaPage() {
 
         <section className="mt-8">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-5">
               <div>
                 <h2 className="font-display text-3xl font-semibold">
                   Artigos publicados
@@ -112,9 +112,6 @@ function AcademiaPage() {
                   partir da lista carregada pela Academia.
                 </p>
               </div>
-              <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
-                Integrado ao Soro
-              </span>
             </div>
 
             <SoroBlogEmbed />
