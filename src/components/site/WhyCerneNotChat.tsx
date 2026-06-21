@@ -4,10 +4,10 @@ export function WhyCerneNotChat() {
   const { openModal } = useSupraContactModal();
 
   return (
-    <section className="relative py-28 border-y border-border">
+    <section className="relative py-16 lg:py-20 border-y border-border">
       <div className="absolute inset-0 bg-grid opacity-45 pointer-events-none" />
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="max-w-4xl mb-14">
+        <div className="max-w-4xl mb-10 lg:mb-12">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
             / Por que CerneOps e não chat de IA?
           </div>

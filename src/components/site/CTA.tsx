@@ -4,7 +4,7 @@ export function CTA() {
   const { openModal } = useSupraContactModal();
 
   return (
-    <section id="contato" className="relative py-28">
+    <section id="contato" className="relative py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="relative rounded-3xl overflow-hidden border border-ember/30 p-12 lg:p-20 text-center">
           <div

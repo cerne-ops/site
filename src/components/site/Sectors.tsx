@@ -285,11 +285,11 @@ export function Sectors() {
   }, []);
 
   return (
-    <section id="setores" ref={sectionRef} className="relative py-28 bg-background/95">
+    <section id="setores" ref={sectionRef} className="relative py-16 lg:py-20 bg-background/95">
       <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl mb-16 reveal-up">
+        <div className="max-w-2xl mb-10 lg:mb-12 reveal-up">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
             / Setores atendidos
           </div>

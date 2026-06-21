@@ -5,7 +5,7 @@ export function Hero() {
   const { openModal } = useSupraContactModal();
 
   return (
-    <section id="topo" className="relative pt-28 sm:pt-36 lg:pt-40 pb-28 overflow-hidden bg-hero">
+    <section id="topo" className="relative pt-10 sm:pt-12 lg:pt-16 pb-16 lg:pb-20 overflow-hidden bg-hero">
       <div className="absolute inset-0 bg-grid pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
@@ -99,7 +99,7 @@ export function Hero() {
         </div>
 
         {/* Stats strip */}
-        <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-border bg-border">
+        <div className="mt-14 lg:mt-16 grid grid-cols-2 md:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-border bg-border">
           {[
             { k: "10x", v: "Capacidade por pessoa" },
             { k: "−70%", v: "Retrabalho operacional" },

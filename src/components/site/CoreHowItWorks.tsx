@@ -61,7 +61,7 @@ export function CoreHowItWorks() {
   }, []);
 
   return (
-    <section id="como-o-core-funciona" ref={sectionRef} className="relative py-28 border-y border-border">
+    <section id="como-o-core-funciona" ref={sectionRef} className="relative py-16 lg:py-20 border-y border-border">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: "var(--gradient-radial-circuit)" }}

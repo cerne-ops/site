@@ -65,7 +65,7 @@ export function HeroCarousel() {
   return (
     <section
       aria-label="Destaques CerneOps"
-      className="relative overflow-hidden bg-hero pt-24 sm:pt-28 lg:pt-32 pb-8"
+      className="relative overflow-hidden bg-hero pt-24 sm:pt-28 lg:pt-28 pb-4"
     >
       <div className="absolute inset-0 bg-grid pointer-events-none" />
       <div

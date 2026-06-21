@@ -80,9 +80,9 @@ export function Pillars() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="plataforma" className="relative py-28">
+    <section ref={sectionRef} id="plataforma" className="relative py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl mb-16 reveal-up">
+        <div className="max-w-2xl mb-10 lg:mb-12 reveal-up">
           <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
             / O que é a CerneOps
           </div>
