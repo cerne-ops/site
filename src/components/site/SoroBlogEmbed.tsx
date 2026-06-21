@@ -87,21 +87,21 @@ export function SoroBlogEmbed() {
   return (
     <div
       ref={hostRef}
-      className="rounded-3xl border border-border bg-surface/55 p-4 shadow-2xl shadow-ember/5 sm:p-6"
+      className="w-full"
     >
       <div
         id={SORO_CONTAINER_ID}
-        className="min-h-[360px] overflow-hidden rounded-2xl border border-border bg-background/70"
+        className="min-h-[320px] w-full overflow-hidden bg-transparent"
       />
 
       {status === "idle" || status === "loading" ? (
-        <div className="mt-4 rounded-2xl border border-border bg-surface/55 p-4 text-sm text-muted-foreground">
+        <div className="mt-4 text-sm text-muted-foreground">
           Carregando artigos da Academia CerneOps...
         </div>
       ) : null}
 
       {status === "error" ? (
-        <div className="mt-4 rounded-2xl border border-amber-500/35 bg-amber-500/10 p-4 text-sm text-amber-200">
+        <div className="mt-4 text-sm text-muted-foreground">
           Não foi possível carregar os artigos agora. Atualize a página em
           instantes.
         </div>

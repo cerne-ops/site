@@ -47,15 +47,18 @@ function AcademiaPage() {
                 / Academia CerneOps
               </div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.03]">
-                Conteúdo prático para operar melhor
-                <br />
-                <span className="text-muted-foreground">
-                  com IA, processos e automação.
-                </span>
+                Opere melhor com especialistas digitais.
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg max-w-3xl">
-                Guias, artigos e ideias aplicáveis para transformar tarefas
-                manuais em rotinas mais claras, rápidas e inteligentes.
+                Estratégias, guias e aplicações práticas para reduzir trabalho
+                manual, acelerar decisões e aumentar a capacidade operacional
+                da sua empresa.
+              </p>
+              <p className="mt-4 text-muted-foreground leading-relaxed text-lg max-w-4xl">
+                Aprenda como empresas utilizam especialistas digitais em RH,
+                Comercial, Financeiro, Atendimento, Jurídico, Fiscal,
+                Engenharia, Saúde e Operações para transformar horas de
+                trabalho em minutos de execução.
               </p>
             </div>
           </div>
@@ -113,7 +116,9 @@ function AcademiaPage() {
                 </p>
               </div>
             </div>
+          </div>
 
+          <div className="mx-auto max-w-7xl px-6">
             <SoroBlogEmbed />
           </div>
         </section>
