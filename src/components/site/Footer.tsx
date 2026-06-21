@@ -44,6 +44,11 @@ export function Footer() {
                   Agentes CerneOps
                 </a>
               </li>
+              <li>
+                <a href="/academia" className="hover:text-foreground transition">
+                  Academia CerneOps
+                </a>
+              </li>
             </ul>
           </div>
 

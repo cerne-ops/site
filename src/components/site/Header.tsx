@@ -11,6 +11,7 @@ const nav = [
   { label: "Início", to: "/#topo" },
   { label: "Plataforma", to: "/#plataforma" },
   { label: "Agentes", to: "/agentes-cerneops" },
+  { label: "Academia", to: "/academia" },
   { label: "Planos", to: "/#planos" },
   { label: "Porque?", to: "/porque" },
   { label: "Como funciona", to: "/#como-funciona" },
@@ -21,6 +22,7 @@ const nav = [
 const desktopNav = [
   { label: "Plataforma", to: "/#plataforma" },
   { label: "Agentes", to: "/agentes-cerneops" },
+  { label: "Academia", to: "/academia" },
   { label: "Core", to: "/#como-o-core-funciona" },
   { label: "Supra", to: "/#como-funciona" },
   { label: "Planos", to: "/#planos" },

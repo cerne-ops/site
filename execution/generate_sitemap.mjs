@@ -24,6 +24,7 @@ const agentSlugs = readdirSync(agentsDir)
 const paths = [
   "/",
   "/porque",
+  "/academia",
   "/agentes-cerneops",
   "/planos/trial",
   "/planos/start",
