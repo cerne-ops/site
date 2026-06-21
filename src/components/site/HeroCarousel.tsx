@@ -5,11 +5,11 @@ const SLIDE_INTERVAL_MS = 10_000;
 const TRIAL_URL = "https://cerneops.com.br/planos/trial#trial-signup-modal";
 
 const slides = [
+  { src: "/site-hero/Hero5.jpg", alt: "Teste o Core CerneOps no plano Trial" },
   { src: "/site-hero/Hero1.jpg", alt: "CerneOps Core para operacoes com agentes de IA" },
   { src: "/site-hero/Hero2.jpg", alt: "Automacao operacional CerneOps para empresas" },
   { src: "/site-hero/Hero3.jpg", alt: "Agentes de IA CerneOps para organizar processos" },
   { src: "/site-hero/Hero4.jpg", alt: "Plataforma CerneOps para gestao inteligente" },
-  { src: "/site-hero/Hero5.jpg", alt: "Teste o Core CerneOps no plano Trial" },
 ];
 
 export function HeroCarousel() {
