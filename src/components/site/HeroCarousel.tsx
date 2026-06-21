@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const SLIDE_INTERVAL_MS = 10_000;
+const SLIDE_INTERVAL_MS = 5_000;
 const TRIAL_URL = "https://cerneops.com.br/planos/trial#trial-signup-modal";
 
 const slides = [
