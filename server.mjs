@@ -1,14 +1,42 @@
-import { createReadStream, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, join, normalize, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Readable } from "node:stream";
 import { createServer } from "node:http";
-import handler from "./dist/server/index.js";
+
+const ROOT_DIR = dirname(fileURLToPath(import.meta.url));
+const CLIENT_DIR = join(ROOT_DIR, "dist", "client");
+
+function loadEnvFile() {
+  const envPath = join(ROOT_DIR, ".env");
+  if (!existsSync(envPath)) return;
+
+  const lines = readFileSync(envPath, "utf8").split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#") || !line.includes("=")) continue;
+
+    const equalIndex = line.indexOf("=");
+    const key = line.slice(0, equalIndex).trim();
+    let value = line.slice(equalIndex + 1).trim();
+    if (!key || process.env[key] !== undefined) continue;
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  }
+}
+
+loadEnvFile();
 
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = Number(process.env.PORT || 4173);
-const ROOT_DIR = dirname(fileURLToPath(import.meta.url));
-const CLIENT_DIR = join(ROOT_DIR, "dist", "client");
+const { default: handler } = await import("./dist/server/index.js");
 
 const MIME_TYPES = {
   ".css": "text/css; charset=utf-8",

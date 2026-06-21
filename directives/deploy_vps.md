@@ -29,6 +29,7 @@ Para funcionalidades server-side de contato/email, o processo `cerne-site` deve 
 - `RESEND_FROM_EMAIL` ou `RESEND_FROM`
 
 Nunca imprimir esses valores em logs ou no chat. Validar apenas presenca/ausencia.
+O `server.mjs` carrega o arquivo `.env` do checkout de producao e preserva variaveis ja injetadas no ambiente do processo.
 
 ## Regra critica
 Mesmo que o repositorio contenha `wrangler.jsonc` ou artefatos Cloudflare, nao assumir deploy por Wrangler/Cloudflare sem validar a topologia ativa. A producao atual do Site responde via Nginx no VPS.
