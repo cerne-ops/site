@@ -60,3 +60,13 @@
 | 56 | Analisador de Glosas | Saúde e Clínicas | 56-analisador-de-glosas.md | analisador-de-glosas |
 | 57 | Gerador de Cronograma de Obra | Engenharia e Construção Civil | 57-gerador-de-cronograma-de-obra.md | gerador-de-cronograma-de-obra |
 | 58 | Analisador de Desvio de Cronograma | Engenharia e Construção Civil | 58-analisador-de-desvio-de-cronograma.md | analisador-de-desvio-de-cronograma |
+| 59 | Adaptador de Receitas Inteligente | Operação Alimentícia | 59-adaptador-de-receitas-inteligente.md | adaptador-de-receitas-inteligente |
+| 60 | Gerador de Cardápios para Eventos | Operação Alimentícia | 60-gerador-de-cardapios-para-eventos.md | gerador-de-cardapios-para-eventos |
+| 61 | Calculador de Perdas e Sobras | Operação Alimentícia | 61-calculador-de-perdas-e-sobras.md | calculador-de-perdas-e-sobras |
+| 62 | Otimizador de Compras de Ingredientes | Operação Alimentícia | 62-otimizador-de-compras-de-ingredientes.md | otimizador-de-compras-de-ingredientes |
+| 63 | Gerador de Fichas Técnicas de Produtos | Operação Alimentícia | 63-gerador-de-fichas-tecnicas-de-produtos.md | gerador-de-fichas-tecnicas-de-produtos |
+| 64 | Auditor de Boas Práticas de Fabricação (BPF) | Operação Alimentícia | 64-auditor-de-boas-praticas-de-fabricacao-bpf.md | auditor-de-boas-praticas-de-fabricacao-bpf |
+| 65 | Planejador de Produção Diária | Operação Alimentícia | 65-planejador-de-producao-diaria.md | planejador-de-producao-diaria |
+| 66 | Analisador de Preços de Concorrentes | Operação Alimentícia | 66-analisador-de-precos-de-concorrentes.md | analisador-de-precos-de-concorrentes |
+| 67 | Gerador de Rótulos Nutricionais | Operação Alimentícia | 67-gerador-de-rotulos-nutricionais.md | gerador-de-rotulos-nutricionais |
+| 68 | Gerenciador de Validade e Estoque Perecível | Operação Alimentícia | 68-gerenciador-de-validade-e-estoque-perecivel.md | gerenciador-de-validade-e-estoque-perecivel |

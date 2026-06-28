@@ -28,6 +28,9 @@
     <loc>https://cerneops.com.br/planos/dominus</loc>
   </url>
   <url>
+    <loc>https://cerneops.com.br/agentes/adaptador-de-receitas-inteligente</loc>
+  </url>
+  <url>
     <loc>https://cerneops.com.br/agentes/analisador-de-acidentes</loc>
   </url>
   <url>
@@ -61,6 +64,9 @@
     <loc>https://cerneops.com.br/agentes/analisador-de-objecoes-de-vendas</loc>
   </url>
   <url>
+    <loc>https://cerneops.com.br/agentes/analisador-de-precos-de-concorrentes</loc>
+  </url>
+  <url>
     <loc>https://cerneops.com.br/agentes/analisador-de-relatorios-de-inspecao</loc>
   </url>
   <url>
@@ -79,6 +85,9 @@
     <loc>https://cerneops.com.br/agentes/analista-de-enquadramento-tributario-simples</loc>
   </url>
   <url>
+    <loc>https://cerneops.com.br/agentes/auditor-de-boas-praticas-de-fabricacao-bpf</loc>
+  </url>
+  <url>
     <loc>https://cerneops.com.br/agentes/auditor-de-conformidade</loc>
   </url>
   <url>
@@ -89,6 +98,9 @@
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/calculador-de-margem-de-lucro</loc>
+  </url>
+  <url>
+    <loc>https://cerneops.com.br/agentes/calculador-de-perdas-e-sobras</loc>
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/classificador-e-roteador-de-e-mails-tickets</loc>
@@ -121,6 +133,9 @@
     <loc>https://cerneops.com.br/agentes/gerador-de-argumentario-de-vendas</loc>
   </url>
   <url>
+    <loc>https://cerneops.com.br/agentes/gerador-de-cardapios-para-eventos</loc>
+  </url>
+  <url>
     <loc>https://cerneops.com.br/agentes/gerador-de-checklist-de-estoque</loc>
   </url>
   <url>
@@ -131,6 +146,9 @@
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/gerador-de-escalas-de-trabalho</loc>
+  </url>
+  <url>
+    <loc>https://cerneops.com.br/agentes/gerador-de-fichas-tecnicas-de-produtos</loc>
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/gerador-de-guia-de-recolhimento</loc>
@@ -166,16 +184,28 @@
     <loc>https://cerneops.com.br/agentes/gerador-de-resumo-de-obrigacoes-acessorias</loc>
   </url>
   <url>
+    <loc>https://cerneops.com.br/agentes/gerador-de-rotulos-nutricionais</loc>
+  </url>
+  <url>
     <loc>https://cerneops.com.br/agentes/gerador-de-script-de-atendimento</loc>
   </url>
   <url>
+    <loc>https://cerneops.com.br/agentes/gerenciador-de-validade-e-estoque-perecivel</loc>
+  </url>
+  <url>
     <loc>https://cerneops.com.br/agentes/limpador-e-padronizador-de-banco-de-dados</loc>
+  </url>
+  <url>
+    <loc>https://cerneops.com.br/agentes/otimizador-de-compras-de-ingredientes</loc>
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/otimizador-de-rotas-de-entrega-visitas</loc>
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/planejador-de-conteudo-para-redes-sociais</loc>
+  </url>
+  <url>
+    <loc>https://cerneops.com.br/agentes/planejador-de-producao-diaria</loc>
   </url>
   <url>
     <loc>https://cerneops.com.br/agentes/previsao-de-demanda</loc>
