@@ -10,6 +10,8 @@ import appCss from "../styles.css?url";
 import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
 import { SITE_RELEASE_VERSION } from "@/lib/release";
 
+const SITE_SOCIAL_IMAGE = "https://cerneops.com.br/og-social.jpg";
+
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -70,6 +72,12 @@ export const Route = createRootRoute({
       { name: "author", content: "CerneOps" },
       { name: "cerneops-site-version", content: SITE_RELEASE_VERSION },
       { name: "theme-color", content: "#0E0F12" },
+      { property: "og:image", content: SITE_SOCIAL_IMAGE },
+      { property: "og:image:width", content: "1024" },
+      { property: "og:image:height", content: "1024" },
+      { property: "og:image:type", content: "image/jpeg" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: SITE_SOCIAL_IMAGE },
     ],
     links: [
       {

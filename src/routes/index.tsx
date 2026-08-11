@@ -31,7 +31,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:image",
-        content: "https://cerneops.com.br/og-whatsapp-v2.jpg",
+        content: "https://cerneops.com.br/og-social.jpg",
       },
       { property: "og:image:width", content: "1024" },
       { property: "og:image:height", content: "1024" },
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
       },
       {
         name: "twitter:image",
-        content: "https://cerneops.com.br/og-whatsapp-v2.jpg",
+        content: "https://cerneops.com.br/og-social.jpg",
       },
     ],
     links: [{ rel: "canonical", href: "https://cerneops.com.br" }],

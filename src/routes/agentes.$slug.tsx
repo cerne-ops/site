@@ -14,7 +14,7 @@ import {
 } from "@/lib/agent-pages";
 
 const SITE_URL = "https://cerneops.com.br";
-const OG_IMAGE = `${SITE_URL}/og-whatsapp-v2.jpg`;
+const OG_IMAGE = `${SITE_URL}/og-social.jpg`;
 
 export const Route = createFileRoute("/agentes/$slug")({
   loader: ({ params }) => {
