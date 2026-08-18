@@ -27,15 +27,17 @@ Validação do protótipo navegável escolhido pelo usuário a partir da referê
 | “Testar depois” fecha e registra a decisão no `localStorage` | Passou |
 | Agentes agrupados por setor, com busca e expansão | Passou |
 | Agente inicial “Analisador de KPIs” selecionado | Passou |
-| Interface fiel ao fluxo do Core, com três textareas, exemplo, execução e resultado estruturado | Passou |
-| Entradas simuladas carregadas automaticamente e campos somente leitura | Passou |
+| Interface fiel ao fluxo do Core, com os campos oficiais do cenário `Exemplo`, execução e resultado estruturado | Passou |
+| Entradas oficiais do Core carregadas automaticamente e campos somente leitura | Passou |
+| 68 agentes com cenário oficial de entrada, sem fallback genérico silencioso | Passou |
+| Resultado explicita as entradas utilizadas na simulação | Passou |
 | Aviso explícito de demonstração simulada | Passou |
 | Copy atualizado: “simulados”, disclaimer sem promessa de envio/processamento e CTA com fidelidade aos Agentes IA Especialistas do Core CerneOps | Passou |
 | Execução simulada sem chamada de API/Core | Passou |
 | Resultado simulado com resumo, premissas, incertezas, destaques, tabela, hipóteses e próximos passos | Passou |
 | CTA pós-demo inline com link para `https://cerneops.com.br/planos/trial` | Passou |
 | Resultado permanece totalmente visível, sem modal sobrepondo o conteúdo | Passou |
-| Compatibilidade automática com novos agentes vindos do catálogo existente | Passou |
+| Compatibilidade automática com novos agentes vindos do catálogo existente e gerador de cenários | Passou |
 | Desktop em 1440×1024 | Passou |
 | Mobile em 390×844 sem overflow horizontal após ajuste | Passou |
 | Console do navegador sem erros ou warnings durante o fluxo final | Passou |
@@ -61,7 +63,9 @@ Validação do protótipo navegável escolhido pelo usuário a partir da referê
 - O modal de Trial foi removido e substituído por um CTA inline abaixo do resultado, eliminando a obstrução apontada.
 - Os campos de entrada foram convertidos para `readOnly`, sem `onChange`, sem redimensionamento e sem elementos `contenteditable`.
 - O botão “Novo” apenas reinicia os valores simulados; não limpa nem abre edição de entrada.
-- O painel lateral recebeu `min-w-0 overflow-hidden` para evitar overflow horizontal em telas estreitas.
+- O painel lateral recebeu `min-w-0 overflow-x-clip` para evitar overflow horizontal em telas estreitas sem criar scroll vertical interno.
+- A Demo deixou de usar textos genéricos: `execution/generate_demo_scenarios.mjs` extrai `exampleValues` e handlers `EXAMPLE_*`/equivalentes do Core para `src/lib/core-demo-scenarios.generated.ts`.
+- O resultado passou a exibir “Entradas utilizadas nesta simulação”, vinculando visualmente a saída simulada aos dados exibidos.
 
 ## Histórico de comparação
 
@@ -71,6 +75,7 @@ Validação do protótipo navegável escolhido pelo usuário a partir da referê
 - QA independente encontrou uma condição de corrida durante troca rápida de agente e um exportador sem ação.
 - Correção aplicada: token de execução invalida timers antigos ao trocar/reiniciar agente; exportação implementada como `.txt` local.
 - Evidência pós-correção: troca rápida sem `demo-result`, exportação acionável e logs limpos.
+- Auditoria de cobertura: 68 agentes públicos comparados com 68 cenários gerados do Core; nenhuma ausência no catálogo atual.
 - Iteração atual: campos de entrada identificados como editáveis no protótipo.
 - Correção aplicada: entradas pré-carregadas, `readOnly`, saída visual não editável e fluxo executável sem digitação.
 - Evidência pós-correção: `demo-core-aligned-initial.png`, `demo-core-aligned-result.png` e `demo-core-aligned-mobile.png`.
@@ -78,6 +83,7 @@ Validação do protótipo navegável escolhido pelo usuário a partir da referê
 ## Verificações técnicas
 
 - `npm run build`: passou; sitemap gerado com 78 URLs.
+- `npm run generate:demo-scenarios`: passou; 68 cenários gerados a partir do Core.
 - ESLint direcionado aos arquivos alterados: passou.
 - `npm run lint` geral: permanece com erros de formatação preexistentes em arquivos fora deste protótipo; não foram introduzidos como parte do fluxo Demo.
 - ESLint direcionado após a correção: passou.

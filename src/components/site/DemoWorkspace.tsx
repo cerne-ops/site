@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
+import { CORE_DEMO_SCENARIOS } from "@/lib/core-demo-scenarios.generated";
 import { fetchLandingPlans } from "@/lib/plans";
 
 type DemoAgent = {
@@ -46,6 +47,7 @@ type DemoResult = {
   title: string;
   reviewNotice: string;
   summary: string;
+  inputReference: Array<{ label: string; value: string }>;
   premises: string[];
   uncertainties: string[];
   highlights: string[];
@@ -61,15 +63,6 @@ const SPECIAL_GROUPS: Record<string, string> = {
   atendimento_relacionamento: "Atendimento e Relacionamento com Cliente",
   operacao_logistica: "Operação e Logística",
   gestao_produtividade_gestor: "Gestão e Produtividade do Gestor",
-};
-
-const KPI_EXAMPLE_VALUES = {
-  kpiData:
-    "NPS caiu de 72 para 61 em abril. Tempo médio de espera subiu de 3 para 8 minutos. Conversão comercial caiu de 18% para 14%. Churn mensal subiu de 2,1% para 3,4%. Meta de SLA era 90%, realizado 82%.",
-  businessContext:
-    "Em abril houve troca de ferramenta de atendimento, aumento de tickets e ausência de dois analistas. Parte dos dados de atendimento do dia 12 não foi consolidada.",
-  analysisFocus:
-    "Evitar causalidade definitiva. Separar hipóteses, evidências, riscos de dados incompletos e ações revisáveis para gestores.",
 };
 
 function normalizeGroupLabel(raw: string) {
@@ -159,82 +152,47 @@ function isKpiAgent(agent: DemoAgent) {
   return agent.title.toLowerCase().includes("kpi");
 }
 
-function createFields(
-  agent: DemoAgent,
-  values?: Record<string, string>,
-): DemoField[] {
-  if (isKpiAgent(agent)) {
+function normalizeDemoKey(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+function getDemoScenario(agent: DemoAgent) {
+  const key = normalizeDemoKey(agent.title);
+  return CORE_DEMO_SCENARIOS.find(
+    (scenario) => normalizeDemoKey(scenario.title) === key,
+  );
+}
+
+function createFields(agent: DemoAgent): DemoField[] {
+  const scenario = getDemoScenario(agent);
+  if (!scenario) return [];
+
+  return scenario.fields.flatMap((field) => {
+    const value = scenario.values[field.key];
+    if (value === undefined || value === null || String(value).trim() === "") {
+      return [];
+    }
+    const rows = Math.max(4, Math.min(14, Number(field.rows) || 8));
     return [
       {
-        key: "kpiData",
-        label: "KPIs e metas",
-        rows: 10,
-        placeholder:
-          "Ex.: NPS, TME, conversão, churn, margem, SLA, metas, períodos e variação.",
-        value: values?.kpiData ?? KPI_EXAMPLE_VALUES.kpiData,
-      },
-      {
-        key: "businessContext",
-        label: "Contexto e eventos",
-        rows: 6,
-        placeholder:
-          "Ex.: mudanças de equipe, campanha, sazonalidade, incidentes, alteração de processo ou dados faltantes.",
-        value: values?.businessContext ?? KPI_EXAMPLE_VALUES.businessContext,
-      },
-      {
-        key: "analysisFocus",
-        label: "Foco da análise",
-        rows: 4,
-        placeholder:
-          "Ex.: priorizar desvios de meta, correlações prováveis, riscos de dados incompletos e próximos passos.",
-        value: values?.analysisFocus ?? KPI_EXAMPLE_VALUES.analysisFocus,
+        key: field.key,
+        label: field.label || field.key,
+        rows,
+        placeholder: field.placeholder || "",
+        value: String(value),
       },
     ];
-  }
-
-  return [
-    {
-      key: "input",
-      label: "Informe os dados para a demonstração",
-      rows: 8,
-      placeholder: agent.operation,
-      value:
-        values?.input ??
-        "Dados operacionais de exemplo carregados para simulação, com informações suficientes para organizar uma primeira leitura.",
-    },
-    {
-      key: "context",
-      label: "Informe o contexto da empresa",
-      rows: 6,
-      placeholder: "Ex.: equipe, período, objetivo ou restrições conhecidas",
-      value:
-        values?.context ??
-        `Contexto simulado para o ${agent.title}, com período, equipe envolvida e restrições conhecidas.`,
-    },
-    {
-      key: "focus",
-      label: "Defina o foco da análise",
-      rows: 4,
-      placeholder: "Ex.: alertas, prioridades, riscos e próximos passos",
-      value:
-        values?.focus ??
-        "Organizar os principais pontos, alertas, hipóteses e próximos passos revisáveis.",
-    },
-  ];
+  });
 }
 
-function createExampleValues(agent: DemoAgent): Record<string, string> {
-  if (isKpiAgent(agent)) return KPI_EXAMPLE_VALUES;
-  return {
-    input:
-      "Dados operacionais de exemplo carregados para simulação, com informações suficientes para organizar uma primeira leitura.",
-    context: `Contexto simulado para o ${agent.title}, com período, equipe envolvida e restrições conhecidas.`,
-    focus:
-      "Organizar os principais pontos, alertas, hipóteses e próximos passos revisáveis.",
-  };
-}
-
-function createMockResult(agent: DemoAgent): DemoResult {
+function createMockResult(agent: DemoAgent, fields: DemoField[]): DemoResult {
+  const inputReference = fields.map(({ label, value }) => ({ label, value }));
   if (isKpiAgent(agent)) {
     return {
       title: "Análise de KPIs",
@@ -242,6 +200,7 @@ function createMockResult(agent: DemoAgent): DemoResult {
         "Análise gerencial revisável. KPIs podem refletir dados incompletos, recortes e correlações aparentes; não trate como causalidade definitiva.",
       summary:
         "Os dados indicam piora em NPS, tempo médio de espera, conversão e churn no período informado. A troca de ferramenta, o aumento de tickets e a ausência de analistas aparecem como hipóteses que precisam ser conferidas, não como causas definitivas.",
+      inputReference,
       premises: [
         "Período observado: abril, conforme os dados de exemplo.",
         "A comparação usa os valores informados pelo usuário e a meta de SLA de 90%.",
@@ -318,10 +277,11 @@ function createMockResult(agent: DemoAgent): DemoResult {
     title: `${agent.title} — resultado da demonstração`,
     reviewNotice:
       "Material de apoio operacional. A saída é simulada, revisável e não substitui a análise do responsável pelo processo.",
-    summary: `A demonstração do ${agent.title} organizou os dados informados e destacou os pontos que merecem revisão humana antes de qualquer decisão operacional.`,
+    summary: `A demonstração do ${agent.title} considerou exatamente os dados de exemplo do Core exibidos acima e organizou os pontos que merecem revisão humana antes de qualquer decisão operacional.`,
+    inputReference,
     premises: [
-      "A leitura considera apenas as informações textuais fornecidas no exemplo.",
-      "O contexto foi organizado para demonstrar a estrutura de saída do agente.",
+      "A leitura considera apenas os valores do cenário oficial carregado pelo botão Exemplo do Core.",
+      `Foram consideradas ${fields.length} entradas: ${fields.map((field) => field.label).join(", ")}.`,
     ],
     uncertainties: [
       "Dados ausentes ou incompletos podem alterar a leitura final.",
@@ -354,6 +314,12 @@ function buildDemoResultText(result: DemoResult) {
     `# ${result.title}`,
     result.reviewNotice,
     "",
+    "## Entradas utilizadas nesta simulação",
+    ...result.inputReference.flatMap((input) => [
+      `### ${input.label}`,
+      input.value,
+      "",
+    ]),
     "## Resumo",
     result.summary,
     "",
@@ -497,7 +463,7 @@ export function DemoWorkspace() {
   const handleNew = () => {
     if (!selectedAgent) return;
     executionRef.current += 1;
-    setFields(createFields(selectedAgent, createExampleValues(selectedAgent)));
+    setFields(createFields(selectedAgent));
     setResult(null);
     setStatus("idle");
   };
@@ -505,7 +471,7 @@ export function DemoWorkspace() {
   const handleExample = () => {
     if (!selectedAgent) return;
     executionRef.current += 1;
-    setFields(createFields(selectedAgent, createExampleValues(selectedAgent)));
+    setFields(createFields(selectedAgent));
     setResult(null);
     setStatus("idle");
   };
@@ -518,7 +484,7 @@ export function DemoWorkspace() {
     setResult(null);
     window.setTimeout(() => {
       if (executionRef.current !== executionId) return;
-      setResult(createMockResult(selectedAgent));
+      setResult(createMockResult(selectedAgent, fields));
       setStatus("success");
     }, 850);
   };
@@ -687,6 +653,11 @@ export function DemoWorkspace() {
                   </div>
 
                   <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      Dados preenchidos pelo botão “Exemplo” do Core CerneOps.
+                      As entradas são exibidas exatamente como no fluxo do
+                      agente e permanecem somente leitura.
+                    </p>
                     <div className="grid gap-4 md:grid-cols-2">
                       {fields.map((field, index) => (
                         <label
@@ -707,6 +678,14 @@ export function DemoWorkspace() {
                         </label>
                       ))}
                     </div>
+
+                    {!fields.length ? (
+                      <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
+                        O cenário oficial de demonstração deste agente ainda
+                        está em preparação. A execução ficará disponível assim
+                        que o exemplo do Core for publicado.
+                      </div>
+                    ) : null}
 
                     <div className="flex items-start gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
                       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
@@ -774,6 +753,27 @@ export function DemoWorkspace() {
 
                   <div className="mt-5 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
                     {result.reviewNotice}
+                  </div>
+
+                  <div className="mt-4 rounded-lg border border-circuit/25 bg-circuit/5 p-4">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      Entradas utilizadas nesta simulação
+                    </h3>
+                    <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                      {result.inputReference.map((input) => (
+                        <div
+                          key={input.label}
+                          className="rounded-lg border border-border/70 bg-surface/30 p-3"
+                        >
+                          <p className="text-xs font-medium text-muted-foreground">
+                            {input.label}
+                          </p>
+                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-foreground/85">
+                            {input.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="mt-4 rounded-lg border border-border bg-surface/30 p-4">
