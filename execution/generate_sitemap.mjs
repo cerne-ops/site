@@ -25,6 +25,7 @@ const paths = [
   "/",
   "/porque",
   "/academia",
+  "/demo",
   "/agentes-cerneops",
   "/planos/trial",
   "/planos/start",

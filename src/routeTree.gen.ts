@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PorqueRouteImport } from './routes/porque'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as AgentesCerneopsRouteImport } from './routes/agentes-cerneops'
 import { Route as AcademiaRouteImport } from './routes/academia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -20,6 +21,11 @@ import { Route as ApiContactSupraRouteImport } from './routes/api/contact/supra'
 const PorqueRoute = PorqueRouteImport.update({
   id: '/porque',
   path: '/porque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentesCerneopsRoute = AgentesCerneopsRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
   '/agentes-cerneops': typeof AgentesCerneopsRoute
+  '/demo': typeof DemoRoute
   '/porque': typeof PorqueRoute
   '/agentes/$slug': typeof AgentesSlugRoute
   '/planos/$slug': typeof PlanosSlugRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
   '/agentes-cerneops': typeof AgentesCerneopsRoute
+  '/demo': typeof DemoRoute
   '/porque': typeof PorqueRoute
   '/agentes/$slug': typeof AgentesSlugRoute
   '/planos/$slug': typeof PlanosSlugRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/academia': typeof AcademiaRoute
   '/agentes-cerneops': typeof AgentesCerneopsRoute
+  '/demo': typeof DemoRoute
   '/porque': typeof PorqueRoute
   '/agentes/$slug': typeof AgentesSlugRoute
   '/planos/$slug': typeof PlanosSlugRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/academia'
     | '/agentes-cerneops'
+    | '/demo'
     | '/porque'
     | '/agentes/$slug'
     | '/planos/$slug'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/academia'
     | '/agentes-cerneops'
+    | '/demo'
     | '/porque'
     | '/agentes/$slug'
     | '/planos/$slug'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/academia'
     | '/agentes-cerneops'
+    | '/demo'
     | '/porque'
     | '/agentes/$slug'
     | '/planos/$slug'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcademiaRoute: typeof AcademiaRoute
   AgentesCerneopsRoute: typeof AgentesCerneopsRoute
+  DemoRoute: typeof DemoRoute
   PorqueRoute: typeof PorqueRoute
   AgentesSlugRoute: typeof AgentesSlugRoute
   PlanosSlugRoute: typeof PlanosSlugRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/porque'
       fullPath: '/porque'
       preLoaderRoute: typeof PorqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agentes-cerneops': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcademiaRoute: AcademiaRoute,
   AgentesCerneopsRoute: AgentesCerneopsRoute,
+  DemoRoute: DemoRoute,
   PorqueRoute: PorqueRoute,
   AgentesSlugRoute: AgentesSlugRoute,
   PlanosSlugRoute: PlanosSlugRoute,

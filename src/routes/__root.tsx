@@ -8,6 +8,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
+import { DemoIntroModal } from "@/components/site/DemoIntroModal";
 import { SITE_RELEASE_VERSION } from "@/lib/release";
 
 const SITE_SOCIAL_IMAGE = "https://cerneops.com.br/og-social.jpg";
@@ -153,6 +154,7 @@ function RootComponent() {
   return (
     <SupraContactModalProvider>
       <Outlet />
+      <DemoIntroModal />
     </SupraContactModalProvider>
   );
 }
