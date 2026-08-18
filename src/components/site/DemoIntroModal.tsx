@@ -84,11 +84,6 @@ export function DemoIntroModal() {
                 Testar depois
               </button>
             </div>
-
-            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              Ambiente demonstrativo: nenhum dado real é enviado e nenhuma
-              tarefa do Core é consumida.
-            </p>
           </div>
         </div>
       </DialogContent>

@@ -543,7 +543,7 @@ export function DemoWorkspace() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[350px_minmax(0,1fr)]">
-            <aside className="min-w-0 overflow-hidden rounded-2xl border border-border bg-background/65 p-5 shadow-elevated backdrop-blur-sm lg:max-h-[calc(100vh-175px)] lg:overflow-y-auto">
+            <aside className="min-w-0 overflow-x-clip rounded-2xl border border-border bg-background/65 p-5 shadow-elevated backdrop-blur-sm">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-display text-2xl font-semibold">
