@@ -162,10 +162,20 @@ function normalizeDemoKey(value: string) {
     .replace(/\s+/g, " ");
 }
 
+function normalizeDemoBaseKey(value: string) {
+  return normalizeDemoKey(value.replace(/\([^)]*\)/g, " "));
+}
+
 function getDemoScenario(agent: DemoAgent) {
   const key = normalizeDemoKey(agent.title);
-  return CORE_DEMO_SCENARIOS.find(
+  const exactScenario = CORE_DEMO_SCENARIOS.find(
     (scenario) => normalizeDemoKey(scenario.title) === key,
+  );
+  if (exactScenario) return exactScenario;
+
+  const baseKey = normalizeDemoBaseKey(agent.title);
+  return CORE_DEMO_SCENARIOS.find(
+    (scenario) => normalizeDemoBaseKey(scenario.title) === baseKey,
   );
 }
 
