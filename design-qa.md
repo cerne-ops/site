@@ -39,6 +39,8 @@ Validação do protótipo navegável escolhido pelo usuário a partir da referê
 | Desktop em 1440×1024 | Passou |
 | Mobile em 390×844 sem overflow horizontal após ajuste | Passou |
 | Console do navegador sem erros ou warnings durante o fluxo final | Passou |
+| Troca rápida de agente não reapresenta resultado de uma execução anterior | Passou |
+| “Exportar relatório” gera arquivo local da saída simulada | Passou |
 
 ## Interações executadas
 
@@ -66,6 +68,9 @@ Validação do protótipo navegável escolhido pelo usuário a partir da referê
 - Iteração anterior — P1: cards de métricas e modal de Trial divergiam do fluxo real do Core e cobriam o resultado.
 - Correção aplicada: substituição por resultado estruturado do agente e CTA inline pós-resultado.
 - Evidência pós-correção: `demo-core-aligned-result.png` e `demo-core-aligned-trial-inline.png`; nenhum P0/P1/P2 restante.
+- QA independente encontrou uma condição de corrida durante troca rápida de agente e um exportador sem ação.
+- Correção aplicada: token de execução invalida timers antigos ao trocar/reiniciar agente; exportação implementada como `.txt` local.
+- Evidência pós-correção: troca rápida sem `demo-result`, exportação acionável e logs limpos.
 - Iteração atual: campos de entrada identificados como editáveis no protótipo.
 - Correção aplicada: entradas pré-carregadas, `readOnly`, saída visual não editável e fluxo executável sem digitação.
 - Evidência pós-correção: `demo-core-aligned-initial.png`, `demo-core-aligned-result.png` e `demo-core-aligned-mobile.png`.

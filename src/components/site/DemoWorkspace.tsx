@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   Bot,
@@ -349,6 +349,53 @@ function createMockResult(agent: DemoAgent): DemoResult {
   };
 }
 
+function buildDemoResultText(result: DemoResult) {
+  return [
+    `# ${result.title}`,
+    result.reviewNotice,
+    "",
+    "## Resumo",
+    result.summary,
+    "",
+    "## Premissas e fontes",
+    ...result.premises.map((item) => `- ${item}`),
+    "",
+    "## Incertezas e limitações",
+    ...result.uncertainties.map((item) => `- ${item}`),
+    "",
+    "## Destaques",
+    ...result.highlights.map((item) => `- ${item}`),
+    "",
+    ...result.tables.flatMap((table) => [
+      `## ${table.title}`,
+      table.columns.join(" | "),
+      ...table.rows.map((row) =>
+        table.columns.map((column) => row[column] ?? "-").join(" | "),
+      ),
+      "",
+    ]),
+    ...result.sections.flatMap((section) => [
+      `## ${section.title}`,
+      ...section.items.map((item) => `- ${item}`),
+      "",
+    ]),
+    "## Próximos passos",
+    ...result.nextSteps.map((item) => `- ${item}`),
+  ].join("\n");
+}
+
+function downloadDemoResult(result: DemoResult) {
+  const blob = new Blob([buildDemoResultText(result)], {
+    type: "text/plain;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "cerneops-demo-resultado.txt";
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 export function DemoWorkspace() {
   const [agents, setAgents] = useState<DemoAgent[]>([]);
   const [isLoadingAgents, setIsLoadingAgents] = useState(true);
@@ -359,6 +406,7 @@ export function DemoWorkspace() {
   const [fields, setFields] = useState<DemoField[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
   const [result, setResult] = useState<DemoResult | null>(null);
+  const executionRef = useRef(0);
 
   useEffect(() => {
     let alive = true;
@@ -438,6 +486,7 @@ export function DemoWorkspace() {
   }, [agents, search]);
 
   const selectAgent = (agent: DemoAgent) => {
+    executionRef.current += 1;
     setSelectedId(agent.id);
     setFields(createFields(agent));
     setResult(null);
@@ -447,6 +496,7 @@ export function DemoWorkspace() {
 
   const handleNew = () => {
     if (!selectedAgent) return;
+    executionRef.current += 1;
     setFields(createFields(selectedAgent, createExampleValues(selectedAgent)));
     setResult(null);
     setStatus("idle");
@@ -454,6 +504,7 @@ export function DemoWorkspace() {
 
   const handleExample = () => {
     if (!selectedAgent) return;
+    executionRef.current += 1;
     setFields(createFields(selectedAgent, createExampleValues(selectedAgent)));
     setResult(null);
     setStatus("idle");
@@ -462,9 +513,11 @@ export function DemoWorkspace() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedAgent || !canRun) return;
+    const executionId = ++executionRef.current;
     setStatus("loading");
     setResult(null);
     window.setTimeout(() => {
+      if (executionRef.current !== executionId) return;
       setResult(createMockResult(selectedAgent));
       setStatus("success");
     }, 850);
@@ -711,6 +764,7 @@ export function DemoWorkspace() {
                     </div>
                     <button
                       type="button"
+                      onClick={() => downloadDemoResult(result)}
                       className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border bg-surface/55 px-3 py-2 text-sm text-muted-foreground transition hover:text-foreground"
                     >
                       <FileText className="h-4 w-4" />
