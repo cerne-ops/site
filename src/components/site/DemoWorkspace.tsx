@@ -1455,70 +1455,313 @@ function ResultJsonValue({
   );
 }
 
+type MarkdownBlock =
+  | { kind: "heading"; level: number; text: string }
+  | { kind: "paragraph"; text: string }
+  | { kind: "list"; ordered: boolean; items: string[] }
+  | { kind: "table"; columns: string[]; rows: string[][] }
+  | { kind: "divider" };
+
+type MarkdownSection = {
+  title?: string;
+  level: number;
+  blocks: MarkdownBlock[];
+};
+
+function splitMarkdownTableRow(line: string) {
+  return line
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function isMarkdownTableDivider(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length > 0 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+}
+
+function parseMarkdownBlocks(output: string): MarkdownBlock[] {
+  const lines = output.replace(/\r/g, "").split("\n");
+  const blocks: MarkdownBlock[] = [];
+  let index = 0;
+
+  while (index < lines.length) {
+    const current = lines[index].trim();
+    if (!current) {
+      index += 1;
+      continue;
+    }
+    if (/^(---|\*\*\*|___)$/.test(current)) {
+      blocks.push({ kind: "divider" });
+      index += 1;
+      continue;
+    }
+    const heading = current.match(/^(#{1,6})\s+(.+)$/);
+    if (heading) {
+      blocks.push({
+        kind: "heading",
+        level: heading[1].length,
+        text: heading[2].trim(),
+      });
+      index += 1;
+      continue;
+    }
+    if (
+      current.startsWith("|") &&
+      index + 1 < lines.length &&
+      isMarkdownTableDivider(lines[index + 1])
+    ) {
+      const columns = splitMarkdownTableRow(lines[index]);
+      const rows: string[][] = [];
+      index += 2;
+      while (index < lines.length && lines[index].trim().startsWith("|")) {
+        rows.push(splitMarkdownTableRow(lines[index]));
+        index += 1;
+      }
+      blocks.push({ kind: "table", columns, rows });
+      continue;
+    }
+    const listMatch = current.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+    if (listMatch) {
+      const ordered = /^\d+[.)]\s+/.test(current);
+      const items: string[] = [];
+      while (index < lines.length) {
+        const item = lines[index].trim();
+        const match = item.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+        if (!match || /^\d+[.)]\s+/.test(item) !== ordered) break;
+        items.push(match[1].trim());
+        index += 1;
+      }
+      blocks.push({ kind: "list", ordered, items });
+      continue;
+    }
+    const paragraph: string[] = [current];
+    index += 1;
+    while (index < lines.length) {
+      const next = lines[index].trim();
+      if (
+        !next ||
+        /^(---|\*\*\*|___)$/.test(next) ||
+        /^(#{1,6})\s+/.test(next) ||
+        /^(?:[-*•]|\d+[.)])\s+/.test(next) ||
+        (next.startsWith("|") &&
+          index + 1 < lines.length &&
+          isMarkdownTableDivider(lines[index + 1]))
+      ) {
+        break;
+      }
+      paragraph.push(next);
+      index += 1;
+    }
+    blocks.push({ kind: "paragraph", text: paragraph.join(" ") });
+  }
+  return blocks;
+}
+
+function groupMarkdownSections(blocks: MarkdownBlock[]): MarkdownSection[] {
+  const sections: MarkdownSection[] = [];
+  let current: MarkdownSection = { level: 0, blocks: [] };
+  for (const block of blocks) {
+    if (block.kind === "heading" && block.level <= 3) {
+      if (current.title || current.blocks.length) sections.push(current);
+      current = { title: block.text, level: block.level, blocks: [] };
+    } else {
+      current.blocks.push(block);
+    }
+  }
+  if (current.title || current.blocks.length) sections.push(current);
+  return sections;
+}
+
+function InlineResultText({ text }: { text: string }) {
+  const fragments = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
+  return (
+    <>
+      {fragments.map((fragment, index) => {
+        if (fragment.startsWith("**") && fragment.endsWith("**")) {
+          return (
+            <strong key={index} className="font-semibold text-foreground">
+              {fragment.slice(2, -2)}
+            </strong>
+          );
+        }
+        if (fragment.startsWith("`") && fragment.endsWith("`")) {
+          return (
+            <code
+              key={index}
+              className="rounded bg-surface-elevated px-1.5 py-0.5 font-mono text-xs text-foreground"
+            >
+              {fragment.slice(1, -1)}
+            </code>
+          );
+        }
+        return fragment;
+      })}
+    </>
+  );
+}
+
+function resultTone(title = "") {
+  const normalized = title.toLowerCase();
+  if (/risco|limita|incerteza|alerta|atenção|atencao/.test(normalized))
+    return "warning";
+  if (/ação|acao|próximo|proximo|recomend|plano/.test(normalized))
+    return "action";
+  if (/síntese|sintese|resumo|consideraç/.test(normalized)) return "summary";
+  return "default";
+}
+
+function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
+  return (
+    <div className="space-y-4">
+      {blocks.map((block, index) => {
+        if (block.kind === "divider")
+          return <div key={index} className="border-t border-border/70" />;
+        if (block.kind === "heading") {
+          return (
+            <h4
+              key={index}
+              className="pt-1 font-display text-lg font-semibold leading-snug text-foreground"
+            >
+              {block.text}
+            </h4>
+          );
+        }
+        if (block.kind === "table") {
+          return (
+            <div
+              key={index}
+              className="overflow-x-auto rounded-xl border border-border bg-background/45 shadow-inner"
+            >
+              <table className="min-w-full divide-y divide-border/70 text-left text-sm">
+                <thead className="bg-surface-elevated/80 text-xs uppercase tracking-wide text-muted-foreground">
+                  <tr>
+                    {block.columns.map((column) => (
+                      <th
+                        key={column}
+                        className="whitespace-nowrap px-4 py-3 font-medium"
+                      >
+                        <InlineResultText text={column} />
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/55">
+                  {block.rows.map((row, rowIndex) => (
+                    <tr
+                      key={rowIndex}
+                      className="transition-colors hover:bg-surface/35"
+                    >
+                      {block.columns.map((column, columnIndex) => (
+                        <td
+                          key={`${column}-${columnIndex}`}
+                          className="max-w-sm whitespace-pre-wrap px-4 py-3 align-top leading-6 text-foreground/80"
+                        >
+                          <InlineResultText text={row[columnIndex] || "-"} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+        if (block.kind === "list") {
+          const List = block.ordered ? "ol" : "ul";
+          return (
+            <List
+              key={index}
+              className={`grid gap-2 ${block.ordered ? "list-decimal pl-5" : ""}`}
+            >
+              {block.items.map((item, itemIndex) => (
+                <li
+                  key={`${item}-${itemIndex}`}
+                  className="flex gap-2 rounded-lg border border-border/60 bg-background/35 px-3 py-2.5 text-sm leading-6 text-muted-foreground"
+                >
+                  {!block.ordered ? (
+                    <CircleCheck className="mt-1 h-3.5 w-3.5 shrink-0 text-circuit" />
+                  ) : null}
+                  <span>
+                    <InlineResultText text={item} />
+                  </span>
+                </li>
+              ))}
+            </List>
+          );
+        }
+        const fact = block.text.match(/^\*\*([^*]+):\*\*\s*(.+)$/);
+        if (fact) {
+          return (
+            <div
+              key={index}
+              className="rounded-lg border border-circuit/25 bg-circuit/5 px-3 py-2.5 text-sm leading-6"
+            >
+              <span className="font-medium text-foreground">{fact[1]}:</span>{" "}
+              <span className="text-muted-foreground">
+                <InlineResultText text={fact[2]} />
+              </span>
+            </div>
+          );
+        }
+        return (
+          <p
+            key={index}
+            className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground"
+          >
+            <InlineResultText text={block.text} />
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+function MarkdownResultOutput({ output }: { output: string }) {
+  const sections = groupMarkdownSections(parseMarkdownBlocks(output));
+  return (
+    <div className="space-y-4">
+      {sections.map((section, index) => {
+        const tone = resultTone(section.title);
+        const toneClass =
+          tone === "warning"
+            ? "border-amber-500/30 bg-amber-500/[0.07]"
+            : tone === "action"
+              ? "border-ember/30 bg-ember/[0.06]"
+              : tone === "summary"
+                ? "border-circuit/30 bg-circuit/[0.06]"
+                : "border-border bg-surface/25";
+        return (
+          <section
+            key={`${section.title || "resultado"}-${index}`}
+            className={`rounded-xl border p-4 sm:p-5 ${toneClass}`}
+          >
+            {section.title ? (
+              <div className="mb-4 flex items-start gap-3">
+                <div
+                  className={`mt-1 h-2 w-2 shrink-0 rounded-full ${tone === "warning" ? "bg-amber-400" : tone === "action" ? "bg-ember" : "bg-circuit"}`}
+                />
+                <h3 className="font-display text-xl font-semibold leading-tight text-foreground">
+                  {section.title}
+                </h3>
+              </div>
+            ) : null}
+            <ResultMarkdownBlocks blocks={section.blocks} />
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
 function CoreResultOutput({ output }: { output: string }) {
   try {
     const parsed = JSON.parse(output) as unknown;
     return <ResultJsonValue value={parsed} />;
   } catch {
-    const lines = output.split(/\r?\n/);
-    return (
-      <div className="space-y-2 text-sm leading-7 text-foreground/85">
-        {lines.map((line, index) => {
-          const text = line.trim();
-          if (!text) return <div key={index} className="h-2" />;
-          if (text.startsWith("### "))
-            return (
-              <h4
-                key={index}
-                className="pt-2 text-base font-semibold text-foreground"
-              >
-                {text.slice(4)}
-              </h4>
-            );
-          if (text.startsWith("## "))
-            return (
-              <h3
-                key={index}
-                className="pt-3 font-display text-xl font-semibold text-foreground"
-              >
-                {text.slice(3)}
-              </h3>
-            );
-          if (text.startsWith("# "))
-            return (
-              <h3
-                key={index}
-                className="font-display text-2xl font-semibold text-foreground"
-              >
-                {text.slice(2)}
-              </h3>
-            );
-          if (/^[-*]\s/.test(text))
-            return (
-              <p key={index} className="pl-4 text-muted-foreground">
-                • {text.slice(2)}
-              </p>
-            );
-          if (text.includes("|") && text.startsWith("|"))
-            return (
-              <pre
-                key={index}
-                className="overflow-x-auto whitespace-pre text-xs text-muted-foreground"
-              >
-                {line}
-              </pre>
-            );
-          return (
-            <p
-              key={index}
-              className="whitespace-pre-wrap text-muted-foreground"
-            >
-              {line}
-            </p>
-          );
-        })}
-      </div>
-    );
+    return <MarkdownResultOutput output={output} />;
   }
 }
 
