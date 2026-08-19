@@ -34,19 +34,19 @@ Substituir a renderização genérica de snapshots por uma solução orientada a
 
 ## Fase 4 — Release
 
-- [ ] Commit e push intencionais em `main`.
+- [x] Commit e push intencionais em `main`.
 - [x] Pre-check VPS, Nginx, PM2, commit e versão atual.
-- [ ] Atualização `ff-only`, build e restart de `cerne-site`.
-- [ ] Confirmar commit e versão servidos.
+- [x] Atualização `ff-only`, build e restart de `cerne-site`.
+- [x] Confirmar commit e versão servidos.
 
 ## Fase 5 — Smoke de produção
 
-- [ ] `/demo` responde com sucesso.
-- [ ] Extrator de Precedentes exibe os rótulos oficiais.
-- [ ] Resultado usa a composição estruturada equivalente ao Core.
-- [ ] `/`, `/planos/trial` e assets críticos respondem corretamente.
-- [ ] Ausência de runtime Vite/React Refresh em produção.
-- [ ] PM2 e porta 4173 saudáveis.
+- [x] `/demo` responde com sucesso.
+- [x] Extrator de Precedentes exibe os rótulos oficiais.
+- [x] Resultado usa a composição estruturada equivalente ao Core.
+- [x] `/`, `/planos/trial` e assets críticos respondem corretamente.
+- [x] Ausência de runtime Vite/React Refresh em produção.
+- [x] PM2 e porta 4173 saudáveis.
 
 ## Rollback
 
