@@ -1521,14 +1521,15 @@ function isResultRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-
 function isRecordLikeTable(value: unknown): value is Record<string, unknown>[] {
   if (!Array.isArray(value) || !value.length) return false;
   const rows = value.filter(hasMeaningfulResultValue);
   if (!rows.length) return false;
   if (rows.some((row) => !isResultRecord(row))) return false;
   return rows.every((row) =>
-    Object.values(row).every((cell) => cell === null || typeof cell !== "object"),
+    Object.values(row).every(
+      (cell) => cell === null || typeof cell !== "object",
+    ),
   );
 }
 
@@ -1648,7 +1649,9 @@ function ResultJsonValue({
           }`}
         >
           <table className="min-w-full divide-y divide-border/60 text-left text-sm">
-            <caption className="sr-only">Dados estruturados do resultado do agente</caption>
+            <caption className="sr-only">
+              Dados estruturados do resultado do agente
+            </caption>
             <thead className="bg-background/70 text-muted-foreground">
               <tr>
                 {columns.map((column) => (
@@ -1737,7 +1740,9 @@ function ResultJsonValue({
   const complexEntries = contentEntries.filter(
     ([, item]) => item !== null && typeof item === "object",
   );
-  const tableEntries = complexEntries.filter(([, item]) => isRecordLikeTable(item));
+  const tableEntries = complexEntries.filter(([, item]) =>
+    isRecordLikeTable(item),
+  );
   const nonTableEntries = complexEntries.filter(
     ([key]) => !tableEntries.some(([tableKey]) => tableKey === key),
   );
@@ -2184,8 +2189,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
                     ? `${
                         block.items
                           .slice(0, itemIndex + 1)
-                          .filter((candidate) => candidate.depth === 0)
-                          .length
+                          .filter((candidate) => candidate.depth === 0).length
                       }.`
                     : null;
                 return (
