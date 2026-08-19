@@ -16,6 +16,10 @@ import {
 import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
 import { CORE_DEMO_SCENARIOS } from "@/lib/core-demo-scenarios.generated";
 import { fetchLandingPlans } from "@/lib/plans";
+import {
+  buildPrecedentExtractionText,
+  PrecedentExtractionResult,
+} from "@/components/site/demo-results/PrecedentExtractionResult";
 
 type DemoAgent = {
   id: string;
@@ -63,9 +67,22 @@ type DemoResult = {
   sections: Array<{ title: string; items: string[] }>;
   nextSteps: string[];
   rawOutput?: string;
+  rawStructuredResult?: unknown;
+  agentCode?: string;
+  contractVersion?: string;
+  schemaKey?: string;
+  rendererKey?: string;
 };
 
-type GoldenSnapshot = { title: string; output: string };
+type GoldenSnapshot = {
+  agentCode?: string;
+  title: string;
+  output: string;
+  structuredResult?: unknown;
+  contractVersion?: string;
+  schemaKey?: string;
+  rendererKey?: string;
+};
 
 const SPECIAL_GROUPS: Record<string, string> = {
   rh_departamento_pessoal: "Recursos Humanos e Departamento Pessoal",
@@ -194,6 +211,13 @@ function getGoldenResult(
   agent: DemoAgent,
   snapshots: readonly GoldenSnapshot[],
 ) {
+  const scenario = getDemoScenario(agent);
+  if (scenario?.agentCode) {
+    const byAgentCode = snapshots.find(
+      (snapshot) => snapshot.agentCode === scenario.agentCode,
+    );
+    if (byAgentCode) return byAgentCode;
+  }
   const key = normalizeDemoKey(agent.title);
   const exact = snapshots.find(
     (snapshot) => normalizeDemoKey(snapshot.title) === key,
@@ -248,6 +272,12 @@ function createDemoResult(
       sections: [],
       nextSteps: [],
       rawOutput: golden.output,
+      rawStructuredResult: golden.structuredResult,
+      agentCode:
+        golden.agentCode || getDemoScenario(agent)?.agentCode || undefined,
+      contractVersion: golden.contractVersion,
+      schemaKey: golden.schemaKey,
+      rendererKey: golden.rendererKey,
     };
   }
   if (isKpiAgent(agent)) {
@@ -1756,7 +1786,32 @@ function MarkdownResultOutput({ output }: { output: string }) {
   );
 }
 
-function CoreResultOutput({ output }: { output: string }) {
+function CoreResultOutput({
+  output,
+  structuredResult,
+  agentCode,
+  contractVersion,
+  schemaKey,
+  rendererKey,
+}: {
+  output: string;
+  structuredResult?: unknown;
+  agentCode?: string;
+  contractVersion?: string;
+  schemaKey?: string;
+  rendererKey?: string;
+}) {
+  if (agentCode === "extrator_precedentes") {
+    const validContract =
+      contractVersion === "core-demo-snapshot-v2" &&
+      schemaKey === "precedent_extraction_v1" &&
+      rendererKey === "precedent_extraction_v1";
+    return (
+      <PrecedentExtractionResult
+        value={validContract ? structuredResult : undefined}
+      />
+    );
+  }
   try {
     const parsed = JSON.parse(output) as unknown;
     return <ResultJsonValue value={parsed} />;
@@ -1766,6 +1821,21 @@ function CoreResultOutput({ output }: { output: string }) {
 }
 
 function buildDemoResultText(result: DemoResult) {
+  if (result.agentCode === "extrator_precedentes") {
+    return [
+      `# ${result.title}`,
+      result.reviewNotice,
+      "",
+      "## Entradas utilizadas nesta simulação",
+      ...result.inputReference.flatMap((input) => [
+        `### ${input.label}`,
+        input.value,
+        "",
+      ]),
+      "## Resultado",
+      buildPrecedentExtractionText(result.rawStructuredResult),
+    ].join("\n");
+  }
   if (result.rawOutput) {
     return [
       `# ${result.title}`,
@@ -2300,7 +2370,14 @@ export function DemoWorkspace() {
                           Resultado gerado pelo Agente no Core
                         </h3>
                       </div>
-                      <CoreResultOutput output={result.rawOutput} />
+                      <CoreResultOutput
+                        output={result.rawOutput}
+                        structuredResult={result.rawStructuredResult}
+                        agentCode={result.agentCode}
+                        contractVersion={result.contractVersion}
+                        schemaKey={result.schemaKey}
+                        rendererKey={result.rendererKey}
+                      />
                     </div>
                   ) : (
                     <>

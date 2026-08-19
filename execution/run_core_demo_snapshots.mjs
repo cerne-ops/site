@@ -204,6 +204,45 @@ function promptFor(scenario, agentCode) {
       `Avaliacoes para analise:\n${values.reviewsInput}`,
     ].join("\n");
   }
+  if (agentCode === "extrator_precedentes") {
+    return [
+      "Voce e o Agente Extrator de Precedentes da CerneOps.",
+      "Extraia e organize apenas precedentes, teses, ementas, trechos e numeros informados pelo usuario.",
+      "Nao consulte, simule ou alegue pesquisa em bases oficiais externas. Nao afirme atualidade, vigencia, completude ou tese dominante sem verificacao oficial.",
+      "Retorne apenas JSON valido no schema precedent_extraction_v1, sem markdown.",
+      "FORMATO OBRIGATORIO:",
+      JSON.stringify({
+        titulo: "string",
+        aviso_revisao: "string",
+        resumo: "string",
+        precedentes: [
+          {
+            tribunal: "string",
+            numero_processo: "string",
+            tipo: "string",
+            tese: "string",
+            trecho_relevante: "string",
+            aderencia: "string",
+            cautela_verificacao: "string",
+          },
+        ],
+        teses_identificadas: [
+          {
+            tese: "string",
+            precedentes_relacionados: "string",
+            uso_sugerido: "string",
+          },
+        ],
+        lacunas: ["string"],
+        checklist_verificacao: ["string"],
+        proximos_passos: ["string"],
+      }),
+      `Tema ou tese buscada: ${values.theme}`,
+      `Contexto do caso: ${values.caseContext}`,
+      `Criterios de relevancia: ${values.relevanceCriteria}`,
+      `Material de precedentes fornecido pelo usuario:\n${values.precedentMaterial}`,
+    ].join("\n\n");
+  }
   const fields = scenario.fields.filter((field) =>
     Object.hasOwn(scenario.values, field.key),
   );
@@ -362,6 +401,7 @@ function exactGatewayContract(agentCode, maxTokens) {
       "structured_analysis",
       "review_sentiment_analysis_v1",
     ],
+    extrator_precedentes: ["extraction", "precedent_extraction_v1"],
   };
   const contract = contracts[agentCode];
   return contract
@@ -415,6 +455,92 @@ function normalizeOutput(payload) {
     if (typeof value === "string" && value.trim()) return value.trim();
   }
   return "";
+}
+
+function parseStructuredResult(value) {
+  if (value && typeof value === "object") return value;
+  if (typeof value !== "string" || !value.trim()) return null;
+  const raw = value
+    .trim()
+    .replace(/^```json\s*/i, "")
+    .replace(/```$/i, "")
+    .trim();
+  const start = raw.indexOf("{");
+  const end = raw.lastIndexOf("}");
+  try {
+    const parsed = JSON.parse(
+      start >= 0 && end > start ? raw.slice(start, end + 1) : raw,
+    );
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function isValidStructuredResult(agentCode, value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  if (agentCode !== "extrator_precedentes") return true;
+  const requiredText = ["titulo", "aviso_revisao", "resumo"];
+  const requiredLists = [
+    "precedentes",
+    "teses_identificadas",
+    "lacunas",
+    "checklist_verificacao",
+    "proximos_passos",
+  ];
+  if (
+    !requiredText.every(
+      (key) => typeof value[key] === "string" && value[key].trim(),
+    ) ||
+    !requiredLists.every((key) => Array.isArray(value[key]))
+  )
+    return false;
+  const validPrecedents = value.precedentes.every(
+    (item) =>
+      item &&
+      typeof item === "object" &&
+      [
+        "tribunal",
+        "numero_processo",
+        "tipo",
+        "tese",
+        "trecho_relevante",
+        "aderencia",
+        "cautela_verificacao",
+      ].every((key) => typeof item[key] === "string" && item[key].trim()),
+  );
+  const validTheses = value.teses_identificadas.every(
+    (item) =>
+      item &&
+      typeof item === "object" &&
+      ["tese", "precedentes_relacionados", "uso_sugerido"].every(
+        (key) => typeof item[key] === "string" && item[key].trim(),
+      ),
+  );
+  const validLists = [
+    value.lacunas,
+    value.checklist_verificacao,
+    value.proximos_passos,
+  ].every((items) =>
+    items.every((item) => typeof item === "string" && item.trim()),
+  );
+  return validPrecedents && validTheses && validLists;
+}
+
+function structuredResultFrom(payload, content, agentCode) {
+  for (const key of [
+    "structured_content",
+    "structuredContent",
+    "structured_response",
+    "structuredResponse",
+  ]) {
+    const parsed = parseStructuredResult(payload?.[key]);
+    if (isValidStructuredResult(agentCode, parsed)) return parsed;
+  }
+  const parsedContent = parseStructuredResult(content);
+  return isValidStructuredResult(agentCode, parsedContent)
+    ? parsedContent
+    : null;
 }
 
 for (const scenario of selected) {
@@ -485,14 +611,25 @@ for (const scenario of selected) {
     if (!retryable || attempt === 3) break;
     await new Promise((resolve) => setTimeout(resolve, 2000));
   }
-  if (!response.ok || !content || truncated || !nonBillableExample) {
+  const structuredResult = structuredResultFrom(payload, content, agentCode);
+  const invalidStructuredResult =
+    agentCode === "extrator_precedentes" && !structuredResult;
+  if (
+    !response.ok ||
+    !content ||
+    truncated ||
+    !nonBillableExample ||
+    invalidStructuredResult
+  ) {
     const reason = !response.ok
       ? `http_${response.status}`
       : truncated
         ? "gateway_truncated"
         : !content
           ? "empty_output"
-          : "unexpected_billable_execution";
+          : !nonBillableExample
+            ? "unexpected_billable_execution"
+            : "invalid_structured_result";
     const payloadKeys =
       Object.keys(payload || {})
         .sort()
@@ -523,6 +660,14 @@ for (const scenario of selected) {
     inputs: scenario.values,
     inputChecksum,
     output: content,
+    structuredResult,
+    ...(agentCode === "extrator_precedentes"
+      ? {
+          contractVersion: "core-demo-snapshot-v2",
+          schemaKey: "precedent_extraction_v1",
+          rendererKey: "precedent_extraction_v1",
+        }
+      : {}),
     usage: payload.usage || null,
     model: payload.model || null,
     durationMs: Date.now() - startedAt,

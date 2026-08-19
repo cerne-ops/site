@@ -330,7 +330,7 @@ export const CORE_DEMO_SCENARIOS = [
     "kind": "definition"
   },
   {
-    "agentCode": "OBJECTION_ANALYZER_AGENT_CODE",
+    "agentCode": "analisador_objecoes_vendas",
     "title": "Analisador de Objecoes de Vendas",
     "fields": [
       {
@@ -450,7 +450,7 @@ export const CORE_DEMO_SCENARIOS = [
     "kind": "definition"
   },
   {
-    "agentCode": "REVIEWS_SENTIMENT_AGENT_CODE",
+    "agentCode": "analisador_sentimento_reviews",
     "title": "Analisador de Sentimento de Avaliações (Reviews)",
     "fields": [
       {
@@ -1001,22 +1001,22 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "theme",
-        "label": "Theme",
+        "label": "Tema ou tese buscada",
         "rows": 8
       },
       {
         "key": "caseContext",
-        "label": "Case Context",
+        "label": "Contexto do caso",
         "rows": 8
       },
       {
         "key": "precedentMaterial",
-        "label": "Precedent Material",
+        "label": "Material de precedentes fornecido",
         "rows": 8
       },
       {
         "key": "relevanceCriteria",
-        "label": "Relevance Criteria",
+        "label": "Critérios de relevância e cautelas",
         "rows": 8
       }
     ],
@@ -1518,7 +1518,7 @@ export const CORE_DEMO_SCENARIOS = [
     "kind": "custom"
   },
   {
-    "agentCode": "PROPOSAL_GENERATOR_AGENT_CODE",
+    "agentCode": "gerador_propostas_comerciais",
     "title": "Gerador de Propostas Comerciais Personalizadas",
     "fields": [
       {
@@ -1632,7 +1632,7 @@ export const CORE_DEMO_SCENARIOS = [
     "kind": "custom"
   },
   {
-    "agentCode": "",
+    "agentCode": "gerador_respostas_faq",
     "title": "Gerador de Respostas para Duvidas Frequentes (FAQ)",
     "fields": [
       {
@@ -2013,7 +2013,7 @@ export const CORE_DEMO_SCENARIOS = [
     "kind": "definition"
   },
   {
-    "agentCode": "LEAD_SCORING_AGENT_CODE",
+    "agentCode": "qualificador_leads",
     "title": "Qualificador de Leads (Lead Scoring)",
     "fields": [
       {
@@ -2034,7 +2034,7 @@ export const CORE_DEMO_SCENARIOS = [
     "kind": "custom"
   },
   {
-    "agentCode": "RESUME_RANKING_AGENT_CODE",
+    "agentCode": "selecionador_ranqueador_curriculos",
     "title": "Selecionador e Ranqueador de Curriculos",
     "fields": [
       {

@@ -29,6 +29,10 @@ const FIELD_LABELS = {
   companyInfo: "Dados da empresa",
   calculationData: "Dados de cálculo",
   reviewRules: "Regras de revisão",
+  theme: "Tema ou tese buscada",
+  caseContext: "Contexto do caso",
+  precedentMaterial: "Material de precedentes fornecido",
+  relevanceCriteria: "Critérios de relevância e cautelas",
 };
 
 const TITLE_ALIASES = {
@@ -44,6 +48,22 @@ const TITLE_ALIASES = {
   "Extrator de Prazos de Intimacoes": "Extrator de Prazos e Intimações",
   "Validador NFe": "Validador de NFe",
 };
+
+const AGENT_CODE_BY_TITLE = {
+  "Gerador de Respostas para Duvidas Frequentes (FAQ)": "gerador_respostas_faq",
+};
+
+const AGENT_CODE_ALIASES = {
+  OBJECTION_ANALYZER_AGENT_CODE: "analisador_objecoes_vendas",
+  PROPOSAL_GENERATOR_AGENT_CODE: "gerador_propostas_comerciais",
+  LEAD_SCORING_AGENT_CODE: "qualificador_leads",
+  RESUME_RANKING_AGENT_CODE: "selecionador_ranqueador_curriculos",
+  REVIEWS_SENTIMENT_AGENT_CODE: "analisador_sentimento_reviews",
+};
+
+function resolveAgentCode(value) {
+  return AGENT_CODE_ALIASES[value] || value;
+}
 
 function fieldLabel(key) {
   if (FIELD_LABELS[key]) return FIELD_LABELS[key];
@@ -168,7 +188,9 @@ function findDefinitionObjects(sourceFile, env) {
     const fields = literal(props.get("fields"), sourceFile, env);
     const values = literal(props.get("exampleValues"), sourceFile, env);
     records.push({
-      agentCode: String(literal(props.get("agentCode"), sourceFile, env)),
+      agentCode: resolveAgentCode(
+        String(literal(props.get("agentCode"), sourceFile, env)),
+      ),
       title: String(literal(props.get("title"), sourceFile, env)),
       fields: Array.isArray(fields)
         ? fields.map((field) => ({
@@ -254,7 +276,7 @@ function findCustomRecord(sourceFile, env, filePath) {
     return value;
   })();
   return {
-    agentCode,
+    agentCode: resolveAgentCode(agentCode) || AGENT_CODE_BY_TITLE[title] || "",
     title,
     fields: fieldKeys.map((key) => ({ key, label: fieldLabel(key), rows: 8 })),
     values,
