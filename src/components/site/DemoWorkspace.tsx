@@ -16,7 +16,10 @@ import {
 import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
 import { CORE_DEMO_SCENARIOS } from "@/lib/core-demo-scenarios.generated";
 import { fetchLandingPlans } from "@/lib/plans";
-import { buildPrecedentExtractionText } from "@/components/site/demo-results/PrecedentExtractionResult";
+import {
+  PrecedentExtractionResult,
+  buildPrecedentExtractionText,
+} from "@/components/site/demo-results/PrecedentExtractionResult";
 
 type DemoAgent = {
   id: string;
@@ -1382,57 +1385,239 @@ function createCoreFaithfulResult(
   };
 }
 
+const RESULT_KEY_ALIASES: Record<string, string> = {
+  abc_classification: "Classificação ABC",
+  acoes_recomendadas: "Ações recomendadas",
+  analise_otimizacao_rotas: "Análise de otimização de rotas",
+  anexos_sugeridos: "Anexos sugeridos",
+  concorrencia: "Concorrência",
+  category_a: "Categoria A",
+  category_b: "Categoria B",
+  category_c: "Categoria C",
+  categoria: "Categoria",
+  categorias_identificadas: "Categorias identificadas",
+  condicoes_pagamento: "Condições de pagamento",
+  contato_responsavel: "Contato responsável",
+  custo_horas: "Custo por hora",
+  custo_km: "Custo por km",
+  custo_por_hora: "Custo por hora",
+  custo_por_km: "Custo por km",
+  custo_unitario: "Custo unitário",
+  distribuicao_categorias: "Distribuição de categorias",
+  distribuicao_departamental: "Distribuição por departamento",
+  evidencias: "Evidências",
+  fluidez: "Fluidez",
+  fonte: "Fonte",
+  fontes_utilizadas: "Fontes utilizadas",
+  gaps_identificados: "Lacunas identificadas",
+  horas_trabalhadas: "Horas trabalhadas",
+  id: "ID",
+  investimento: "Investimento",
+  is_english: "Inglês",
+  justificativa_roteamento: "Justificativa de roteamento",
+  keywords: "Palavras-chave",
+  km_rodados: "Quilômetros rodados",
+  mensagem_final: "Mensagem final",
+  no_items_found: "Nenhum item encontrado",
+  prioridade: "Prioridade",
+  problema: "Problema",
+  produto: "Produto",
+  preco: "Preço",
+  preço: "Preço",
+  relatorio_cobertura: "Relatório de cobertura",
+  relatorio_qualidade: "Relatório de qualidade",
+  risco_nivel: "Nível de risco",
+  row: "Linha",
+  row_count: "Contagem de linhas",
+  sequencia_paradas: "Sequência de paradas",
+  suporte: "Suporte",
+  topicos_cobertos: "Tópicos cobertos",
+  topico: "Tópico",
+  topicos: "Tópicos",
+  total_items: "Total de itens",
+  total_mencoes: "Total de menções",
+  total_perguntas_geradas: "Total de perguntas geradas",
+  total_cost: "Custo total",
+  total_value: "Valor total",
+  urgency_score: "Pontuação de urgência",
+  urgencia_score: "Pontuação de urgência",
+  valor_extraido: "Valor extraído",
+  veiculo: "Veículo",
+  veiculo_id: "ID do veículo",
+  tempo_resposta_sugerido: "Tempo de resposta sugerido",
+  tickets: "Tickets",
+  tickets_classificados: "Tickets classificados",
+  transacoes: "Transações",
+  transacoes_pendentes: "Transações pendentes",
+  categoria_despesa: "Categoria de despesa",
+  documento: "Documento",
+  ranking: "Ranking",
+  percentual_valor: "Percentual de valor",
+  percentual_acumulado: "Percentual acumulado",
+  total_value_check: "Validação de valor total",
+  analise_completa: "Análise completa",
+  analysis_metadata: "Metadados da análise",
+  additional_notes: "Observações adicionais",
+  alertas_e_recomendacoes: "Alertas e recomendações",
+  avaliacoes: "Avaliações analisadas",
+  benefits: "Benefícios",
+  call_to_action: "Chamada para ação",
+  compliance_report: "Relatório de conformidade",
+  consolidated_summary: "Resumo consolidado",
+  criterios_analise: "Critérios da análise",
+  criteria_compliance: "Atendimento aos critérios",
+  consec: "Consecutivo",
+  csv: "Dados CSV",
+  csv_preview: "Prévia dos dados tratados",
+  data_quality: "Qualidade dos dados",
+  documento_original: "Documento original",
+  documentos: "Documentos",
+  executive_report: "Relatório executivo",
+  faq_items: "Perguntas e respostas",
+  fonte: "Fonte",
+  id_objecao: "ID da objeção",
+  insight_geral: "Insight geral",
+  inventario: "Inventário",
+  items_comparison: "Comparação dos itens",
+  item_description: "Item",
+  item_id: "ID do item",
+  itens: "Itens",
+  insights: "Principais insights",
+  indicador_globais: "Indicadores globais",
+  indicadores_globais: "Indicadores globais",
+  metadata: "Metadados",
+  metadata_rota: "Metadados da rota",
+  metadados_processamento: "Metadados do processamento",
+  metrica: "Métrica",
+  metrica_clima: "Métrica de clima",
+  metrics: "Métricas",
+  next_steps: "Próximos passos",
+  objecoes: "Objeções",
+  observacao: "Observação",
+  observacoes: "Observações",
+  recommendations: "Recomendações",
+  recommendation: "Recomendação",
+  relatorio_executivo: "Relatório executivo",
+  resumo_executivo: "Resumo executivo",
+  resumo_geral: "Resumo geral",
+  route_count: "Quantidade de rotas",
+  risk_analysis: "Análise de riscos",
+  riscos_mitigados: "Riscos mitigados",
+  rows: "Itens analisados",
+  rotas_otimizadas: "Rotas otimizadas",
+  sections: "Seções",
+  secoes: "Seções",
+  sequencia_paradas: "Sequência de paradas",
+  sugestoes_acao: "Sugestões de ação",
+  sugestoes_acao_ajustadas: "Sugestões de ação ajustadas",
+  summary: "Resumo",
+  tabela: "Resultado tabulado",
+  table: "Tabela",
+  termos_chave: "Termos-chave",
+  topicos_mais_mencionados: "Tópicos mais mencionados",
+  topico: "Tópico",
+  topicos: "Tópicos",
+  transacoes: "Transações",
+  transacoes_pendentes: "Transações pendentes",
+  validation: "Validação",
+  supplier_name: "Fornecedor",
+  unit_price: "Preço unitário",
+  total_cost: "Custo total",
+  subtotal: "Subtotal",
+  shipping_cost: "Custo de frete",
+  payment_terms: "Condições de pagamento",
+  taxes: "Impostos",
+  criterion: "Critério",
+  total_value: "Valor total",
+  percentage: "Percentual",
+  percentage_value: "Percentual de valor",
+  percentage_items: "Percentual de itens",
+  price_variation_percent: "Variação de preço (%)",
+  supplier_a: "Fornecedor A",
+  supplier_b: "Fornecedor B",
+  supplier_c: "Fornecedor C",
+  termo_original: "Termo original",
+  traducao: "Tradução",
+  texto_trecho: "Texto do trecho",
+  contexto: "Contexto",
+  categoria_sugerida: "Categoria sugerida",
+  status_conciliacao: "Status de conciliação",
+  tipo_documento: "Tipo de documento",
+  numero_documento: "Número do documento",
+  data_emissao: "Data de emissão",
+  cnpj_cpf_emissor: "CNPJ/CPF do emissor",
+  nome_emissor: "Nome do emissor",
+  impostos_total: "Total de impostos",
+  categoria_despesa: "Categoria de despesa",
+  distancia_total: "Distância total",
+  tempo_total_deslocamento: "Tempo total de deslocamento",
+  tempo_total_paradas: "Tempo total de paradas",
+  tempo_total_rota: "Tempo total da rota",
+  horario_conclusao: "Horário de conclusão",
+  custo_total_rota: "Custo total da rota",
+  utilizacao_janela: "Utilização da janela",
+  window: "Janela",
+  documento: "Documento",
+  titulo: "Título",
+  ordem: "Ordem",
+  prioridade: "Prioridade",
+  resposta: "Resposta",
+  pergunta: "Pergunta",
+  mensagem: "Mensagem",
+  descricao_transacao: "Descrição da transação",
+  categoria: "Categoria",
+  local: "Local",
+  departamento_destino: "Departamento destino",
+  assunto: "Assunto",
+  tipo: "Tipo",
+  data: "Data",
+  valor: "Valor",
+  status: "Status",
+  id_avaliacao: "ID da avaliação",
+  sentimento: "Sentimento",
+  sentimento_predominante: "Sentimento predominante",
+  topico: "Tópico",
+  total_mencoes: "Total de menções",
+  texto: "Texto",
+  conteudo: "Conteúdo",
+  relatorio_executivo: "Relatório executivo",
+  resumo: "Resumo",
+  risco: "Risco",
+  risco_nivel: "Nível de risco",
+};
+
+function normalizeResultKey(value: string) {
+  return value
+    .trim()
+    .replace(/([a-záéíóúâêôãõç])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function humanizeResultKey(value: string) {
-  const normalized = value.trim().toLowerCase();
-  const aliases: Record<string, string> = {
-    analysis_metadata: "Metadados da análise",
-    additional_notes: "Observações adicionais",
-    alertas_e_recomendacoes: "Alertas e recomendações",
-    avaliacoes: "Avaliações analisadas",
-    benefits: "Benefícios",
-    call_to_action: "Chamada para ação",
-    consolidated_summary: "Resumo consolidado",
-    criteria_compliance: "Atendimento aos critérios",
-    csv_preview: "Prévia dos dados tratados",
-    data_quality: "Qualidade dos dados",
-    documentos: "Documentos",
-    executive_report: "Relatório executivo",
-    faq_items: "Perguntas e respostas",
-    insights: "Principais insights",
-    inconsistencies: "Inconsistências",
-    items_comparison: "Comparação dos itens",
-    metadata: "Metadados",
-    metadados_processamento: "Metadados do processamento",
-    next_steps: "Próximos passos",
-    observacoes: "Observações",
-    recommendations: "Recomendações",
-    recommendation: "Recomendação",
-    relatorio_executivo: "Relatório executivo",
-    risk_analysis: "Análise de riscos",
-    rows: "Itens analisados",
-    sections: "Seções",
-    secoes: "Seções",
-    sugestoes_acao: "Sugestões de ação",
-    summary: "Resumo",
-    tabela: "Resultado tabulado",
-    topicos_mais_mencionados: "Tópicos mais mencionados",
-    validation: "Validação",
-  };
-  if (aliases[normalized]) return aliases[normalized];
+  const normalized = normalizeResultKey(value);
+  if (RESULT_KEY_ALIASES[normalized]) return RESULT_KEY_ALIASES[normalized];
   const words: Record<string, string> = {
     action: "ação",
-    additional: "adicionais",
+    additional: "adicional",
     alerts: "alertas",
     alternative: "alternativo",
     analysis: "análise",
-    analyzed: "analisados",
+    analyzed: "analisado",
     amount: "valor",
     best: "melhor",
     breakdown: "detalhamento",
     calculation: "cálculo",
     category: "categoria",
+    categorias: "categorias",
     comparison: "comparação",
-    compared: "comparados",
+    compared: "comparado",
+    competitive: "competitivo",
     compliance: "conformidade",
     concentration: "concentração",
     confidence: "confiança",
@@ -1448,23 +1633,31 @@ function humanizeResultKey(value: string) {
     delivery: "entrega",
     description: "descrição",
     difference: "diferença",
+    docs: "documentos",
+    duration: "duração",
+    errors: "erros",
     export: "exportação",
     factors: "fatores",
     highest: "maior",
-    ignored: "ignorados",
-    inconsistencies: "inconsistências",
+    ignored: "ignorado",
+    inconsistencies: "inconsistência",
+    insight: "insight",
     input: "entrada",
     item: "item",
     items: "itens",
+    id: "ID",
+    ids: "IDs",
     justification: "justificativa",
     level: "nível",
-    limits: "limites",
-    lowest: "menor",
+    limits: "limite",
+    low: "baixo",
+    message: "mensagem",
     method: "método",
-    metadata: "metadados",
-    notes: "observações",
+    metadata: "metadado",
+    month: "mês",
     name: "nome",
-    observations: "observações",
+    notes: "observação",
+    observations: "observação",
     output: "saída",
     payment: "pagamento",
     percent: "percentual",
@@ -1472,8 +1665,8 @@ function humanizeResultKey(value: string) {
     period: "período",
     price: "preço",
     preview: "prévia",
-    processed: "processados",
-    quantity: "quantidade",
+    processed: "processado",
+    processing: "processamento",
     quality: "qualidade",
     quotes: "cotações",
     recommendation: "recomendação",
@@ -1483,28 +1676,549 @@ function humanizeResultKey(value: string) {
     risk: "risco",
     score: "pontuação",
     shipping: "frete",
-    status: "situação",
+    status: "status",
     supplier: "fornecedor",
     suppliers: "fornecedores",
-    summary: "resumo",
+    subject: "assunto",
+    terms: "termos",
+    text: "texto",
+    texto: "texto",
     taxes: "impostos",
-    terms: "condições",
     title: "título",
     total: "total",
-    variation: "variação",
-    check: "conferência",
+    totalization: "totalização",
+    traffic: "tráfego",
+    type: "tipo",
     type: "tipo",
     unit: "unidade",
+    units: "unidades",
     validation: "validação",
     value: "valor",
+    variation: "variação",
+    veiculo: "veículo",
+    window: "janela",
+    urgency: "urgência",
+    warning: "alerta",
+    warnings: "alertas",
+    rh: "RH",
+    produto: "produto",
+    concorrencia: "concorrência",
+    necessidade: "necessidade",
+    timing: "prazo",
   };
   const translated = normalized
-    .split("_")
+    .split(" ")
     .map((word) => words[word] || word)
     .join(" ");
-  return translated.replace(/\b\w/g, (letter) => letter.toUpperCase());
+  return translated
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => {
+      if (word.length <= 2 || /^(rh|id|id\w*)$/i.test(word))
+        return word.toUpperCase();
+      return word[0].toUpperCase() + word.slice(1);
+    })
+    .join(" ");
 }
 
+const NARRATIVE_FIELD_HINTS = new Set([
+  "analise",
+  "análise",
+  "categoria",
+  "conclusao",
+  "conclusão",
+  "conteudo",
+  "conteúdo",
+  "descricao",
+  "descrição",
+  "fonte",
+  "id_objecao",
+  "insight",
+  "texto",
+  "texto_trecho",
+  "resposta",
+  "resumo",
+  "resumo_geral",
+  "topico",
+  "topicos",
+  "resumo_executivo",
+  "recomendacao",
+  "recomendacoes",
+  "recomendacoes",
+  "relatorio_executivo",
+  "mensagem",
+  "observacao",
+  "observacoes",
+  "observações",
+  "avaliação",
+  "avaliacao",
+  "beneficio",
+  "benefício",
+  "beneficios",
+  "beneficio",
+  "benefícios",
+  "recomendacao",
+  "recomendacoes",
+  "recomendação",
+  "recomendações",
+]);
+
+const TITLE_FIELD_HINTS = new Set([
+  "titulo",
+  "title",
+  "nome",
+  "ordem",
+  "id",
+  "id_objecao",
+  "veiculo_id",
+  "departamento_destino",
+  "item",
+  "item_id",
+  "documento",
+  "local",
+  "assunto",
+  "tipo",
+  "severidade",
+  "pergunta",
+  "metrica",
+  "metrica_clima",
+  "departamento_destino",
+  "resumo",
+  "relatorio_executivo",
+  "categoria",
+]);
+
+function isNarrativeField(fieldKey: string) {
+  return NARRATIVE_FIELD_HINTS.has(normalizeResultKey(fieldKey));
+}
+
+function isTitleField(fieldKey: string) {
+  return TITLE_FIELD_HINTS.has(normalizeResultKey(fieldKey));
+}
+
+function findRecordTitle(item: Record<string, unknown>): string | null {
+  const titleCandidate = Object.entries(item).find(([key, value]) => {
+    if (!isTitleField(key)) return false;
+    return isNonEmptyString(value) || typeof value === "number";
+  });
+  return titleCandidate ? String(titleCandidate[1]) : null;
+}
+
+function renderRecordCardsAsSections(
+  records: Array<Record<string, unknown>>,
+  baseDepth: number,
+  archetype: "analitico" | "tabular" | "documental",
+  options: { titlePrefix?: string } = {},
+) {
+  return (
+    <div className="space-y-3">
+      {records.map((item, index) => {
+        const detectedTitle = findRecordTitle(item);
+        const fallbackTitle = options.titlePrefix
+          ? `${options.titlePrefix} ${index + 1}`
+          : `Item ${index + 1}`;
+        return (
+          <article
+            key={`${options.titlePrefix || "item"}-${index}`}
+            className="rounded-lg border border-border bg-background/60 p-4"
+          >
+            <h5 className="text-sm font-semibold text-foreground/90">
+              {detectedTitle?.trim() || fallbackTitle}
+            </h5>
+            <dl className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {Object.entries(item)
+                .filter(([, itemValue]) => hasMeaningfulResultValue(itemValue))
+                .map(([key, itemValue]) => (
+                  <div key={key} className="min-w-0">
+                    <dt className="text-xs font-medium text-muted-foreground">
+                      {humanizeResultKey(key)}
+                    </dt>
+                    <dd className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/80">
+                      <ResultJsonValue
+                        value={itemValue}
+                        depth={baseDepth + 1}
+                        archetype={archetype}
+                      />
+                    </dd>
+                  </div>
+                ))}
+            </dl>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
+function hasNarrativeText(value: unknown): boolean {
+  if (!isNonEmptyString(value)) return false;
+  return (
+    value.length > 160 ||
+    value.includes("\n") ||
+    value.includes("**") ||
+    /\n/.test(value)
+  );
+}
+
+function isLikelyMarkdownText(value: string) {
+  const text = String(value)
+    .replace(/<br\s*\/?/gi, "\n")
+    .replace(/\r/g, "");
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!lines.length) return false;
+
+  if (lines.some((line) => /^#{1,6}\s+/.test(line))) return true;
+  if (lines.some((line) => /^```/.test(line))) return true;
+  if (lines.some((line) => /^(?:---|\*\*\*|___)$/.test(line))) return true;
+  if (
+    lines.some((line) =>
+      /^\s*(?:[-*•]|\d+[.)]|✅|⚠️?|❌|☑️?|✓|✔️?|>)\s+/.test(line),
+    )
+  )
+    return true;
+  if (lines.some((line) => /^\*\*[^*]{2,120}:\*\*:?$/.test(line))) return true;
+
+  if (
+    lines.some((line, index) => {
+      const next = lines[index + 1];
+      return isMarkdownTableHeader(line) && isMarkdownTableDivider(next ?? "");
+    })
+  )
+    return true;
+
+  if (
+    lines.length > 1 &&
+    lines.every((line) =>
+      /^(?:\*\*[^*]+\*\*:?.+|[-*•]\s+|\d+[.)]\s+|#{2,6}\s+)/.test(line),
+    )
+  )
+    return true;
+
+  return lines.some((line) => /^[A-ZÁÉÍÓÚÂÊÔÃÕÇ].{0,100}:$/.test(line));
+}
+function recordFieldTextVolume(records: Array<Record<string, unknown>>) {
+  let longValues = 0;
+  let hasNarrativeField = false;
+
+  for (const record of records) {
+    for (const [key, itemValue] of Object.entries(record)) {
+      if (typeof itemValue === "string") {
+        if (NARRATIVE_FIELD_HINTS.has(key)) hasNarrativeField = true;
+        if (itemValue.length > 180) longValues += 1;
+      }
+    }
+  }
+
+  return { longValues, hasNarrativeField };
+}
+
+function shouldRenderArrayAsCards(
+  records: Array<Record<string, unknown>>,
+  columns: string[],
+) {
+  if (records.length > 14) return false;
+  if (columns.length > 7) return true;
+
+  const { longValues, hasNarrativeField } = recordFieldTextVolume(records);
+  if (hasNarrativeField) return true;
+  if (longValues >= Math.max(1, Math.floor(records.length * 0.3))) return true;
+
+  const shortRows = records.some((record) =>
+    Object.values(record).some((value) => hasNarrativeText(value)),
+  );
+  if (shortRows) return true;
+
+  const hasTextRichColumns = columns.some((column) => {
+    const values = records
+      .map((item) => item[column])
+      .filter((value): value is string => isNonEmptyString(value));
+    if (!values.length) return false;
+    return values.some((value) => value.length > 140);
+  });
+  if (hasTextRichColumns) return true;
+
+  return false;
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function faqKeywordsFromValue(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item) => isNonEmptyString(item))
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function FAQResultCoverage({
+  coverage,
+}: {
+  coverage: Record<string, unknown>;
+}) {
+  const totalGeradas = String(coverage.total_perguntas_geradas ?? "-");
+  const originais = String(coverage.perguntas_originais_cobertas ?? "-");
+  const adicionais = String(coverage.perguntas_adicionais_sugeridas ?? "-");
+  const nivelCobertura = String(coverage.nivel_cobertura ?? "-");
+  const confiabilidade = String(coverage.confiabilidade_geral ?? "-");
+  const observacoes = isNonEmptyString(coverage.observacoes)
+    ? String(coverage.observacoes)
+    : "";
+  const categorias = faqKeywordsFromValue(coverage.categorias_identificadas);
+  const topicos = faqKeywordsFromValue(coverage.topicos_cobertos);
+  const gaps = faqKeywordsFromValue(coverage.gaps_identificados);
+  const recomendacoes = faqKeywordsFromValue(coverage.recomendacoes);
+  const fontes = faqKeywordsFromValue(coverage.fontes_utilizadas);
+
+  return (
+    <section className="rounded-lg border border-border bg-background/60 p-4">
+      <h4 className="text-sm font-semibold text-foreground/90">
+        Relatório de cobertura
+      </h4>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <article className="rounded-lg border border-border/70 bg-background/65 p-3">
+          <p className="text-xs text-muted-foreground">Perguntas geradas</p>
+          <p className="mt-1 text-lg font-semibold text-foreground">
+            {totalGeradas}
+          </p>
+        </article>
+        <article className="rounded-lg border border-border/70 bg-background/65 p-3">
+          <p className="text-xs text-muted-foreground">
+            Perguntas do cenário original cobertas
+          </p>
+          <p className="mt-1 text-lg font-semibold text-foreground">
+            {originais}
+          </p>
+        </article>
+        <article className="rounded-lg border border-border/70 bg-background/65 p-3">
+          <p className="text-xs text-muted-foreground">
+            Perguntas adicionais sugeridas
+          </p>
+          <p className="mt-1 text-lg font-semibold text-foreground">
+            {adicionais}
+          </p>
+        </article>
+        <article className="rounded-lg border border-border/70 bg-background/65 p-3">
+          <p className="text-xs text-muted-foreground">Nível de cobertura</p>
+          <p className="mt-1 text-lg font-semibold text-foreground">
+            {nivelCobertura}
+          </p>
+        </article>
+      </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <article className="rounded-lg border border-border/70 bg-background/55 p-3">
+          <p className="text-xs text-muted-foreground">Confiabilidade geral</p>
+          <p className="mt-1 text-sm font-medium text-foreground">
+            {confiabilidade}
+          </p>
+        </article>
+        <article className="rounded-lg border border-border/70 bg-background/55 p-3">
+          <p className="text-xs text-muted-foreground">Observações</p>
+          <p className="mt-1 text-sm leading-6 text-foreground/90">
+            {observacoes || "-"}
+          </p>
+        </article>
+      </div>
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        {categorias.length ? (
+          <div className="rounded-lg border border-border/70 bg-background/50 p-3">
+            <p className="text-xs text-muted-foreground">
+              Categorias identificadas
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {categorias.map((categoria) => (
+                <span
+                  key={categoria}
+                  className="rounded-full border border-border bg-background/80 px-2 py-1 text-xs text-foreground/90"
+                >
+                  {categoria}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        <div className="rounded-lg border border-border/70 bg-background/50 p-3">
+          <p className="text-xs text-muted-foreground">Fontes utilizadas</p>
+          <div className="mt-2 space-y-2">
+            {fontes.map((fontesItem) => (
+              <a
+                key={fontesItem}
+                href={fontesItem}
+                target="_blank"
+                rel="noreferrer"
+                className="block break-words text-sm text-circuit hover:underline"
+              >
+                {fontesItem}
+              </a>
+            ))}
+          </div>
+          {!fontes.length ? (
+            <p className="text-sm text-foreground/75">-</p>
+          ) : null}
+        </div>
+      </div>
+      {topicos.length ? (
+        <section className="mt-4 rounded-lg border border-border/70 bg-background/55 p-3">
+          <p className="text-xs text-muted-foreground">Tópicos cobertos</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {topicos.map((topico) => (
+              <span
+                key={topico}
+                className="rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground/85"
+              >
+                {topico}
+              </span>
+            ))}
+          </div>
+        </section>
+      ) : null}
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        {gaps.length ? (
+          <section className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+            <p className="text-xs text-amber-200">Lacunas identificadas</p>
+            <ul className="mt-2 space-y-1.5 pl-5 text-sm text-foreground/85">
+              {gaps.map((gap) => (
+                <li key={gap} className="list-disc">
+                  {gap}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+        {recomendacoes.length ? (
+          <section className="rounded-lg border border-circuit/35 bg-circuit/10 p-3">
+            <p className="text-xs text-circuit">Recomendações</p>
+            <ul className="mt-2 space-y-1.5 pl-5 text-sm text-foreground/85">
+              {recomendacoes.map((item) => (
+                <li key={item} className="list-disc">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function FAQResultOutput({ value }: { value: Record<string, unknown> }) {
+  const items = Array.isArray(value.faq_items) ? value.faq_items : [];
+  const coverage = isResultRecord(value.relatorio_cobertura)
+    ? value.relatorio_cobertura
+    : null;
+  const faqCards = items
+    .filter(isResultRecord)
+    .filter((item) => Object.keys(item).length > 0)
+    .map((item) => item);
+
+  return (
+    <div className="space-y-4">
+      {coverage ? <FAQResultCoverage coverage={coverage} /> : null}
+      <section className="space-y-3">
+        {faqCards.length ? (
+          <h4 className="text-sm font-semibold text-foreground/90">
+            Perguntas e respostas geradas
+          </h4>
+        ) : null}
+        {faqCards.map((item, index) => {
+          const pergunta = isNonEmptyString(item.pergunta)
+            ? String(item.pergunta)
+            : `Pergunta ${index + 1}`;
+          const resposta = isNonEmptyString(item.resposta)
+            ? String(item.resposta)
+            : "-";
+          const categoria = isNonEmptyString(item.categoria)
+            ? String(item.categoria)
+            : "";
+          const fonte = isNonEmptyString(item.fonte) ? String(item.fonte) : "";
+          const confianca = isNonEmptyString(item.confianca)
+            ? String(item.confianca)
+            : "-";
+          const palavras = faqKeywordsFromValue(item.palavras_chave);
+          return (
+            <article
+              key={`${pergunta}-${index}`}
+              className="rounded-lg border border-border bg-background/60 p-4"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <h5 className="text-base font-semibold text-foreground/90">
+                  {pergunta}
+                </h5>
+                {categoria ? (
+                  <span className="rounded-full border border-circuit/40 bg-circuit/10 px-2.5 py-1 text-xs font-medium text-circuit">
+                    {categoria}
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                {resposta}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-border bg-background px-2 py-1 text-xs text-foreground/85">
+                  Confiança: {confianca}
+                </span>
+              </div>
+              {palavras.length ? (
+                <div className="mt-3">
+                  <p className="text-xs text-muted-foreground">
+                    Palavras-chave
+                  </p>
+                  <div className="mt-1 flex flex-wrap gap-2">
+                    {palavras.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-border bg-surface px-2 py-1 text-xs text-foreground/85"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+              {fonte ? (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Fonte:{" "}
+                  <a
+                    href={fonte}
+                    className="text-circuit hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {fonte}
+                  </a>
+                </p>
+              ) : null}
+            </article>
+          );
+        })}
+      </section>
+    </div>
+  );
+}
+
+function isLikelyFAQResult(value: unknown): value is Record<string, unknown> {
+  if (!isResultRecord(value)) return false;
+
+  const faqItems = (value as Record<string, unknown>).faq_items;
+  if (!Array.isArray(faqItems) || faqItems.length === 0) return false;
+
+  const firstItem = faqItems.find((item) => isResultRecord(item));
+  if (!firstItem) return false;
+
+  const normalizedKeys = new Set(
+    Object.keys(firstItem).map((key) => key.toLowerCase()),
+  );
+  return normalizedKeys.has("pergunta") || normalizedKeys.has("resposta");
+}
+
+function isFAQResult(value: unknown): value is Record<string, unknown> {
+  return isLikelyFAQResult(value);
+}
 function hasMeaningfulResultValue(value: unknown): boolean {
   if (value === null || value === undefined) return false;
   if (typeof value === "string") return value.trim().length > 0;
@@ -1544,11 +2258,18 @@ function ResultJsonValue({
 }) {
   if (!hasMeaningfulResultValue(value)) return null;
   if (typeof value !== "object") {
-    return (
-      <span className="whitespace-pre-wrap break-words">
-        {typeof value === "boolean" ? (value ? "Sim" : "Não") : String(value)}
-      </span>
-    );
+    const text = String(value);
+    if (typeof value === "boolean") {
+      return (
+        <span className="whitespace-pre-wrap break-words">
+          {value ? "Sim" : "Não"}
+        </span>
+      );
+    }
+    if (isLikelyMarkdownText(text)) {
+      return <MarkdownResultOutput output={text} />;
+    }
+    return <span className="whitespace-pre-wrap break-words">{text}</span>;
   }
   if (Array.isArray(value)) {
     const visibleItems = value.filter(hasMeaningfulResultValue);
@@ -1588,6 +2309,7 @@ function ResultJsonValue({
           (cell) => cell === null || typeof cell !== "object",
         ),
       );
+    const shouldRenderCards = shouldRenderArrayAsCards(records, columns);
     const isNarrativeRecords =
       isFlatTable &&
       records.some((item) =>
@@ -1595,6 +2317,15 @@ function ResultJsonValue({
           (cell) => typeof cell === "string" && cell.length > 180,
         ),
       );
+    if (shouldRenderCards) {
+      return (
+        <div className="space-y-3">
+          {renderRecordCardsAsSections(records, depth, archetype, {
+            titlePrefix: "Item",
+          })}
+        </div>
+      );
+    }
     if (isNarrativeRecords) {
       return (
         <div className="space-y-3">
@@ -1867,6 +2598,20 @@ function splitMarkdownTableRow(line: string) {
     .map((cell) => cell.trim());
 }
 
+function isMarkdownTableHeader(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length >= 2 && cells.every((cell) => cell.length > 0);
+}
+
+function isMarkdownTableRow(line: string) {
+  const normalized = line.trim();
+  const cells = splitMarkdownTableRow(normalized);
+  return (
+    normalized.includes("|") &&
+    cells.length >= 2 &&
+    cells.some((cell) => cell.trim().length > 0)
+  );
+}
 function isMarkdownTableDivider(line: string) {
   const cells = splitMarkdownTableRow(line);
   return cells.length > 0 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
@@ -1948,14 +2693,14 @@ function parseMarkdownBlocks(output: string): MarkdownBlock[] {
       continue;
     }
     if (
-      current.startsWith("|") &&
+      isMarkdownTableRow(current) &&
       index + 1 < lines.length &&
       isMarkdownTableDivider(lines[index + 1])
     ) {
       const columns = splitMarkdownTableRow(lines[index]);
       const rows: string[][] = [];
       index += 2;
-      while (index < lines.length && lines[index].trim().startsWith("|")) {
+      while (index < lines.length && isMarkdownTableRow(lines[index])) {
         rows.push(splitMarkdownTableRow(lines[index]));
         index += 1;
       }
@@ -2003,7 +2748,7 @@ function parseMarkdownBlocks(output: string): MarkdownBlock[] {
         /^(?:[-*•]|\d+[.)]|✅|⚠️?|❌|☑️?|✓|✔️?)\s+/.test(next) ||
         /^\*\*([^*]{2,120}):?\*\*:?$/.test(next) ||
         /^\*\*[^*]{1,80}:\*\*\s*.+$/.test(next) ||
-        (next.startsWith("|") &&
+        (isMarkdownTableRow(next) &&
           index + 1 < lines.length &&
           isMarkdownTableDivider(lines[index + 1]))
       ) {
@@ -2356,8 +3101,19 @@ function inferResultArchetype(value: unknown, output: string): ResultArchetype {
     }
   };
   if (value !== undefined) inspect(value);
-  const markdownTables = (output.match(/^\|.+\|\s*\n\|[-: |]+\|/gm) || [])
-    .length;
+  const markdownTables = (() => {
+    const lines = output.replace(/\r/g, "").split("\n");
+    let count = 0;
+    for (let i = 0; i < lines.length - 1; i += 1) {
+      if (
+        isMarkdownTableHeader(lines[i]) &&
+        isMarkdownTableDivider(lines[i + 1])
+      ) {
+        count += 1;
+      }
+    }
+    return count;
+  })();
   if (flatRecordArrays > 0 || markdownTables >= 2) return "tabular";
   if (
     numericScalars >= 3 ||
@@ -2370,9 +3126,11 @@ function inferResultArchetype(value: unknown, output: string): ResultArchetype {
 function CoreResultOutput({
   output,
   structuredResult,
+  agentCode,
 }: {
   output: string;
   structuredResult?: unknown;
+  agentCode?: string;
 }) {
   const hasStructuredResult =
     structuredResult !== null && structuredResult !== undefined;
@@ -2382,12 +3140,25 @@ function CoreResultOutput({
   if (hasStructuredResult)
     return (
       <div data-result-archetype={archetype}>
-        <ResultJsonValue value={structuredResult} archetype={archetype} />
+        {isFAQResult(structuredResult) ? (
+          <FAQResultOutput
+            value={structuredResult as Record<string, unknown>}
+          />
+        ) : (
+          <ResultJsonValue value={structuredResult} archetype={archetype} />
+        )}
       </div>
     );
   try {
     const parsed = JSON.parse(output) as unknown;
     const parsedArchetype = inferResultArchetype(parsed, output);
+    if (isFAQResult(parsed)) {
+      return (
+        <div data-result-archetype={parsedArchetype}>
+          <FAQResultOutput value={parsed as Record<string, unknown>} />
+        </div>
+      );
+    }
     return (
       <div data-result-archetype={parsedArchetype}>
         <ResultJsonValue value={parsed} archetype={parsedArchetype} />
@@ -2947,6 +3718,7 @@ export function DemoWorkspace() {
                       <CoreResultOutput
                         output={result.rawOutput}
                         structuredResult={result.rawStructuredResult}
+                        agentCode={result.agentCode}
                       />
                     </div>
                   ) : (
