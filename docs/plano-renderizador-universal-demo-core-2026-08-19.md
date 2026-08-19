@@ -39,21 +39,21 @@ Fazer com que todos os Agentes DEMO apresentem os resultados reais captados do C
 - [x] Validar os três arquétipos visualmente em desktop e mobile.
 - [x] Validar acessibilidade básica, tabelas responsivas e navegação por teclado.
 - [x] Executar lint direcionado, build e `git diff --check`.
-- [ ] Obter revisão independente e corrigir bloqueadores.
+- [x] Obter revisão independente e corrigir bloqueadores.
 
 ## Fase 4 — release do Site
 
-- [ ] Commit e push intencionais em `main`.
-- [ ] Pre-check da topologia VPS/Nginx/PM2 conforme `directives/deploy_vps.md`.
-- [ ] Atualização `ff-only`, build e restart do processo `cerne-site`.
-- [ ] Confirmar commit, versão e ausência de runtime de desenvolvimento.
+- [x] Commit e push intencionais em `main`.
+- [x] Pre-check da topologia VPS/Nginx/PM2 conforme `directives/deploy_vps.md`.
+- [x] Atualização `ff-only`, build e restart do processo `cerne-site`.
+- [x] Confirmar commit, versão e ausência de runtime de desenvolvimento.
 
 ## Fase 5 — smoke de produção
 
-- [ ] `/demo` e rotas principais respondem com sucesso.
-- [ ] Testar pelo menos um agente de cada arquétipo em produção.
-- [ ] Confirmar conteúdo real, tabelas/cards/listas, somente leitura e CTA de Trial.
-- [ ] Confirmar PM2, porta 4173 e cache de assets.
+- [x] `/demo` e rotas principais respondem com sucesso.
+- [x] Testar pelo menos um agente de cada arquétipo em produção.
+- [x] Confirmar conteúdo real, tabelas/cards/listas, somente leitura e CTA de Trial.
+- [x] Confirmar PM2, porta 4173 e cache de assets.
 
 ## Rollback
 
