@@ -35,6 +35,82 @@ const FIELD_LABELS = {
   relevanceCriteria: "Critérios de relevância e cautelas",
 };
 
+const LABEL_TRANSLATIONS = {
+  "Active Run Id": "Identificador da execução ativa",
+  "Activity Context": "Contexto da atividade",
+  "Admission Type": "Tipo de admissão",
+  Area: "Área",
+  "Birth Date": "Data de nascimento",
+  "Candidate Email": "E-mail do candidato",
+  "Candidate Name": "Nome do candidato",
+  "Catalog Text": "Conteúdo do catálogo",
+  "Client Context": "Contexto do cliente",
+  "Client Name": "Nome do cliente",
+  "Company Name": "Nome da empresa",
+  "Company Profile": "Perfil da empresa",
+  Constraints: "Restrições",
+  Context: "Contexto",
+  "Context Data": "Dados de contexto",
+  "Contract Text": "Texto do contrato",
+  "Contract Type": "Tipo de contrato",
+  Criteria: "Critérios",
+  "Criteria Text": "Critérios de análise",
+  "Current Regime": "Regime atual",
+  "Custom Rules": "Regras personalizadas",
+  "Data Input": "Dados de entrada",
+  "Detail Level": "Nível de detalhe",
+  "Documents Text": "Conteúdo dos documentos",
+  "End Date": "Data final",
+  "Expected Start Date": "Data prevista de início",
+  Files: "Arquivos",
+  "Financial Data": "Dados financeiros",
+  "Fleet Input": "Dados da frota",
+  "Free Text": "Texto livre",
+  Goal: "Objetivo",
+  "Incident Report": "Relato do incidente",
+  "Key Clauses": "Cláusulas-chave",
+  "Inspection Type": "Tipo de inspeção",
+  "Interaction Text": "Conteúdo das interações",
+  "Internal Rules": "Regras internas",
+  "Intimation Text": "Texto da intimação",
+  "Investigation Scope": "Escopo da investigação",
+  "Items Text": "Dados dos itens",
+  "Job Description": "Descrição da vaga",
+  "Job Title": "Cargo",
+  "Legal Context": "Contexto jurídico",
+  "Manual Data": "Dados informados manualmente",
+  "Manual Input": "Entrada manual",
+  "Manual Rules": "Regras informadas manualmente",
+  "Manual Statement": "Extrato informado manualmente",
+  "Manual Text": "Texto informado manualmente",
+  "Meeting Date": "Data da reunião",
+  "Nfe Data": "Dados da NFe",
+  Objective: "Objetivo",
+  "Obligation Type": "Tipo de obrigação",
+  "Offer Details": "Detalhes da oferta",
+  "Order Data": "Dados do pedido",
+  "Points Input": "Dados dos pontos",
+  "Precedent Text": "Material de precedentes",
+  "Reference Date": "Data de referência",
+  "Report Style": "Estilo do relatório",
+  "Report Text": "Conteúdo do relatório",
+  Required: "Requisitos obrigatórios",
+  "Review Constraints": "Restrições para revisão",
+  "Review Context": "Contexto da revisão",
+  "Risk Data": "Dados de risco",
+  Role: "Função",
+  Rules: "Regras",
+  "Start Date": "Data inicial",
+  "Target Date": "Data-alvo",
+  "Target Language": "Idioma de destino",
+  "Template Text": "Conteúdo do modelo",
+  Title: "Título",
+  "Tolerance Rules": "Regras de tolerância",
+};
+
+const INTERNAL_FIELD_KEYS =
+  /^(?:files?|structuredResult|activeRunId|inviteEmailDrafts|inviteSendingKey|inviteModal|result|resultText|resultStructured|usage|feedback|sourceFileName|selectedFileName|fileName|runs|loading|processing|status|error|runtimeConfig|agentConfig|modal|toast|preview|message|leads|results|summary|proposal|selectedRunId)$/i;
+
 const TITLE_ALIASES = {
   "Qualificador de Leads": "Qualificador de Leads (Lead Scoring)",
   "Gerador de Propostas Comerciais":
@@ -67,9 +143,30 @@ function resolveAgentCode(value) {
 
 function fieldLabel(key) {
   if (FIELD_LABELS[key]) return FIELD_LABELS[key];
-  return key
+  const generated = key
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/^./, (char) => char.toUpperCase());
+  return LABEL_TRANSLATIONS[generated] || generated;
+}
+
+function localizedFieldLabel(label, key) {
+  if (FIELD_LABELS[key]) return FIELD_LABELS[key];
+  const source = String(label || fieldLabel(key)).trim();
+  return LABEL_TRANSLATIONS[source] || source;
+}
+
+function meaningfulExampleValue(value) {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    return (
+      Boolean(normalized) &&
+      !["null", "undefined", "[]", "{}"].includes(normalized)
+    );
+  }
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === "object") return Object.keys(value).length > 0;
+  return true;
 }
 
 function literal(node, sourceFile, env = new Map()) {
@@ -81,6 +178,7 @@ function literal(node, sourceFile, env = new Map()) {
   if (ts.isNumericLiteral(node)) return node.text;
   if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
   if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
+  if (node.kind === ts.SyntaxKind.NullKeyword) return null;
   if (ts.isIdentifier(node) && env.has(node.text)) return env.get(node.text);
   if (ts.isTemplateExpression(node)) {
     let output = node.head.text;
@@ -187,20 +285,30 @@ function findDefinitionObjects(sourceFile, env) {
     if (!props.has("agentCode") || !props.has("exampleValues")) return;
     const fields = literal(props.get("fields"), sourceFile, env);
     const values = literal(props.get("exampleValues"), sourceFile, env);
+    const normalizedFields = Array.isArray(fields)
+      ? fields
+          .filter(
+            (field) =>
+              field?.key &&
+              !INTERNAL_FIELD_KEYS.test(field.key) &&
+              meaningfulExampleValue(values?.[field.key]),
+          )
+          .map((field) => ({
+            key: field.key,
+            label: localizedFieldLabel(field.label, field.key),
+            rows: field.rows,
+            placeholder: field.placeholder,
+          }))
+      : [];
     records.push({
       agentCode: resolveAgentCode(
         String(literal(props.get("agentCode"), sourceFile, env)),
       ),
       title: String(literal(props.get("title"), sourceFile, env)),
-      fields: Array.isArray(fields)
-        ? fields.map((field) => ({
-            key: field.key,
-            label: field.label,
-            rows: field.rows,
-            placeholder: field.placeholder,
-          }))
-        : [],
-      values: values && typeof values === "object" ? values : {},
+      fields: normalizedFields,
+      values: Object.fromEntries(
+        normalizedFields.map((field) => [field.key, values[field.key]]),
+      ),
       kind: "definition",
     });
   });
@@ -210,8 +318,6 @@ function findDefinitionObjects(sourceFile, env) {
 function findCustomRecord(sourceFile, env, filePath) {
   const values = {};
   const fieldKeys = [];
-  const ignoredKeys =
-    /^(result|resultText|resultStructured|usage|feedback|sourceFileName|selectedFileName|fileName|runs|loading|processing|status|error|runtimeConfig|agentConfig|modal|toast|preview|message|leads|results|summary|proposal|selectedRunId)$/i;
   walk(sourceFile, (node) => {
     const functionName = ts.isFunctionDeclaration(node)
       ? node.name?.text
@@ -246,12 +352,7 @@ function findCustomRecord(sourceFile, env, filePath) {
       if (!call.arguments.length) return;
       const sourceValue = literal(call.arguments[0], sourceFile, env);
       const key = stateName.charAt(0).toLowerCase() + stateName.slice(1);
-      if (
-        ignoredKeys.test(key) ||
-        sourceValue === "" ||
-        sourceValue === null ||
-        sourceValue === undefined
-      )
+      if (INTERNAL_FIELD_KEYS.test(key) || !meaningfulExampleValue(sourceValue))
         return;
       values[key] =
         typeof sourceValue === "string"

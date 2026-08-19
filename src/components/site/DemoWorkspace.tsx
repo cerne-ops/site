@@ -16,10 +16,7 @@ import {
 import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
 import { CORE_DEMO_SCENARIOS } from "@/lib/core-demo-scenarios.generated";
 import { fetchLandingPlans } from "@/lib/plans";
-import {
-  buildPrecedentExtractionText,
-  PrecedentExtractionResult,
-} from "@/components/site/demo-results/PrecedentExtractionResult";
+import { buildPrecedentExtractionText } from "@/components/site/demo-results/PrecedentExtractionResult";
 
 type DemoAgent = {
   id: string;
@@ -232,9 +229,16 @@ function getGoldenResult(
 function createFields(agent: DemoAgent): DemoField[] {
   const scenario = getDemoScenario(agent);
   if (!scenario) return [];
+  const fields = scenario.fields as ReadonlyArray<{
+    key: string;
+    label?: string;
+    rows?: string | number;
+    placeholder?: string;
+  }>;
+  const values = scenario.values as Record<string, unknown>;
 
-  return scenario.fields.flatMap((field) => {
-    const value = scenario.values[field.key];
+  return fields.flatMap((field) => {
+    const value = values[field.key];
     if (value === undefined || value === null || String(value).trim() === "") {
       return [];
     }
@@ -1379,39 +1383,203 @@ function createCoreFaithfulResult(
 }
 
 function humanizeResultKey(value: string) {
-  return value
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const normalized = value.trim().toLowerCase();
+  const aliases: Record<string, string> = {
+    analysis_metadata: "Metadados da análise",
+    additional_notes: "Observações adicionais",
+    alertas_e_recomendacoes: "Alertas e recomendações",
+    avaliacoes: "Avaliações analisadas",
+    benefits: "Benefícios",
+    call_to_action: "Chamada para ação",
+    consolidated_summary: "Resumo consolidado",
+    criteria_compliance: "Atendimento aos critérios",
+    csv_preview: "Prévia dos dados tratados",
+    data_quality: "Qualidade dos dados",
+    documentos: "Documentos",
+    executive_report: "Relatório executivo",
+    faq_items: "Perguntas e respostas",
+    insights: "Principais insights",
+    inconsistencies: "Inconsistências",
+    items_comparison: "Comparação dos itens",
+    metadata: "Metadados",
+    metadados_processamento: "Metadados do processamento",
+    next_steps: "Próximos passos",
+    observacoes: "Observações",
+    recommendations: "Recomendações",
+    recommendation: "Recomendação",
+    relatorio_executivo: "Relatório executivo",
+    risk_analysis: "Análise de riscos",
+    rows: "Itens analisados",
+    sections: "Seções",
+    secoes: "Seções",
+    sugestoes_acao: "Sugestões de ação",
+    summary: "Resumo",
+    tabela: "Resultado tabulado",
+    topicos_mais_mencionados: "Tópicos mais mencionados",
+    validation: "Validação",
+  };
+  if (aliases[normalized]) return aliases[normalized];
+  const words: Record<string, string> = {
+    action: "ação",
+    additional: "adicionais",
+    alerts: "alertas",
+    alternative: "alternativo",
+    analysis: "análise",
+    analyzed: "analisados",
+    amount: "valor",
+    best: "melhor",
+    breakdown: "detalhamento",
+    calculation: "cálculo",
+    category: "categoria",
+    comparison: "comparação",
+    compared: "comparados",
+    compliance: "conformidade",
+    concentration: "concentração",
+    confidence: "confiança",
+    consolidated: "consolidado",
+    cost: "custo",
+    count: "quantidade",
+    criteria: "critérios",
+    criterion: "critério",
+    currency: "moeda",
+    data: "dados",
+    date: "data",
+    days: "dias",
+    delivery: "entrega",
+    description: "descrição",
+    difference: "diferença",
+    export: "exportação",
+    factors: "fatores",
+    highest: "maior",
+    ignored: "ignorados",
+    inconsistencies: "inconsistências",
+    input: "entrada",
+    item: "item",
+    items: "itens",
+    justification: "justificativa",
+    level: "nível",
+    limits: "limites",
+    lowest: "menor",
+    method: "método",
+    metadata: "metadados",
+    notes: "observações",
+    name: "nome",
+    observations: "observações",
+    output: "saída",
+    payment: "pagamento",
+    percent: "percentual",
+    percentage: "percentual",
+    period: "período",
+    price: "preço",
+    preview: "prévia",
+    processed: "processados",
+    quantity: "quantidade",
+    quality: "qualidade",
+    quotes: "cotações",
+    recommendation: "recomendação",
+    recommendations: "recomendações",
+    recommended: "recomendado",
+    result: "resultado",
+    risk: "risco",
+    score: "pontuação",
+    shipping: "frete",
+    status: "situação",
+    supplier: "fornecedor",
+    suppliers: "fornecedores",
+    summary: "resumo",
+    taxes: "impostos",
+    terms: "condições",
+    title: "título",
+    total: "total",
+    variation: "variação",
+    check: "conferência",
+    type: "tipo",
+    unit: "unidade",
+    validation: "validação",
+    value: "valor",
+  };
+  const translated = normalized
+    .split("_")
+    .map((word) => words[word] || word)
+    .join(" ");
+  return translated.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function hasMeaningfulResultValue(value: unknown): boolean {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (typeof value !== "object") return true;
+  if (Array.isArray(value)) return value.some(hasMeaningfulResultValue);
+  return Object.values(value).some(hasMeaningfulResultValue);
+}
+
+function isTechnicalResultKey(key: string) {
+  return /^(schema_version|gateway_task_type|export)$/i.test(key);
 }
 
 function isResultRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
+
+function isRecordLikeTable(value: unknown): value is Record<string, unknown>[] {
+  if (!Array.isArray(value) || !value.length) return false;
+  const rows = value.filter(hasMeaningfulResultValue);
+  if (!rows.length) return false;
+  if (rows.some((row) => !isResultRecord(row))) return false;
+  return rows.every((row) =>
+    Object.values(row).every((cell) => cell === null || typeof cell !== "object"),
+  );
+}
+
 function ResultJsonValue({
   value,
   depth = 0,
+  archetype = "documental",
 }: {
   value: unknown;
   depth?: number;
+  archetype?: "analitico" | "tabular" | "documental";
 }) {
-  if (value === null || value === undefined || value === "") {
-    return <span className="text-muted-foreground/70">Não informado</span>;
-  }
+  if (!hasMeaningfulResultValue(value)) return null;
   if (typeof value !== "object") {
     return (
-      <span className="whitespace-pre-wrap break-words">{String(value)}</span>
+      <span className="whitespace-pre-wrap break-words">
+        {typeof value === "boolean" ? (value ? "Sim" : "Não") : String(value)}
+      </span>
     );
   }
   if (Array.isArray(value)) {
-    if (!value.length)
-      return <span className="text-muted-foreground/70">Sem itens.</span>;
-    const records = value.filter(isResultRecord);
+    const visibleItems = value.filter(hasMeaningfulResultValue);
+    const primitiveItems = visibleItems.every(
+      (item) => item === null || typeof item !== "object",
+    );
+    if (primitiveItems) {
+      return (
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          {visibleItems.map((item, index) => (
+            <li key={index} className="flex gap-2 leading-6">
+              <span aria-hidden="true" className="text-foreground/45">
+                -
+              </span>
+              <span className="whitespace-pre-wrap break-words">
+                {String(item)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    const records = visibleItems.filter(isResultRecord);
     const columns = Array.from(
       new Set(records.flatMap((item) => Object.keys(item))),
+    ).filter(
+      (column) =>
+        !isTechnicalResultKey(column) &&
+        records.some((item) => hasMeaningfulResultValue(item[column])),
     );
     const isFlatTable =
-      records.length === value.length &&
+      records.length === visibleItems.length &&
       columns.length > 0 &&
       columns.length <= 8 &&
       records.every((item) =>
@@ -1419,15 +1587,74 @@ function ResultJsonValue({
           (cell) => cell === null || typeof cell !== "object",
         ),
       );
+    const isNarrativeRecords =
+      isFlatTable &&
+      records.some((item) =>
+        Object.values(item).some(
+          (cell) => typeof cell === "string" && cell.length > 180,
+        ),
+      );
+    if (isNarrativeRecords) {
+      return (
+        <div className="space-y-3">
+          {records.map((item, index) => {
+            const titleEntry = Object.entries(item).find(([key]) =>
+              /^(titulo|title|nome|name|id|codigo|código)$/.test(
+                key.toLowerCase(),
+              ),
+            );
+            return (
+              <article
+                key={index}
+                className="rounded-lg border border-border bg-background/60 p-4"
+              >
+                <h5 className="text-sm font-semibold text-foreground/90">
+                  {titleEntry ? String(titleEntry[1]) : `Item ${index + 1}`}
+                </h5>
+                <dl className="mt-3 grid gap-3 lg:grid-cols-2">
+                  {Object.entries(item)
+                    .filter(
+                      ([key, itemValue]) =>
+                        key !== titleEntry?.[0] &&
+                        !isTechnicalResultKey(key) &&
+                        hasMeaningfulResultValue(itemValue),
+                    )
+                    .map(([key, itemValue]) => (
+                      <div key={key} className="min-w-0">
+                        <dt className="text-xs font-medium text-muted-foreground">
+                          {humanizeResultKey(key)}
+                        </dt>
+                        <dd className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/80">
+                          <ResultJsonValue
+                            value={itemValue}
+                            depth={depth + 1}
+                            archetype={archetype}
+                          />
+                        </dd>
+                      </div>
+                    ))}
+                </dl>
+              </article>
+            );
+          })}
+        </div>
+      );
+    }
     if (isFlatTable) {
       return (
-        <div className="overflow-x-auto rounded-lg border border-border/70">
+        <div
+          className={`overflow-x-auto rounded-lg border border-border ${
+            depth === 0 ? "xl:col-span-2" : ""
+          }`}
+        >
           <table className="min-w-full divide-y divide-border/60 text-left text-sm">
-            <thead className="bg-surface/55 text-muted-foreground">
+            <caption className="sr-only">Dados estruturados do resultado do agente</caption>
+            <thead className="bg-background/70 text-muted-foreground">
               <tr>
                 {columns.map((column) => (
                   <th
                     key={column}
+                    scope="col"
                     className="whitespace-nowrap px-3 py-2 font-medium"
                   >
                     {humanizeResultKey(column)}
@@ -1441,9 +1668,13 @@ function ResultJsonValue({
                   {columns.map((column) => (
                     <td
                       key={column}
-                      className="max-w-sm whitespace-pre-wrap px-3 py-2 align-top text-foreground/80"
+                      className="min-w-36 max-w-md whitespace-pre-wrap break-words px-3 py-2.5 align-top leading-6 text-foreground/80"
                     >
-                      {String(row[column] ?? "-")}
+                      <ResultJsonValue
+                        value={row[column] ?? "-"}
+                        depth={depth + 1}
+                        archetype={archetype}
+                      />
                     </td>
                   ))}
                 </tr>
@@ -1454,33 +1685,151 @@ function ResultJsonValue({
       );
     }
     return (
-      <div className="space-y-2">
-        {value.map((item, index) => (
+      <div className="space-y-3">
+        {visibleItems.map((item, index) => (
           <div
             key={index}
-            className="rounded-lg border border-border/70 bg-background/35 p-3"
+            className="rounded-lg border border-border bg-background/60 p-4"
           >
-            <ResultJsonValue value={item} depth={depth + 1} />
+            <ResultJsonValue
+              value={item}
+              depth={depth + 1}
+              archetype={archetype}
+            />
           </div>
         ))}
       </div>
     );
   }
+  const entries = Object.entries(value as Record<string, unknown>).filter(
+    ([key, item]) =>
+      !isTechnicalResultKey(key) && hasMeaningfulResultValue(item),
+  );
+  const rootText = (keys: string[]) => {
+    if (depth !== 0) return undefined;
+    const entry = entries.find(
+      ([key, item]) =>
+        keys.includes(key.toLowerCase()) && typeof item === "string",
+    );
+    return entry as [string, string] | undefined;
+  };
+  const rootTitle = rootText(["titulo", "title", "nome"]);
+  const rootSummary = rootText([
+    "resumo",
+    "summary",
+    "resumo_executivo",
+    "sumario_executivo",
+    "relatorio_executivo",
+  ]);
+  const rootNotice = rootText([
+    "aviso_revisao",
+    "aviso",
+    "alerta",
+    "disclaimer",
+  ]);
+  const reservedRootKeys = new Set(
+    [rootTitle?.[0], rootSummary?.[0], rootNotice?.[0]].filter(Boolean),
+  );
+  const contentEntries = entries.filter(([key]) => !reservedRootKeys.has(key));
+  const scalarEntries = contentEntries.filter(
+    ([, item]) => item === null || typeof item !== "object",
+  );
+  const complexEntries = contentEntries.filter(
+    ([, item]) => item !== null && typeof item === "object",
+  );
+  const tableEntries = complexEntries.filter(([, item]) => isRecordLikeTable(item));
+  const nonTableEntries = complexEntries.filter(
+    ([key]) => !tableEntries.some(([tableKey]) => tableKey === key),
+  );
+  const orderedComplexEntries =
+    depth === 0 && archetype === "tabular"
+      ? [...tableEntries, ...nonTableEntries]
+      : complexEntries;
+  const scalarLayoutClass =
+    depth === 0 && archetype === "documental"
+      ? "grid gap-3 sm:grid-cols-2"
+      : `grid gap-3 ${
+          scalarEntries.length > 1 ? "sm:grid-cols-2 xl:grid-cols-4" : ""
+        }`;
+  const complexLayoutClass =
+    depth === 0 && archetype === "analitico"
+      ? "grid gap-4 xl:grid-cols-2"
+      : depth === 0
+        ? "space-y-4"
+        : "space-y-3";
+
   return (
-    <div className={depth ? "space-y-3" : "grid gap-4 lg:grid-cols-2"}>
-      {Object.entries(value).map(([key, item]) => (
-        <section
-          key={key}
-          className="min-w-0 rounded-lg border border-border/70 bg-surface/25 p-4"
-        >
-          <h4 className="mb-2 text-sm font-semibold text-foreground">
-            {humanizeResultKey(key)}
-          </h4>
-          <div className="text-sm leading-6 text-muted-foreground">
-            <ResultJsonValue value={item} depth={depth + 1} />
-          </div>
+    <div className="space-y-4">
+      {rootNotice ? (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-6 text-amber-100">
+          {rootNotice[1]}
+        </div>
+      ) : null}
+      {rootTitle || rootSummary ? (
+        <section className="rounded-lg border border-border bg-background/60 p-4">
+          {rootTitle ? (
+            <h3 className="text-base font-semibold text-foreground">
+              {rootTitle[1]}
+            </h3>
+          ) : null}
+          {rootSummary ? (
+            <p
+              className={`${rootTitle ? "mt-2" : ""} whitespace-pre-wrap text-sm leading-6 text-muted-foreground`}
+            >
+              {rootSummary[1]}
+            </p>
+          ) : null}
         </section>
-      ))}
+      ) : null}
+      {scalarEntries.length ? (
+        <dl className={scalarLayoutClass}>
+          {scalarEntries.map(([key, item]) => (
+            <div
+              key={key}
+              className="min-w-0 rounded-lg border border-border bg-background/60 p-3"
+            >
+              <dt className="text-xs text-muted-foreground">
+                {humanizeResultKey(key)}
+              </dt>
+              <dd className="mt-1 text-sm font-medium leading-6 text-foreground/90">
+                <ResultJsonValue
+                  value={item}
+                  depth={depth + 1}
+                  archetype={archetype}
+                />
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      <div className={complexLayoutClass}>
+        {orderedComplexEntries.map(([key, item]) => {
+          const warning = /risco|risk|limita|lacuna|inconsist|alerta/.test(
+            key.toLowerCase(),
+          );
+          return (
+            <section
+              key={key}
+              className={`min-w-0 rounded-lg border p-4 ${
+                warning
+                  ? "border-amber-500/30 bg-amber-500/10"
+                  : "border-border bg-background/60"
+              }`}
+            >
+              <h4 className="mb-3 text-sm font-semibold text-foreground/90">
+                {humanizeResultKey(key)}
+              </h4>
+              <div className="text-sm leading-6 text-muted-foreground">
+                <ResultJsonValue
+                  value={item}
+                  depth={depth + 1}
+                  archetype={archetype}
+                />
+              </div>
+            </section>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -1488,8 +1837,14 @@ function ResultJsonValue({
 type MarkdownBlock =
   | { kind: "heading"; level: number; text: string }
   | { kind: "paragraph"; text: string }
-  | { kind: "list"; ordered: boolean; items: string[] }
+  | {
+      kind: "list";
+      ordered: boolean;
+      items: Array<{ text: string; depth: number; checked?: boolean }>;
+    }
   | { kind: "table"; columns: string[]; rows: string[][] }
+  | { kind: "code"; language: string; content: string }
+  | { kind: "quote"; text: string }
   | { kind: "divider" };
 
 type MarkdownSection = {
@@ -1513,7 +1868,11 @@ function isMarkdownTableDivider(line: string) {
 }
 
 function parseMarkdownBlocks(output: string): MarkdownBlock[] {
-  const lines = output.replace(/\r/g, "").split("\n");
+  const lines = output
+    .replace(/\r/g, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/ {2,}\n/g, "\n\n")
+    .split("\n");
   const blocks: MarkdownBlock[] = [];
   let index = 0;
 
@@ -1521,6 +1880,31 @@ function parseMarkdownBlocks(output: string): MarkdownBlock[] {
     const current = lines[index].trim();
     if (!current) {
       index += 1;
+      continue;
+    }
+    if (current.startsWith("```")) {
+      const language = current.slice(3).trim().toLowerCase();
+      const content: string[] = [];
+      index += 1;
+      while (index < lines.length && !lines[index].trim().startsWith("```")) {
+        content.push(lines[index]);
+        index += 1;
+      }
+      if (index < lines.length) index += 1;
+      blocks.push({
+        kind: "code",
+        language,
+        content: content.join("\n").trim(),
+      });
+      continue;
+    }
+    if (current.startsWith(">")) {
+      const quoted: string[] = [];
+      while (index < lines.length && lines[index].trim().startsWith(">")) {
+        quoted.push(lines[index].trim().replace(/^>\s?/, ""));
+        index += 1;
+      }
+      blocks.push({ kind: "quote", text: quoted.join(" ") });
       continue;
     }
     if (/^(---|\*\*\*|___)$/.test(current)) {
@@ -1535,6 +1919,26 @@ function parseMarkdownBlocks(output: string): MarkdownBlock[] {
         level: heading[1].length,
         text: heading[2].trim(),
       });
+      index += 1;
+      continue;
+    }
+    const emphasizedHeading = current.match(/^\*\*([^*]{2,120}):?\*\*:?$/);
+    const uppercaseHeading =
+      current.length <= 100 &&
+      /[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(current) &&
+      current === current.toLocaleUpperCase("pt-BR") &&
+      !/[.!?]$/.test(current);
+    if (emphasizedHeading || uppercaseHeading) {
+      blocks.push({
+        kind: "heading",
+        level: 3,
+        text: (emphasizedHeading?.[1] || current).replace(/:$/, "").trim(),
+      });
+      index += 1;
+      continue;
+    }
+    if (/^\*\*[^*]{1,80}:\*\*\s*.+$/.test(current)) {
+      blocks.push({ kind: "paragraph", text: current });
       index += 1;
       continue;
     }
@@ -1553,15 +1957,29 @@ function parseMarkdownBlocks(output: string): MarkdownBlock[] {
       blocks.push({ kind: "table", columns, rows });
       continue;
     }
-    const listMatch = current.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+    const listPattern =
+      /^(\s*)([-*•]|\d+[.)]|✅|⚠️?|❌|☑️?|✓|✔️?)\s+(?:\[([ xX])\]\s*)?(.+)$/;
+    const listMatch = lines[index].match(listPattern);
     if (listMatch) {
-      const ordered = /^\d+[.)]\s+/.test(current);
-      const items: string[] = [];
+      const ordered = /^\d+[.)]$/.test(listMatch[2]);
+      const items: Array<{ text: string; depth: number; checked?: boolean }> =
+        [];
       while (index < lines.length) {
-        const item = lines[index].trim();
-        const match = item.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
-        if (!match || /^\d+[.)]\s+/.test(item) !== ordered) break;
-        items.push(match[1].trim());
+        const match = lines[index].match(listPattern);
+        if (!match) break;
+        items.push({
+          text: match[4].trim(),
+          depth: Math.min(
+            3,
+            Math.floor(match[1].replace(/\t/g, "  ").length / 2),
+          ),
+          checked:
+            match[3] !== undefined
+              ? match[3].toLowerCase() === "x"
+              : /^(✅|☑️?|✓|✔️?)$/.test(match[2])
+                ? true
+                : undefined,
+        });
         index += 1;
       }
       blocks.push({ kind: "list", ordered, items });
@@ -1574,8 +1992,12 @@ function parseMarkdownBlocks(output: string): MarkdownBlock[] {
       if (
         !next ||
         /^(---|\*\*\*|___)$/.test(next) ||
+        next.startsWith("```") ||
+        next.startsWith(">") ||
         /^(#{1,6})\s+/.test(next) ||
-        /^(?:[-*•]|\d+[.)])\s+/.test(next) ||
+        /^(?:[-*•]|\d+[.)]|✅|⚠️?|❌|☑️?|✓|✔️?)\s+/.test(next) ||
+        /^\*\*([^*]{2,120}):?\*\*:?$/.test(next) ||
+        /^\*\*[^*]{1,80}:\*\*\s*.+$/.test(next) ||
         (next.startsWith("|") &&
           index + 1 < lines.length &&
           isMarkdownTableDivider(lines[index + 1]))
@@ -1594,7 +2016,7 @@ function groupMarkdownSections(blocks: MarkdownBlock[]): MarkdownSection[] {
   const sections: MarkdownSection[] = [];
   let current: MarkdownSection = { level: 0, blocks: [] };
   for (const block of blocks) {
-    if (block.kind === "heading" && block.level <= 3) {
+    if (block.kind === "heading" && block.level <= 2) {
       if (current.title || current.blocks.length) sections.push(current);
       current = { title: block.text, level: block.level, blocks: [] };
     } else {
@@ -1649,6 +2071,46 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
       {blocks.map((block, index) => {
         if (block.kind === "divider")
           return <div key={index} className="border-t border-border/70" />;
+        if (block.kind === "code") {
+          if (block.language === "csv") {
+            const [header = "", ...rows] = block.content.split("\n");
+            const columns = header.split(",").map((cell) => cell.trim());
+            return (
+              <ResultMarkdownBlocks
+                key={index}
+                blocks={[
+                  {
+                    kind: "table",
+                    columns,
+                    rows: rows
+                      .filter(Boolean)
+                      .map((row) => row.split(",").map((cell) => cell.trim())),
+                  },
+                ]}
+              />
+            );
+          }
+          return (
+            <div
+              key={index}
+              className="overflow-x-auto rounded-lg border border-border bg-background/80 p-4"
+            >
+              <pre className="min-w-max whitespace-pre font-mono text-xs leading-6 text-foreground/75">
+                {block.content}
+              </pre>
+            </div>
+          );
+        }
+        if (block.kind === "quote") {
+          return (
+            <blockquote
+              key={index}
+              className="rounded-r-lg border-l-2 border-circuit bg-background/60 px-4 py-3 text-sm italic leading-6 text-foreground/75"
+            >
+              <InlineResultText text={block.text} />
+            </blockquote>
+          );
+        }
         if (block.kind === "heading") {
           return (
             <h4
@@ -1663,15 +2125,19 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
           return (
             <div
               key={index}
-              className="overflow-x-auto rounded-xl border border-border bg-background/45 shadow-inner"
+              className="overflow-x-auto rounded-lg border border-border"
             >
               <table className="min-w-full divide-y divide-border/70 text-left text-sm">
-                <thead className="bg-surface-elevated/80 text-xs uppercase tracking-wide text-muted-foreground">
+                <caption className="sr-only">
+                  Tabela apresentada no resultado do agente
+                </caption>
+                <thead className="bg-background/70 text-left text-muted-foreground">
                   <tr>
                     {block.columns.map((column) => (
                       <th
                         key={column}
-                        className="whitespace-nowrap px-4 py-3 font-medium"
+                        scope="col"
+                        className="whitespace-nowrap px-3 py-2 font-medium"
                       >
                         <InlineResultText text={column} />
                       </th>
@@ -1682,12 +2148,12 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
                   {block.rows.map((row, rowIndex) => (
                     <tr
                       key={rowIndex}
-                      className="transition-colors hover:bg-surface/35"
+                      className="transition-colors hover:bg-background/80"
                     >
                       {block.columns.map((column, columnIndex) => (
                         <td
                           key={`${column}-${columnIndex}`}
-                          className="max-w-sm whitespace-pre-wrap px-4 py-3 align-top leading-6 text-foreground/80"
+                          className="min-w-36 max-w-md whitespace-pre-wrap break-words px-3 py-2.5 align-top leading-6 text-foreground/80"
                         >
                           <InlineResultText text={row[columnIndex] || "-"} />
                         </td>
@@ -1704,21 +2170,43 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
           return (
             <List
               key={index}
-              className={`grid gap-2 ${block.ordered ? "list-decimal pl-5" : ""}`}
+              className="list-none space-y-2 pl-4 text-sm text-muted-foreground"
             >
-              {block.items.map((item, itemIndex) => (
-                <li
-                  key={`${item}-${itemIndex}`}
-                  className="flex gap-2 rounded-lg border border-border/60 bg-background/35 px-3 py-2.5 text-sm leading-6 text-muted-foreground"
-                >
-                  {!block.ordered ? (
-                    <CircleCheck className="mt-1 h-3.5 w-3.5 shrink-0 text-circuit" />
-                  ) : null}
-                  <span>
-                    <InlineResultText text={item} />
-                  </span>
-                </li>
-              ))}
+              {block.items.map((item, itemIndex) => {
+                const marker =
+                  item.checked !== undefined
+                    ? item.checked
+                      ? "✓"
+                      : "◯"
+                    : null;
+                const numberedPrefix =
+                  block.ordered && item.depth === 0
+                    ? `${
+                        block.items
+                          .slice(0, itemIndex + 1)
+                          .filter((candidate) => candidate.depth === 0)
+                          .length
+                      }.`
+                    : null;
+                return (
+                  <li
+                    key={`${item.text}-${itemIndex}`}
+                    className="leading-6"
+                    style={{ marginLeft: `${item.depth * 16}px` }}
+                  >
+                    <span
+                      className={
+                        marker || numberedPrefix
+                          ? "text-foreground/45"
+                          : "hidden"
+                      }
+                    >
+                      {marker ?? numberedPrefix}
+                    </span>{" "}
+                    <InlineResultText text={item.text} />
+                  </li>
+                );
+              })}
             </List>
           );
         }
@@ -1727,7 +2215,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
           return (
             <div
               key={index}
-              className="rounded-lg border border-circuit/25 bg-circuit/5 px-3 py-2.5 text-sm leading-6"
+              className="rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm leading-6"
             >
               <span className="font-medium text-foreground">{fact[1]}:</span>{" "}
               <span className="text-muted-foreground">
@@ -1751,29 +2239,74 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
 
 function MarkdownResultOutput({ output }: { output: string }) {
   const sections = groupMarkdownSections(parseMarkdownBlocks(output));
+  const metricCandidates = sections.flatMap((section) =>
+    section.blocks.flatMap((block) => {
+      if (block.kind === "paragraph") {
+        const fact = block.text.match(/^\*\*([^*]+):\*\*\s*(.+)$/);
+        if (!fact || !/(?:\d|R\$|%)/.test(fact[2])) return [];
+        const genericLabel = /^(variação|valor|status|resultado)$/i.test(
+          fact[1].trim(),
+        );
+        return [
+          {
+            label:
+              genericLabel && section.title
+                ? section.title.replace(/^\d+(?:\.\d+)*\s*/, "")
+                : fact[1].trim(),
+            value: fact[2].trim(),
+          },
+        ];
+      }
+      if (block.kind === "table" && block.columns.length === 2) {
+        return block.rows.flatMap((row) =>
+          row[0] && row[1] && /(?:\d|R\$|%)/.test(row[1])
+            ? [{ label: row[0], value: row[1] }]
+            : [],
+        );
+      }
+      return [];
+    }),
+  );
+  const metrics = metricCandidates
+    .filter((item) => item.label.length <= 52 && item.value.length <= 72)
+    .filter(
+      (item, index, all) =>
+        all.findIndex((candidate) => candidate.label === item.label) === index,
+    )
+    .slice(0, 4);
   return (
     <div className="space-y-4">
+      {metrics.length >= 2 ? (
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {metrics.map((metric) => (
+            <div
+              key={`${metric.label}-${metric.value}`}
+              className="rounded-lg border border-border bg-background/60 p-3"
+            >
+              <p className="text-xs text-muted-foreground">
+                <InlineResultText text={metric.label} />
+              </p>
+              <p className="mt-1 text-base font-semibold leading-6 text-foreground">
+                <InlineResultText text={metric.value} />
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : null}
       {sections.map((section, index) => {
         const tone = resultTone(section.title);
         const toneClass =
           tone === "warning"
-            ? "border-amber-500/30 bg-amber-500/[0.07]"
-            : tone === "action"
-              ? "border-ember/30 bg-ember/[0.06]"
-              : tone === "summary"
-                ? "border-circuit/30 bg-circuit/[0.06]"
-                : "border-border bg-surface/25";
+            ? "border-amber-500/30 bg-amber-500/10"
+            : "border-border bg-background/60";
         return (
           <section
             key={`${section.title || "resultado"}-${index}`}
-            className={`rounded-xl border p-4 sm:p-5 ${toneClass}`}
+            className={`rounded-lg border p-4 ${toneClass}`}
           >
             {section.title ? (
-              <div className="mb-4 flex items-start gap-3">
-                <div
-                  className={`mt-1 h-2 w-2 shrink-0 rounded-full ${tone === "warning" ? "bg-amber-400" : tone === "action" ? "bg-ember" : "bg-circuit"}`}
-                />
-                <h3 className="font-display text-xl font-semibold leading-tight text-foreground">
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold leading-tight text-foreground/90">
                   {section.title}
                 </h3>
               </div>
@@ -1786,37 +2319,82 @@ function MarkdownResultOutput({ output }: { output: string }) {
   );
 }
 
+type ResultArchetype = "analitico" | "tabular" | "documental";
+
+function inferResultArchetype(value: unknown, output: string): ResultArchetype {
+  let flatRecordArrays = 0;
+  let numericScalars = 0;
+  const inspect = (item: unknown) => {
+    if (Array.isArray(item)) {
+      if (
+        item.length > 0 &&
+        item.every(
+          (row) =>
+            isResultRecord(row) &&
+            Object.values(row).every(
+              (cell) => cell === null || typeof cell !== "object",
+            ),
+        )
+      )
+        flatRecordArrays += 1;
+      item.forEach(inspect);
+      return;
+    }
+    if (!isResultRecord(item)) return;
+    for (const child of Object.values(item)) {
+      if (
+        typeof child === "number" ||
+        (typeof child === "string" &&
+          /(?:^|\s)(?:R\$\s*)?\d+[\d.,]*%?(?:\s|$)/.test(child))
+      )
+        numericScalars += 1;
+      else inspect(child);
+    }
+  };
+  if (value !== undefined) inspect(value);
+  const markdownTables = (output.match(/^\|.+\|\s*\n\|[-: |]+\|/gm) || [])
+    .length;
+  if (flatRecordArrays > 0 || markdownTables >= 2) return "tabular";
+  if (
+    numericScalars >= 3 ||
+    /\b(?:KPI|indicador|métrica|percentual)\b/i.test(output)
+  )
+    return "analitico";
+  return "documental";
+}
+
 function CoreResultOutput({
   output,
   structuredResult,
-  agentCode,
-  contractVersion,
-  schemaKey,
-  rendererKey,
 }: {
   output: string;
   structuredResult?: unknown;
-  agentCode?: string;
-  contractVersion?: string;
-  schemaKey?: string;
-  rendererKey?: string;
 }) {
-  if (agentCode === "extrator_precedentes") {
-    const validContract =
-      contractVersion === "core-demo-snapshot-v2" &&
-      schemaKey === "precedent_extraction_v1" &&
-      rendererKey === "precedent_extraction_v1";
+  const hasStructuredResult =
+    structuredResult !== null && structuredResult !== undefined;
+  const archetype = hasStructuredResult
+    ? inferResultArchetype(structuredResult, output)
+    : inferResultArchetype(undefined, output);
+  if (hasStructuredResult)
     return (
-      <PrecedentExtractionResult
-        value={validContract ? structuredResult : undefined}
-      />
+      <div data-result-archetype={archetype}>
+        <ResultJsonValue value={structuredResult} archetype={archetype} />
+      </div>
     );
-  }
   try {
     const parsed = JSON.parse(output) as unknown;
-    return <ResultJsonValue value={parsed} />;
+    const parsedArchetype = inferResultArchetype(parsed, output);
+    return (
+      <div data-result-archetype={parsedArchetype}>
+        <ResultJsonValue value={parsed} archetype={parsedArchetype} />
+      </div>
+    );
   } catch {
-    return <MarkdownResultOutput output={output} />;
+    return (
+      <div data-result-archetype={archetype}>
+        <MarkdownResultOutput output={output} />
+      </div>
+    );
   }
 }
 
@@ -2281,19 +2859,18 @@ export function DemoWorkspace() {
               {result && selectedAgent ? (
                 <section
                   data-testid="demo-result"
-                  className="rounded-2xl border border-border bg-background/65 p-5 shadow-elevated backdrop-blur-sm sm:p-7"
+                  aria-live="polite"
+                  className="rounded-xl border border-border bg-surface/90 p-5 shadow-elevated backdrop-blur-sm"
                 >
-                  <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-ember">
+                      <div className="flex items-center gap-2 text-sm font-semibold uppercase text-foreground/90">
                         <CircleCheck className="h-4 w-4 text-emerald-400" />
-                        Resultado estruturado
+                        Resultado do agente
                       </div>
-                      <h2 className="mt-2 font-display text-2xl font-semibold">
-                        {result.title}
-                      </h2>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        Revise antes de qualquer uso operacional.
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Demonstração simulando uma análise real do Agente IA
+                        Especialista.
                       </p>
                     </div>
                     <button
@@ -2306,9 +2883,11 @@ export function DemoWorkspace() {
                     </button>
                   </div>
 
-                  <div className="mt-5 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
-                    {result.reviewNotice}
-                  </div>
+                  {!result.rawOutput ? (
+                    <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
+                      {result.reviewNotice}
+                    </div>
+                  ) : null}
 
                   {result.metrics.length ? (
                     <div className="mt-4 rounded-lg border border-circuit/25 bg-circuit/5 p-4">
@@ -2341,42 +2920,29 @@ export function DemoWorkspace() {
                     </div>
                   ) : null}
 
-                  <div className="mt-4 rounded-lg border border-circuit/25 bg-circuit/5 p-4">
-                    <h3 className="text-sm font-semibold text-foreground">
-                      Entradas do Exemplo utilizadas nesta simulação
-                    </h3>
-                    <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                  <details className="mt-4 rounded-lg border border-border bg-background/60">
+                    <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-foreground/85 marker:text-muted-foreground">
+                      Conferir entradas do Exemplo utilizadas
+                    </summary>
+                    <div className="grid gap-3 border-t border-border p-4 lg:grid-cols-2">
                       {result.inputReference.map((input) => (
-                        <div
-                          key={input.label}
-                          className="rounded-lg border border-border/70 bg-surface/30 p-3"
-                        >
+                        <div key={input.label} className="min-w-0">
                           <p className="text-xs font-medium text-muted-foreground">
                             {input.label}
                           </p>
-                          <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/85">
+                          <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/85">
                             {input.value}
                           </p>
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </details>
 
                   {result.rawOutput ? (
-                    <div className="mt-4 rounded-xl border border-circuit/30 bg-background/50 p-4 sm:p-5">
-                      <div className="mb-4 flex items-center gap-2 border-b border-border pb-3">
-                        <Bot className="h-4 w-4 text-circuit" />
-                        <h3 className="text-base font-semibold">
-                          Resultado gerado pelo Agente no Core
-                        </h3>
-                      </div>
+                    <div className="mt-4 space-y-4">
                       <CoreResultOutput
                         output={result.rawOutput}
                         structuredResult={result.rawStructuredResult}
-                        agentCode={result.agentCode}
-                        contractVersion={result.contractVersion}
-                        schemaKey={result.schemaKey}
-                        rendererKey={result.rendererKey}
                       />
                     </div>
                   ) : (

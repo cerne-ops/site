@@ -38,22 +38,22 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "incidentReport",
-        "label": "Incident Report",
+        "label": "Relato do incidente",
         "rows": 8
       },
       {
         "key": "contextData",
-        "label": "Context Data",
+        "label": "Dados de contexto",
         "rows": 8
       },
       {
         "key": "investigationScope",
-        "label": "Investigation Scope",
+        "label": "Escopo da investigação",
         "rows": 8
       },
       {
         "key": "internalRules",
-        "label": "Internal Rules",
+        "label": "Regras internas",
         "rows": 8
       }
     ],
@@ -131,17 +131,17 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "contractText",
-        "label": "Contract Text",
+        "label": "Texto do contrato",
         "rows": 8
       },
       {
         "key": "keyClauses",
-        "label": "Key Clauses",
+        "label": "Cláusulas-chave",
         "rows": 8
       },
       {
         "key": "contractType",
-        "label": "Contract Type",
+        "label": "Tipo de contrato",
         "rows": 8
       }
     ],
@@ -157,23 +157,17 @@ export const CORE_DEMO_SCENARIOS = [
     "title": "Analisador de Curva ABC de Estoque",
     "fields": [
       {
-        "key": "files",
-        "label": "Files",
-        "rows": 8
-      },
-      {
         "key": "period",
         "label": "Período de apuração",
         "rows": 8
       },
       {
         "key": "manualData",
-        "label": "Manual Data",
+        "label": "Dados informados manualmente",
         "rows": 8
       }
     ],
     "values": {
-      "files": "[]",
       "period": "Ultimos 6 meses",
       "manualData": "item_id,nome_produto,custo_unitario,quantidade\n001,Parafuso M8,1.50,1000\n002,Tinta Branca 18L,250.00,10\n003,Placa de Circuito,150.00,100\n004,Cabo HDMI,25.00,120\n005,Embalagem Papel Kraft,2.30,1500\n006,Fonte 12V,48.00,80"
     },
@@ -335,12 +329,12 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "interactionText",
-        "label": "Interaction Text",
+        "label": "Conteúdo das interações",
         "rows": 8
       },
       {
         "key": "catalogText",
-        "label": "Catalog Text",
+        "label": "Conteúdo do catálogo",
         "rows": 8
       }
     ],
@@ -391,22 +385,22 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "inspectionType",
-        "label": "Inspection Type",
+        "label": "Tipo de inspeção",
         "rows": 8
       },
       {
         "key": "referenceDate",
-        "label": "Reference Date",
+        "label": "Data de referência",
         "rows": 8
       },
       {
         "key": "criteria",
-        "label": "Criteria",
+        "label": "Critérios",
         "rows": 8
       },
       {
         "key": "reportText",
-        "label": "Report Text",
+        "label": "Conteúdo do relatório",
         "rows": 8
       }
     ],
@@ -536,7 +530,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "companyProfile",
-        "label": "Company Profile",
+        "label": "Perfil da empresa",
         "rows": 8
       },
       {
@@ -556,7 +550,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "currentRegime",
-        "label": "Current Regime",
+        "label": "Regime atual",
         "rows": 8
       },
       {
@@ -566,7 +560,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "constraints",
-        "label": "Constraints",
+        "label": "Restrições",
         "rows": 8
       }
     ],
@@ -646,23 +640,17 @@ export const CORE_DEMO_SCENARIOS = [
     "title": "Auditor de Conformidade de Imagens (Controle de Qualidade)",
     "fields": [
       {
-        "key": "files",
-        "label": "Files",
-        "rows": 8
-      },
-      {
         "key": "rules",
-        "label": "Rules",
+        "label": "Regras",
         "rows": 8
       },
       {
         "key": "context",
-        "label": "Context",
+        "label": "Contexto",
         "rows": 8
       }
     ],
     "values": {
-      "files": "Arquivo,Canal,Descricao textual informada,Observacoes humanas\nbanner_lancamento_1080x1080.png,Instagram Feed,Peca quadrada para lancamento do Plano Pro com chamada de desconto de 20%,Texto promocional precisa incluir validade da oferta\nstory_depoimento_cliente.png,Instagram Stories,Depoimento curto de cliente com nome e cargo,Revisar autorizacao de uso de imagem e depoimento\ncapa_linkedin_relatorio.png,LinkedIn,Capa de post sobre relatorio executivo de produtividade,Manter tom consultivo e evitar promessa de resultado garantido",
       "rules": "Toda oferta deve informar prazo de validade e condicao principal.\nNao usar promessa de resultado garantido.\nDepoimentos exigem registro de autorizacao.\nQuando a regra depender de leitura visual real, marcar como nao_avaliavel e pedir revisao humana.",
       "context": "Campanha B2B para redes sociais em junho. Publico: gestores de pequenas empresas. Revisao final sera feita por marketing e juridico."
     },
@@ -784,23 +772,17 @@ export const CORE_DEMO_SCENARIOS = [
     "title": "Comparador de Orcamentos de Fornecedores",
     "fields": [
       {
-        "key": "files",
-        "label": "Files",
-        "rows": 8
-      },
-      {
         "key": "criteria",
-        "label": "Criteria",
+        "label": "Critérios",
         "rows": 8
       },
       {
         "key": "manualInput",
-        "label": "Manual Input",
+        "label": "Entrada manual",
         "rows": 8
       }
     ],
     "values": {
-      "files": "[]",
       "criteria": "Priorizar menor preco total com prazo de entrega ate 7 dias.\nConsiderar impostos e frete no custo final.\nPreferir condicao de pagamento minima de 30 dias.",
       "manualInput": "Fornecedor A\n- Item: Caixa organizadora 50L\n- Quantidade: 20\n- Preco unitario: R$ 115,00\n- Frete: R$ 0,00\n- Prazo entrega: 5 dias\n- Pagamento: 30 dias\n\nFornecedor B\n- Item: Caixa organizadora 50L\n- Quantidade: 20\n- Preco unitario: R$ 109,00\n- Frete: R$ 180,00\n- Prazo entrega: 3 dias\n- Pagamento: 15 dias\n\nFornecedor C\n- Item: Caixa organizadora 50L\n- Quantidade: 20\n- Preco unitario: R$ 112,00\n- Frete: R$ 50,00\n- Prazo entrega: 7 dias\n- Pagamento: 45 dias"
     },
@@ -811,23 +793,13 @@ export const CORE_DEMO_SCENARIOS = [
     "title": "Conciliador de Extrato Bancario Simples",
     "fields": [
       {
-        "key": "statementFile",
-        "label": "Statement File",
-        "rows": 8
-      },
-      {
-        "key": "rulesFile",
-        "label": "Rules File",
-        "rows": 8
-      },
-      {
         "key": "manualStatement",
-        "label": "Manual Statement",
+        "label": "Extrato informado manualmente",
         "rows": 8
       },
       {
         "key": "manualRules",
-        "label": "Manual Rules",
+        "label": "Regras informadas manualmente",
         "rows": 8
       },
       {
@@ -842,8 +814,6 @@ export const CORE_DEMO_SCENARIOS = [
       }
     ],
     "values": {
-      "statementFile": "null",
-      "rulesFile": "null",
       "manualStatement": "2026-04-20;PIX CLIENTE ALFA;2500.00;credito\n2026-04-20;PAGAMENTO FORNECEDOR XPTO;-1500.00;debito\n2026-04-21;SAQUE 24H AG 1234;-200.00;debito",
       "manualRules": "PIX CLIENTE=Recebimentos\nFORNECEDOR=Fornecedores\nSAQUE=Retirada de Caixa",
       "suggestCategories": "true",
@@ -857,7 +827,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "admissionType",
-        "label": "Admission Type",
+        "label": "Tipo de admissão",
         "rows": 8
       },
       {
@@ -872,7 +842,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "candidateName",
-        "label": "Candidate Name",
+        "label": "Nome do candidato",
         "rows": 8
       },
       {
@@ -882,27 +852,27 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "birthDate",
-        "label": "Birth Date",
+        "label": "Data de nascimento",
         "rows": 8
       },
       {
         "key": "expectedStartDate",
-        "label": "Expected Start Date",
+        "label": "Data prevista de início",
         "rows": 8
       },
       {
         "key": "role",
-        "label": "Role",
+        "label": "Função",
         "rows": 8
       },
       {
         "key": "candidateEmail",
-        "label": "Candidate Email",
+        "label": "E-mail do candidato",
         "rows": 8
       },
       {
         "key": "documentsText",
-        "label": "Documents Text",
+        "label": "Conteúdo dos documentos",
         "rows": 8
       },
       {
@@ -967,7 +937,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "intimationText",
-        "label": "Intimation Text",
+        "label": "Texto da intimação",
         "rows": 8
       },
       {
@@ -977,12 +947,12 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "rules",
-        "label": "Rules",
+        "label": "Regras",
         "rows": 8
       },
       {
         "key": "constraints",
-        "label": "Constraints",
+        "label": "Restrições",
         "rows": 8
       }
     ],
@@ -1063,18 +1033,12 @@ export const CORE_DEMO_SCENARIOS = [
     "title": "Extrator e Tabulador de Notas Fiscais/Recibos",
     "fields": [
       {
-        "key": "files",
-        "label": "Files",
-        "rows": 8
-      },
-      {
         "key": "customRules",
-        "label": "Custom Rules",
+        "label": "Regras personalizadas",
         "rows": 8
       }
     ],
     "values": {
-      "files": "[{\"name\":\"NF_001.pdf\",\"type\":\"application/pdf\",\"size\":\"180400\"},{\"name\":\"Recibo_Transporte_abril.jpg\",\"type\":\"image/jpeg\",\"size\":\"91200\"}]",
       "customRules": "Extrair campos: data_emissao, cnpj_cpf_emissor, nome_emissor, valor_total, impostos_total, itens.\nNormalizar valores em BRL.\nClassificar categoria da despesa por contexto (material, servico, transporte, utilidades, tributos, outros).\nSinalizar confianca baixa (< 0.85) em inconsistencias."
     },
     "kind": "custom"
@@ -1240,17 +1204,17 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "rules",
-        "label": "Rules",
+        "label": "Regras",
         "rows": 8
       },
       {
         "key": "startDate",
-        "label": "Start Date",
+        "label": "Data inicial",
         "rows": 8
       },
       {
         "key": "endDate",
-        "label": "End Date",
+        "label": "Data final",
         "rows": 8
       },
       {
@@ -1353,7 +1317,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "criteria",
-        "label": "Criteria",
+        "label": "Critérios",
         "rows": 8
       },
       {
@@ -1363,7 +1327,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "context",
-        "label": "Context",
+        "label": "Contexto",
         "rows": 8
       }
     ],
@@ -1382,7 +1346,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "area",
-        "label": "Area",
+        "label": "Área",
         "rows": 8
       },
       {
@@ -1402,7 +1366,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "reviewConstraints",
-        "label": "Review Constraints",
+        "label": "Restrições para revisão",
         "rows": 8
       }
     ],
@@ -1451,7 +1415,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "goal",
-        "label": "Goal",
+        "label": "Objetivo",
         "rows": 8
       },
       {
@@ -1461,17 +1425,17 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "targetDate",
-        "label": "Target Date",
+        "label": "Data-alvo",
         "rows": 8
       },
       {
         "key": "constraints",
-        "label": "Constraints",
+        "label": "Restrições",
         "rows": 8
       },
       {
         "key": "context",
-        "label": "Context",
+        "label": "Contexto",
         "rows": 8
       }
     ],
@@ -1490,17 +1454,17 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "activityContext",
-        "label": "Activity Context",
+        "label": "Contexto da atividade",
         "rows": 8
       },
       {
         "key": "riskData",
-        "label": "Risk Data",
+        "label": "Dados de risco",
         "rows": 8
       },
       {
         "key": "legalContext",
-        "label": "Legal Context",
+        "label": "Contexto jurídico",
         "rows": 8
       },
       {
@@ -1523,32 +1487,32 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "clientName",
-        "label": "Client Name",
+        "label": "Nome do cliente",
         "rows": 8
       },
       {
         "key": "companyName",
-        "label": "Company Name",
+        "label": "Nome da empresa",
         "rows": 8
       },
       {
         "key": "clientContext",
-        "label": "Client Context",
+        "label": "Contexto do cliente",
         "rows": 8
       },
       {
         "key": "offerDetails",
-        "label": "Offer Details",
+        "label": "Detalhes da oferta",
         "rows": 8
       },
       {
         "key": "itemsText",
-        "label": "Items Text",
+        "label": "Dados dos itens",
         "rows": 8
       },
       {
         "key": "templateText",
-        "label": "Template Text",
+        "label": "Conteúdo do modelo",
         "rows": 8
       }
     ],
@@ -1598,7 +1562,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "objective",
-        "label": "Objective",
+        "label": "Objetivo",
         "rows": 8
       },
       {
@@ -1613,7 +1577,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "detailLevel",
-        "label": "Detail Level",
+        "label": "Nível de detalhe",
         "rows": 8
       },
       {
@@ -1664,7 +1628,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "obligationType",
-        "label": "Obligation Type",
+        "label": "Tipo de obrigação",
         "rows": 8
       },
       {
@@ -1684,7 +1648,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "financialData",
-        "label": "Financial Data",
+        "label": "Dados financeiros",
         "rows": 8
       },
       {
@@ -1805,7 +1769,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "dataInput",
-        "label": "Data Input",
+        "label": "Dados de entrada",
         "rows": 8
       },
       {
@@ -1880,12 +1844,12 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "pointsInput",
-        "label": "Points Input",
+        "label": "Dados dos pontos",
         "rows": 8
       },
       {
         "key": "fleetInput",
-        "label": "Fleet Input",
+        "label": "Dados da frota",
         "rows": 8
       },
       {
@@ -1907,7 +1871,7 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "objective",
-        "label": "Objective",
+        "label": "Objetivo",
         "rows": 8
       },
       {
@@ -1937,7 +1901,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "constraints",
-        "label": "Constraints",
+        "label": "Restrições",
         "rows": 8
       }
     ],
@@ -2018,12 +1982,12 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "criteriaText",
-        "label": "Criteria Text",
+        "label": "Critérios de análise",
         "rows": 8
       },
       {
         "key": "freeText",
-        "label": "Free Text",
+        "label": "Texto livre",
         "rows": 8
       }
     ],
@@ -2039,17 +2003,17 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "jobTitle",
-        "label": "Job Title",
+        "label": "Cargo",
         "rows": 8
       },
       {
         "key": "jobDescription",
-        "label": "Job Description",
+        "label": "Descrição da vaga",
         "rows": 8
       },
       {
         "key": "required",
-        "label": "Required",
+        "label": "Requisitos obrigatórios",
         "rows": 8
       },
       {
@@ -2060,11 +2024,6 @@ export const CORE_DEMO_SCENARIOS = [
       {
         "key": "resumes",
         "label": "Resumes",
-        "rows": 8
-      },
-      {
-        "key": "files",
-        "label": "Files",
         "rows": 8
       },
       {
@@ -2094,32 +2053,7 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "reportStyle",
-        "label": "Report Style",
-        "rows": 8
-      },
-      {
-        "key": "structuredResult",
-        "label": "Structured Result",
-        "rows": 8
-      },
-      {
-        "key": "activeRunId",
-        "label": "Active Run Id",
-        "rows": 8
-      },
-      {
-        "key": "inviteEmailDrafts",
-        "label": "Invite Email Drafts",
-        "rows": 8
-      },
-      {
-        "key": "inviteSendingKey",
-        "label": "Invite Sending Key",
-        "rows": 8
-      },
-      {
-        "key": "inviteModal",
-        "label": "Invite Modal",
+        "label": "Estilo do relatório",
         "rows": 8
       }
     ],
@@ -2129,18 +2063,12 @@ export const CORE_DEMO_SCENARIOS = [
       "required": "Experiencia comprovada em Departamento Pessoal.\nConhecimento em admissao, rescisao, ferias, folha de pagamento e controle de ponto.\nDominio de Excel ou Google Sheets para controles operacionais.\nConhecimento basico de eSocial, DCTFWeb e prazos trabalhistas.\nBoa comunicacao, organizacao e atencao a detalhes.",
       "desired": "Experiencia com sistema Domínio, Sênior ou similar.\nVivencia em empresas de servicos ou consultorias.\nConhecimento em beneficios corporativos e atendimento a colaboradores.\nNoções de indicadores de RH e auditoria documental.",
       "resumes": "CURRICULO 1 - Mariana Lopes\nEmail: mariana.lopes@email.com\nExperiencia: 4 anos em Departamento Pessoal, atuando com admissoes, rescisões, ferias, folha mensal, beneficios e controle de ponto para empresa com 180 colaboradores. Utiliza Excel avancado, sistema Domínio e acompanha eventos do eSocial. Formação: Tecnologa em Gestao de Recursos Humanos. Pontos fortes: organizada, boa comunicacao com colaboradores e historico de reducao de pendencias documentais.\n\n---\n\nCURRICULO 2 - Bruno Almeida\nEmail: bruno.almeida@email.com\nExperiencia: 2 anos como assistente administrativo com apoio ao RH. Realizou controle de ponto, arquivo de documentos, atendimento a colaboradores e lancamentos simples de beneficios. Pouca experiencia com rescisao e folha. Formação: cursando Administracao. Pontos fortes: disponibilidade imediata, perfil analitico e facilidade com planilhas.\n\n---\n\nCURRICULO 3 - Camila Ferreira\nEmail: camila.ferreira@email.com\nExperiencia: 6 anos em Departamento Pessoal em consultoria contábil, atendendo multiplos clientes. Forte vivencia em admissao, rescisao, ferias, folha, eSocial, DCTFWeb e atendimento a fiscalizacoes. Conhece sistemas Sênior e Domínio. Formação: Bacharel em Ciências Contábeis. Pontos fortes: autonomia, profundidade técnica e experiência em alto volume.",
-      "files": "[]",
       "weightsMode": "default",
       "minExperience": "3",
       "expectedEducation": "graduacao",
       "minScore": "70",
       "recommendedCount": "3",
-      "reportStyle": "executivo",
-      "structuredResult": "null",
-      "activeRunId": "null",
-      "inviteEmailDrafts": "{}",
-      "inviteSendingKey": "null",
-      "inviteModal": "null"
+      "reportStyle": "executivo"
     },
     "kind": "custom"
   },
@@ -2155,22 +2083,22 @@ export const CORE_DEMO_SCENARIOS = [
       },
       {
         "key": "precedentText",
-        "label": "Precedent Text",
+        "label": "Material de precedentes",
         "rows": 8
       },
       {
         "key": "context",
-        "label": "Context",
+        "label": "Contexto",
         "rows": 8
       },
       {
         "key": "criteria",
-        "label": "Criteria",
+        "label": "Critérios",
         "rows": 8
       },
       {
         "key": "constraints",
-        "label": "Constraints",
+        "label": "Restrições",
         "rows": 8
       }
     ],
@@ -2189,12 +2117,12 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "title",
-        "label": "Title",
+        "label": "Título",
         "rows": 8
       },
       {
         "key": "meetingDate",
-        "label": "Meeting Date",
+        "label": "Data da reunião",
         "rows": 8
       },
       {
@@ -2233,18 +2161,13 @@ export const CORE_DEMO_SCENARIOS = [
     "title": "Tradutor de Manuais Tecnicos e POPs",
     "fields": [
       {
-        "key": "files",
-        "label": "Files",
-        "rows": 8
-      },
-      {
         "key": "targetLanguage",
-        "label": "Target Language",
+        "label": "Idioma de destino",
         "rows": 8
       },
       {
         "key": "manualText",
-        "label": "Manual Text",
+        "label": "Texto informado manualmente",
         "rows": 8
       },
       {
@@ -2254,7 +2177,6 @@ export const CORE_DEMO_SCENARIOS = [
       }
     ],
     "values": {
-      "files": "[]",
       "targetLanguage": "en",
       "manualText": "MANUAL TECNICO - TROCA DO FILTRO PRINCIPAL\nEquipamento: Unidade de filtragem industrial UF-300\nAntes de iniciar o procedimento, desligue a alimentacao eletrica no painel principal e confirme ausencia de pressao na linha.\n1. Feche a valvula de entrada.\n2. Aguarde 3 minutos para alivio de pressao residual.\n3. Remova a tampa superior utilizando chave Allen 6 mm.\n4. Substitua o elemento filtrante e confira se a vedacao O-ring esta corretamente posicionada.\n5. Reinstale a tampa e abra lentamente a valvula de entrada.\nCriterio de aceite: nao deve haver vazamento visivel durante 5 minutos de operacao.",
       "glossary": "Unidade de filtragem = filtration unit\nVálvula de entrada = inlet valve\nAlívio de pressão residual = residual pressure relief\nElemento filtrante = filter element\nCritério de aceite = acceptance criterion"
@@ -2297,22 +2219,22 @@ export const CORE_DEMO_SCENARIOS = [
     "fields": [
       {
         "key": "nfeData",
-        "label": "Nfe Data",
+        "label": "Dados da NFe",
         "rows": 8
       },
       {
         "key": "orderData",
-        "label": "Order Data",
+        "label": "Dados do pedido",
         "rows": 8
       },
       {
         "key": "toleranceRules",
-        "label": "Tolerance Rules",
+        "label": "Regras de tolerância",
         "rows": 8
       },
       {
         "key": "reviewContext",
-        "label": "Review Context",
+        "label": "Contexto da revisão",
         "rows": 8
       }
     ],

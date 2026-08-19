@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "generate:demo-scenarios": "node execution/generate_demo_scenarios.mjs",
+    "qa:demo-results": "node execution/qa_demo_results.mjs",
     "build": "node execution/generate_demo_scenarios.mjs && node execution/generate_sitemap.mjs && vite build",
     "build:dev": "vite build --mode development",
     "start": "node server.mjs",
