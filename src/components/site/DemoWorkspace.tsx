@@ -3101,7 +3101,7 @@ function TrialCta() {
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Leve o fluxo para os dados e rotinas reais da sua empresa. A
               demonstração reflete fielmente os Agentes IA Especialistas do Core
-              CerneOps, teste!.
+              CerneOps.
             </p>
           </div>
         </div>
