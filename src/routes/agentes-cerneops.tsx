@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Bot, ChevronDown, ChevronRight } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { getAgentSlugByName } from "@/lib/agent-pages";
+import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
 import { fetchLandingPlans } from "@/lib/plans";
+import { useI18n } from "@/lib/i18n";
 
 type Agent = {
   id: string;
@@ -30,6 +31,21 @@ const principles = [
   {
     title: "Praticidade Operacional",
     body: "Cada agente tem uma função clara, uma entrada definida e uma entrega acionável, sem sobreposição de escopo entre eles.",
+  },
+];
+
+const principlesEn = [
+  {
+    title: "zero code",
+    body: "Data entry is manual and simple: file uploads, photos, basic spreadsheets, or copied text. There is no need to connect APIs or legacy systems.",
+  },
+  {
+    title: "Bureaucracy reduction",
+    body: "The agent does not add steps to the process; it replaces hours of repetitive human work with seconds of intelligent processing.",
+  },
+  {
+    title: "Operational practicality",
+    body: "Each agent has a clear function, a defined input, and an actionable deliverable, without overlapping scope.",
   },
 ];
 
@@ -126,6 +142,8 @@ export const Route = createFileRoute("/agentes-cerneops")({
 });
 
 function AgentsPage() {
+  const { locale } = useI18n();
+  const en = locale === "en-US";
   const [agents, setAgents] = useState<Agent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -137,6 +155,27 @@ function AgentsPage() {
     const loadAgents = async () => {
       try {
         if (alive) setHasError(false);
+        if (locale === "en-US") {
+          setAgents(
+            getAgentPages("en-US").map((agent) => ({
+              id: `${agent.agentName.toLowerCase()}::${agent.agentGroup.toLowerCase()}`,
+              title: agent.agentName,
+              slug: agent.slug,
+              description: agent.metaDescription,
+              group: agent.agentGroup,
+              problem:
+                "Manual, repetitive work consumes time and makes execution less consistent.",
+              operation:
+                "The user provides context and available inputs; CerneOps organizes the material into a structured flow.",
+              delivery:
+                "A reviewable operational output ready to support the next step.",
+              status: "ativo",
+            })),
+          );
+          setIsLoading(false);
+          return;
+        }
+
         const plans = await fetchLandingPlans();
         if (!alive) return;
         if (!plans) {
@@ -164,7 +203,7 @@ function AgentsPage() {
       alive = false;
       window.clearInterval(refreshHandle);
     };
-  }, []);
+  }, [locale]);
 
   const groups = useMemo(
     () =>
@@ -210,24 +249,24 @@ function AgentsPage() {
   const statusBadge = (status: Agent["status"]) => {
     if (status === "inativo") {
       return {
-        label: "Inativo",
+        label: en ? "Inactive" : "Inativo",
         className: "border-red-500/35 bg-red-500/15 text-red-300",
       };
     }
     if (status === "manutencao") {
       return {
-        label: "Em Manutenção",
+        label: en ? "Under Maintenance" : "Em Manutenção",
         className: "border-amber-500/35 bg-amber-500/15 text-amber-300",
       };
     }
     if (status === "desenvolvimento") {
       return {
-        label: "Em Breve",
+        label: en ? "Coming Soon" : "Em Breve",
         className: "border-indigo-500/35 bg-indigo-500/15 text-indigo-300",
       };
     }
     return {
-      label: "Ativo",
+      label: en ? "Active" : "Ativo",
       className: "border-emerald-500/35 bg-emerald-500/15 text-emerald-300",
     };
   };
@@ -244,24 +283,23 @@ function AgentsPage() {
                 / Agentes CerneOps
               </div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.03]">
-                Agentes Core da CerneOps,
+                {en ? "CerneOps Core Agents," : "Agentes Core da CerneOps,"}
                 <br />
                 <span className="text-muted-foreground">
-                  Eliminação de Burocracia com zero código.
+                  {en
+                    ? "Bureaucracy elimination with zero code."
+                    : "Eliminação de Burocracia com zero código."}
                 </span>
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-                O plano Core da CerneOps foi desenhado para atacar a raiz da
-                ineficiência nas pequenas e médias empresas: o trabalho manual e
-                burocrático. O objetivo não é criar sistemas complexos, mas sim
-                fornecer ferramentas práticas que o empresário ou operador possa
-                usar imediatamente, sem necessidade de integrações de TI,
-                treinamentos longos ou mudanças drásticas na infraestrutura
-                atual.
+                {en
+                  ? "CerneOps Core was designed to address the root of inefficiency in small and medium-sized companies: manual and bureaucratic work. The goal is not to create complex systems, but to provide practical tools that business owners and operators can use immediately, without IT integrations, long training cycles, or drastic infrastructure changes."
+                  : "O plano Core da CerneOps foi desenhado para atacar a raiz da ineficiência nas pequenas e médias empresas: o trabalho manual e burocrático. O objetivo não é criar sistemas complexos, mas sim fornecer ferramentas práticas que o empresário ou operador possa usar imediatamente, sem necessidade de integrações de TI, treinamentos longos ou mudanças drásticas na infraestrutura atual."}
               </p>
               <p className="mt-4 text-foreground/90 leading-relaxed">
-                Esses agentes materializam o lema da CerneOps: "Uma pessoa com a
-                CerneOps opera com a performance de dez."
+                {en
+                  ? 'These agents materialize the CerneOps principle: "One person with CerneOps operates with the performance of ten."'
+                  : 'Esses agentes materializam o lema da CerneOps: "Uma pessoa com a CerneOps opera com a performance de dez."'}
               </p>
             </div>
           </div>
@@ -270,10 +308,12 @@ function AgentsPage() {
         <section className="mt-4">
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="font-display text-3xl font-semibold">
-              Contexto e Princípios de Design
+              {en
+                ? "Context and Design Principles"
+                : "Contexto e Princípios de Design"}
             </h2>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              {principles.map((item) => (
+              {(en ? principlesEn : principles).map((item) => (
                 <article
                   key={item.title}
                   className="rounded-2xl border border-border bg-surface/55 p-6"
@@ -299,8 +339,9 @@ function AgentsPage() {
                 </h2>
                 {!isLoading && !hasError && agents.length > 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {agents.length} agentes em {groups.length} grupo
-                    {groups.length === 1 ? "" : "s"}.
+                    {en
+                      ? `${agents.length} agents across ${groups.length} group${groups.length === 1 ? "" : "s"}.`
+                      : `${agents.length} agentes em ${groups.length} grupo${groups.length === 1 ? "" : "s"}.`}
                   </p>
                 ) : null}
               </div>
@@ -310,25 +351,30 @@ function AgentsPage() {
                     {agents.length} total
                   </span>
                   <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-300">
-                    {activeAgentsTotal} ativos
+                    {activeAgentsTotal} {en ? "active" : "ativos"}
                   </span>
                 </div>
               ) : null}
             </div>
             {isLoading && (
               <p className="mt-4 text-sm text-muted-foreground">
-                Carregando catálogo oficial de agentes...
+                {en
+                  ? "Loading local agent catalog..."
+                  : "Carregando catálogo oficial de agentes..."}
               </p>
             )}
             {hasError && !isLoading && (
               <p className="mt-4 text-sm text-amber-300">
-                Não foi possível carregar o catálogo em tempo real agora. Tente
-                novamente em instantes.
+                {en
+                  ? "The catalog could not be loaded right now. Please try again shortly."
+                  : "Não foi possível carregar o catálogo em tempo real agora. Tente novamente em instantes."}
               </p>
             )}
             {!isLoading && !hasError && groups.length === 0 && (
               <p className="mt-4 text-sm text-muted-foreground">
-                Nenhum agente disponível para exibição no momento.
+                {en
+                  ? "No agents available for display right now."
+                  : "Nenhum agente disponível para exibição no momento."}
               </p>
             )}
             <div className="mt-6 space-y-4">
@@ -359,7 +405,7 @@ function AgentsPage() {
                           {group.agents.length} total
                         </span>
                         <span className="rounded-full border border-emerald-500/30 px-2.5 py-1 text-emerald-300">
-                          {group.activeCount} ativos
+                          {group.activeCount} {en ? "active" : "ativos"}
                         </span>
                       </span>
                     </button>
@@ -378,7 +424,7 @@ function AgentsPage() {
                             >
                               <div className="flex items-center gap-2">
                                 <div className="font-mono text-xs uppercase tracking-widest text-ember">
-                                  Agente
+                                  {en ? "Agent" : "Agente"}
                                 </div>
                                 {badge ? (
                                   <span
@@ -397,26 +443,26 @@ function AgentsPage() {
                               <div className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
                                 <p>
                                   <span className="text-foreground font-medium">
-                                    Problema:
+                                    {en ? "Problem:" : "Problema:"}
                                   </span>{" "}
                                   {agent.problem}
                                 </p>
                                 <p>
                                   <span className="text-foreground font-medium">
-                                    Operação:
+                                    {en ? "Operation:" : "Operação:"}
                                   </span>{" "}
                                   {agent.operation}
                                 </p>
                                 <p>
                                   <span className="text-foreground font-medium">
-                                    Entrega:
+                                    {en ? "Deliverable:" : "Entrega:"}
                                   </span>{" "}
                                   {agent.delivery}
                                 </p>
                               </div>
                               {agent.slug ? (
                                 <span className="mt-5 inline-flex text-sm font-medium text-ember transition group-hover:text-ember-light">
-                                  Saiba mais →
+                                  {en ? "Learn more →" : "Saiba mais →"}
                                 </span>
                               ) : null}
                             </article>
@@ -425,7 +471,11 @@ function AgentsPage() {
                             <a
                               key={agent.id}
                               href={`/agentes/${agent.slug}`}
-                              aria-label={`Abrir página pública do agente ${agent.title}`}
+                              aria-label={
+                                en
+                                  ? `Open public page for agent ${agent.title}`
+                                  : `Abrir página pública do agente ${agent.title}`
+                              }
                               className="group block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                             >
                               {card}
@@ -447,22 +497,19 @@ function AgentsPage() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="rounded-2xl border border-ember/35 bg-surface-elevated p-7">
               <h2 className="font-display text-3xl font-semibold">
-                Conclusão, O Impacto do Core
+                {en
+                  ? "Conclusion: Core's impact"
+                  : "Conclusão, O Impacto do Core"}
               </h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                A beleza destes agentes reside na sua simplicidade operacional.
-                Eles não exigem que o empresário mude seu software de gestão ou
-                contrate uma equipe de TI. Eles atuam exatamente onde a dor é
-                mais aguda: na interface entre o mundo físico (papéis, fotos,
-                áudios, planilhas desorganizadas) e a necessidade de informação
-                estruturada.
+                {en
+                  ? "The strength of these agents is their operational simplicity. They do not require the business owner to change management software or hire an IT team. They act exactly where the pain is sharpest: between the physical world of papers, photos, audio, and messy spreadsheets, and the need for structured information."
+                  : "A beleza destes agentes reside na sua simplicidade operacional. Eles não exigem que o empresário mude seu software de gestão ou contrate uma equipe de TI. Eles atuam exatamente onde a dor é mais aguda: na interface entre o mundo físico (papéis, fotos, áudios, planilhas desorganizadas) e a necessidade de informação estruturada."}
               </p>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Ao adotar o plano Core da CerneOps, o empresário transforma
-                horas de trabalho braçal e burocrático em minutos de supervisão
-                inteligente, liberando seu tempo e o de sua equipe para focar no
-                que realmente importa: atender bem o cliente e crescer o
-                negócio.
+                {en
+                  ? "By adopting CerneOps Core, the business owner turns hours of manual and bureaucratic work into minutes of intelligent supervision, freeing their own time and the team's time to focus on what really matters: serving customers well and growing the business."
+                  : "Ao adotar o plano Core da CerneOps, o empresário transforma horas de trabalho braçal e burocrático em minutos de supervisão inteligente, liberando seu tempo e o de sua equipe para focar no que realmente importa: atender bem o cliente e crescer o negócio."}
               </p>
             </div>
           </div>

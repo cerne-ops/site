@@ -9,6 +9,7 @@ import {
 import appCss from "../styles.css?url";
 import { SupraContactModalProvider } from "@/components/site/SupraContactModal";
 import { DemoIntroModal } from "@/components/site/DemoIntroModal";
+import { I18nProvider, getInitialLocaleScript } from "@/lib/i18n";
 import { SITE_RELEASE_VERSION } from "@/lib/release";
 
 const SITE_SOCIAL_IMAGE = "https://cerneops.com.br/og-social.jpg";
@@ -111,6 +112,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="pt-BR">
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getInitialLocaleScript(),
+          }}
+        />
         {gtmId ? (
           <script
             dangerouslySetInnerHTML={{
@@ -152,9 +158,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <SupraContactModalProvider>
-      <Outlet />
-      <DemoIntroModal />
-    </SupraContactModalProvider>
+    <I18nProvider>
+      <SupraContactModalProvider>
+        <Outlet />
+        <DemoIntroModal />
+      </SupraContactModalProvider>
+    </I18nProvider>
   );
 }

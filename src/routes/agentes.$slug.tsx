@@ -3,15 +3,14 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Bot, CheckCircle2 } from "lucide-react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import {
-  trackAgentCtaClicked,
-  trackAgentPageView,
-} from "@/lib/analytics";
+import { trackAgentCtaClicked, trackAgentPageView } from "@/lib/analytics";
 import {
   getAgentPageBySlug,
+  localizeAgentPage,
   type AgentMarkdownBlock,
   type AgentPage,
 } from "@/lib/agent-pages";
+import { useI18n } from "@/lib/i18n";
 
 const SITE_URL = "https://cerneops.com.br";
 const OG_IMAGE = `${SITE_URL}/og-social.jpg`;
@@ -115,17 +114,21 @@ function MarkdownBlock({ block }: { block: AgentMarkdownBlock }) {
 }
 
 function ConversionBand({ agent }: { agent: AgentPage }) {
+  const { locale } = useI18n();
+  const en = locale === "en-US";
   return (
     <aside className="my-12 rounded-2xl border border-ember/35 bg-surface-elevated p-7 lg:p-8">
       <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
         <div>
           <h2 className="font-display text-3xl font-semibold">
-            Transforme essa rotina em minutos com a CerneOps
+            {en
+              ? "Turn this routine into minutes with CerneOps"
+              : "Transforme essa rotina em minutos com a CerneOps"}
           </h2>
           <p className="mt-3 text-muted-foreground leading-relaxed">
-            Use agentes especializados para reduzir burocracia, organizar
-            informações e acelerar tarefas operacionais sem aumentar a
-            complexidade da empresa.
+            {en
+              ? "Use specialized agents to reduce bureaucracy, organize information, and accelerate operational tasks without increasing company complexity."
+              : "Use agentes especializados para reduzir burocracia, organizar informações e acelerar tarefas operacionais sem aumentar a complexidade da empresa."}
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -136,20 +139,20 @@ function ConversionBand({ agent }: { agent: AgentPage }) {
                 agentName: agent.agentName,
                 agentSlug: agent.slug,
                 agentGroup: agent.agentGroup,
-                ctaLabel: "Conhecer planos",
+                ctaLabel: en ? "View plans" : "Conhecer planos",
                 ctaPosition: "middle",
               })
             }
             className="inline-flex items-center gap-2 rounded-lg gradient-ember px-5 py-3 font-semibold text-primary-foreground shadow-ember transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
           >
-            Conhecer planos
+            {en ? "View plans" : "Conhecer planos"}
             <ArrowRight className="h-4 w-4" />
           </a>
           <a
             href="/agentes-cerneops"
             className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-5 py-3 font-medium transition hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
           >
-            Ver outros agentes
+            {en ? "See other agents" : "Ver outros agentes"}
           </a>
         </div>
       </div>
@@ -158,7 +161,10 @@ function ConversionBand({ agent }: { agent: AgentPage }) {
 }
 
 function AgentPageRoute() {
-  const agent = Route.useLoaderData();
+  const sourceAgent = Route.useLoaderData();
+  const { locale } = useI18n();
+  const agent = localizeAgentPage(sourceAgent, locale);
+  const en = locale === "en-US";
   const canonical = `${SITE_URL}/agentes/${agent.slug}`;
   const middleIndex = Math.max(4, Math.floor(agent.blocks.length * 0.45));
   const firstBlocks = agent.blocks.slice(0, middleIndex);
@@ -202,14 +208,14 @@ function AgentPageRoute() {
               className="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground"
             >
               <a href="/" className="transition hover:text-ember">
-                Início
+                {en ? "Home" : "Início"}
               </a>
               <span>/</span>
               <a
                 href="/agentes-cerneops"
                 className="transition hover:text-ember"
               >
-                Agentes
+                {en ? "Agents" : "Agentes"}
               </a>
               <span>/</span>
               <span className="text-ember">{agent.agentName}</span>
@@ -258,15 +264,16 @@ function AgentPageRoute() {
                   Agente Core
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  Página pública indexável com conteúdo SEO do agente, descrição
-                  operacional e direcionamento para os planos CerneOps.
+                  {en
+                    ? "Public indexable page with agent SEO content, operational description, and direction to CerneOps plans."
+                    : "Página pública indexável com conteúdo SEO do agente, descrição operacional e direcionamento para os planos CerneOps."}
                 </p>
                 <a
                   href="/agentes-cerneops"
                   className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ember transition hover:text-ember-light focus:outline-none focus:ring-2 focus:ring-ember"
                 >
                   <ArrowLeft className="h-4 w-4" />
-                  Voltar ao catálogo
+                  {en ? "Back to catalog" : "Voltar ao catálogo"}
                 </a>
               </aside>
             </div>
@@ -296,12 +303,12 @@ function AgentPageRoute() {
               <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                 <div>
                   <h2 className="font-display text-4xl font-semibold">
-                    Experimente a CerneOps Core
+                    {en ? "Try CerneOps Core" : "Experimente a CerneOps Core"}
                   </h2>
                   <p className="mt-4 max-w-3xl text-muted-foreground leading-relaxed">
-                    Escolha um plano, acesse os agentes disponíveis e comece a
-                    transformar tarefas repetitivas em entregas operacionais
-                    mais rápidas e organizadas.
+                    {en
+                      ? "Choose a plan, access available agents, and start turning repetitive tasks into faster, better organized operational deliverables."
+                      : "Escolha um plano, acesse os agentes disponíveis e comece a transformar tarefas repetitivas em entregas operacionais mais rápidas e organizadas."}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -312,13 +319,13 @@ function AgentPageRoute() {
                         agentName: agent.agentName,
                         agentSlug: agent.slug,
                         agentGroup: agent.agentGroup,
-                        ctaLabel: "Começar agora",
+                        ctaLabel: en ? "Start now" : "Começar agora",
                         ctaPosition: "footer",
                       })
                     }
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember px-6 py-3.5 font-semibold text-primary-foreground shadow-ember transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                   >
-                    Começar agora
+                    {en ? "Start now" : "Começar agora"}
                     <ArrowRight className="h-4 w-4" />
                   </a>
                   <a
@@ -328,13 +335,13 @@ function AgentPageRoute() {
                         agentName: agent.agentName,
                         agentSlug: agent.slug,
                         agentGroup: agent.agentGroup,
-                        ctaLabel: "Ver planos",
+                        ctaLabel: en ? "View plans" : "Ver planos",
                         ctaPosition: "footer",
                       })
                     }
                     className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium transition hover:bg-surface focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-background"
                   >
-                    Ver planos
+                    {en ? "View plans" : "Ver planos"}
                   </a>
                 </div>
               </div>

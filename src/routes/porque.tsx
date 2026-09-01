@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CTA } from "@/components/site/CTA";
+import { useI18n } from "@/lib/i18n";
 
 const reasons = [
   {
@@ -38,6 +39,41 @@ const reasons = [
   },
 ];
 
+const reasonsEn = [
+  {
+    number: "01",
+    text: "Why CerneOps? 1. Small business owners suffer less from “lack of technology” and more from lack of operational time, unstable teams, rising costs, excessive administrative work, disorganized communication, routine failures, poor demand/inventory control, and financial delays. In 2025, NFIB listed taxes, labor quality, inflation, and labor costs among small businesses’ top problems; the U.S. Chamber of Commerce highlighted rising costs as one of the biggest barriers to growth; and independent food retail faced simultaneous pressure from turnover, shrink, and operating expenses. In healthcare, the AMA continues to point to administrative burden and lack of staff as relevant factors in operational strain.",
+  },
+  {
+    number: "02",
+    text: "Why CerneOps? 2. The biggest bottleneck is not knowledge or technology; it is operational time. The business owner accumulates functions, splits attention between finance, customer service, and management, and still executes basic business tasks. Research indicates that small business owners spend a large share of their time on administrative activities instead of growth [SCORE], and even when working long hours they cannot keep up with operations [SBA]. The result is simple: the business does not scale because the owner is trapped in execution.",
+  },
+  {
+    number: "03",
+    text: "Why CerneOps? 3. The difficulty of hiring, training, and retaining qualified people directly affects operational consistency. Labor quality remains among small businesses’ top problems [NFIB], and labor shortages limit growth and increase operational stress [World Economic Forum]. This creates an environment where everything depends on who executes the task, not on a reliable process.",
+  },
+  {
+    number: "04",
+    text: "Why CerneOps? 4. Costs continue to pressure the business on every front. Inflation, wage increases, and input costs reduce margins and limit investment capacity [NFIB], while rising costs remain one of the biggest barriers to growth [U.S. Chamber of Commerce]. In this context, hiring more people to solve operational problems becomes unfeasible and often worsens the scenario.",
+  },
+  {
+    number: "05",
+    text: "Why CerneOps? 5. A large share of problems comes from excessive repetitive administrative and operational tasks. The team’s time is consumed by manual controls, information organization, unstructured communication, and rework. Administrative burden reduces the time available for essential activities [European Commission] and is one of the main causes of operational strain in sectors such as healthcare [American Medical Association]. The business starts operating at its limit, with no room to evolve.",
+  },
+  {
+    number: "06",
+    text: "Why CerneOps? 6. Disorganization creates a direct cascade effect across the operation: inventory failures, financial delays, loss of control, and a poor customer experience. Without visibility and standardization, decisions are made in the dark. It is no coincidence that cash-flow problems remain among the main causes of small business failure [U.S. Bank]. The operation stops being predictable and becomes reactive.",
+  },
+  {
+    number: "07",
+    text: "Why CerneOps? 7. The problem is clearly not “using technology,” but structuring the operation. Isolated tools help in specific points, but they do not solve the full flow. That is why automation applied to operations has direct impact: it can reduce errors by up to 70% and free time for strategic activities. When tasks stop depending on manual execution, the operation gains consistency.",
+  },
+  {
+    number: "08",
+    text: "Why CerneOps? 8. CerneOps was born exactly from this point: the business owner does not need more tools; they need an operation that works. That means standardizing tasks, reducing dependence on people, eliminating rework, and bringing predictability to daily execution. In the end, this is not about technology, but operational capacity. What limits small business growth is not lack of access to AI; it is the lack of structure to operate better every day.",
+  },
+];
+
 export const Route = createFileRoute("/porque")({
   head: () => ({
     meta: [
@@ -54,6 +90,10 @@ export const Route = createFileRoute("/porque")({
 });
 
 function WhyCernePage() {
+  const { locale } = useI18n();
+  const en = locale === "en-US";
+  const visibleReasons = en ? reasonsEn : reasons;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -63,13 +103,15 @@ function WhyCernePage() {
           <div className="relative mx-auto max-w-7xl px-6">
             <div className="max-w-4xl">
               <div className="font-mono text-xs uppercase tracking-widest text-ember mb-4">
-                / Porque?
+                {en ? "/ Why?" : "/ Porque?"}
               </div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.03]">
-                Porque a CerneOps
+                {en ? "Why CerneOps" : "Porque a CerneOps"}
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg max-w-3xl">
-                Se voce se identificar em alguns desses motivos, nao pense duas vezes.
+                {en
+                  ? "If you recognize yourself in some of these reasons, do not think twice."
+                  : "Se voce se identificar em alguns desses motivos, nao pense duas vezes."}
               </p>
             </div>
           </div>
@@ -78,7 +120,7 @@ function WhyCernePage() {
         <section className="mt-4">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {reasons.map((reason) => (
+              {visibleReasons.map((reason) => (
                 <article
                   key={reason.number}
                   className="rounded-2xl border border-border bg-surface/55 p-6 transition hover:border-ember/45 hover:bg-surface-elevated"

@@ -13,9 +13,15 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { getAgentPages, getAgentSlugByName } from "@/lib/agent-pages";
+import {
+  getAgentPages,
+  getAgentSlugByName,
+  getLocalizedAgentGroup,
+  getLocalizedAgentName,
+} from "@/lib/agent-pages";
 import { CORE_DEMO_SCENARIOS } from "@/lib/core-demo-scenarios.generated";
 import { fetchLandingPlans } from "@/lib/plans";
+import { translateText, useI18n, type Locale } from "@/lib/i18n";
 import {
   PrecedentExtractionResult,
   buildPrecedentExtractionText,
@@ -92,6 +98,354 @@ const SPECIAL_GROUPS: Record<string, string> = {
   operacao_logistica: "Operação e Logística",
   gestao_produtividade_gestor: "Gestão e Produtividade do Gestor",
 };
+
+const DEMO_TEXT_TRANSLATIONS = new Map<string, string>([
+  ["Demo de agentes", "Agent demo"],
+  ["Selecione um agente por setor", "Select an agent by industry"],
+  [
+    "Escolha o setor e o agente que deseja testar.",
+    "Choose the industry and the agent you want to test.",
+  ],
+  ["Buscar setor ou agente", "Search industry or agent"],
+  ["Carregando catálogo oficial...", "Loading official catalog..."],
+  [
+    "Catálogo dinâmico indisponível. Exibindo a cópia local dos agentes para a demonstração.",
+    "Dynamic catalog unavailable. Showing the local agent copy for the demo.",
+  ],
+  ["Todos os agentes operam com", "All agents operate with"],
+  ["zero código", "zero code"],
+  [
+    ", seguindo os princípios Core de simplicidade, redução de burocracia e praticidade operacional.",
+    ", following the Core principles of simplicity, bureaucracy reduction, and operational practicality.",
+  ],
+  ["Agente selecionado", "Selected agent"],
+  ["Novo", "New"],
+  ["Exemplo", "Example"],
+  [
+    "Dados preenchidos pelo botão “Exemplo” do Core CerneOps. As entradas são exibidas exatamente como no fluxo do agente e permanecem somente leitura.",
+    "Data filled by the CerneOps Core “Example” button. Inputs are displayed exactly as in the agent flow and remain read-only.",
+  ],
+  [
+    "O cenário oficial de demonstração deste agente ainda está em preparação. A execução ficará disponível assim que o exemplo do Core for publicado.",
+    "The official demo scenario for this agent is still being prepared. Execution will be available as soon as the Core example is published.",
+  ],
+  [
+    "Demonstração simulando uma análise real do Agente IA Especialista.",
+    "Demo simulating a real analysis by the Specialist AI Agent.",
+  ],
+  [
+    "Entradas e resultado são simulados e somente leitura para você conhecer o fluxo do Core.",
+    "Inputs and result are simulated and read-only so you can understand the Core flow.",
+  ],
+  ["Executando demonstração...", "Running demo..."],
+  ["Executar análise", "Run analysis"],
+  [
+    "Selecione um agente para iniciar a demonstração.",
+    "Select an agent to start the demo.",
+  ],
+  ["Resultado do agente", "Agent result"],
+  ["Exportar relatório", "Export report"],
+  ["Conferir entradas do Exemplo utilizadas", "Check Example inputs used"],
+  ["Resumo", "Summary"],
+  ["Premissas e fontes", "Assumptions and sources"],
+  ["Sem premissas informadas.", "No assumptions provided."],
+  ["Incertezas e limitações", "Uncertainties and limitations"],
+  ["Sem incertezas informadas.", "No uncertainties provided."],
+  ["Destaques", "Highlights"],
+  ["Sem destaques informados.", "No highlights provided."],
+  ["Sem itens informados.", "No items provided."],
+  ["Próximos passos", "Next steps"],
+  ["Sem próximos passos.", "No next steps."],
+  ["Próximo passo", "Next step"],
+  [
+    "Agora veja os ganhos em sua empresa na prática,",
+    "Now see the gains in your company in practice,",
+  ],
+  ["teste nosso trial gratuitamente", "try our free trial"],
+  [
+    "Leve o fluxo para os dados e rotinas reais da sua empresa. A demonstração reflete fielmente os Agentes IA Especialistas do Core CerneOps.",
+    "Take the flow to your company's real data and routines. The demo faithfully reflects CerneOps Core Specialist AI Agents.",
+  ],
+  ["Testar o Trial gratuitamente", "Try the Trial for free"],
+  ["agentes", "agents"],
+  ["Sim", "Yes"],
+  ["Não", "No"],
+  [
+    "Tabela apresentada no resultado do agente",
+    "Table shown in the agent result",
+  ],
+  [
+    "Dados estruturados do resultado do agente",
+    "Structured data from the agent result",
+  ],
+  ["Entradas utilizadas nesta simulação", "Inputs used in this simulation"],
+  ["Resultado", "Result"],
+  ["Indicadores do resultado", "Result indicators"],
+  ["Recomendação de execução", "Execution recommendation"],
+  [
+    "Evidências consideradas no cenário de exemplo",
+    "Evidence considered in the example scenario",
+  ],
+  ["Leitura operacional", "Operational reading"],
+  ["KPIs e metas", "KPIs and goals"],
+  ["Contexto e eventos", "Context and events"],
+  ["Foco da analise", "Analysis focus"],
+  ["Receita original", "Original recipe"],
+  ["Objetivo da adaptação", "Adaptation objective"],
+  ["Restrições e premissas", "Restrictions and assumptions"],
+  ["Relato do incidente", "Incident report"],
+  ["Dados de contexto", "Context data"],
+  ["Escopo da investigação", "Investigation scope"],
+  ["Regras internas", "Internal rules"],
+  ["Contexto do funil", "Pipeline context"],
+  ["Dados estruturados do ciclo", "Structured cycle data"],
+  ["Limites e premissas", "Limits and assumptions"],
+  ["Contexto da pesquisa", "Survey context"],
+  [
+    "Dados agregados e comentarios anonimizados",
+    "Aggregated data and anonymized comments",
+  ],
+  ["Foco, limites e cuidados", "Focus, limits, and cautions"],
+  ["Texto do contrato", "Contract text"],
+  ["Cláusulas-chave", "Key clauses"],
+  ["Tipo de contrato", "Contract type"],
+  ["Período de apuração", "Assessment period"],
+  ["Dados informados manualmente", "Manually provided data"],
+  ["Cronograma base informado", "Provided baseline schedule"],
+  ["Avanco real e fatos ocorridos", "Actual progress and events"],
+  ["Escopo da obra e entregaveis", "Construction scope and deliverables"],
+  ["Contexto financeiro", "Financial context"],
+  ["Premissas e dados incompletos", "Assumptions and incomplete data"],
+  ["Anotacoes clinicas fornecidas", "Provided clinical notes"],
+  ["Dados clinicos contextuais", "Contextual clinical data"],
+  ["Justificativa clinica informada", "Provided clinical justification"],
+  ["Demonstrativo ou motivo da glosa", "Statement or denial reason"],
+  ["Regras conhecidas do convenio", "Known payer rules"],
+  ["Regras internas ou prazo de recurso", "Internal rules or appeal deadline"],
+  ["Dados da empresa", "Company data"],
+  ["Objetivo da auditoria", "Audit objective"],
+  ["Conteudo ou processo a auditar", "Content or process to audit"],
+  ["Critérios de análise", "Analysis criteria"],
+  ["Evidências observadas", "Observed evidence"],
+  ["Objetivo da análise", "Analysis objective"],
+  ["Dados de entrada", "Input data"],
+  ["Contexto da analise", "Analysis context"],
+  ["Contexto da auditoria", "Audit context"],
+  ["Regras de revisão", "Review rules"],
+  ["Texto livre", "Free text"],
+  ["Idioma de destino", "Target language"],
+  ["Preferencias de estruturacao", "Structuring preferences"],
+  ["Perguntas existentes", "Existing questions"],
+  ["Conteúdo do catálogo", "Catalog content"],
+  ["Conteúdo do modelo", "Template content"],
+  ["Conteúdo do relatório", "Report content"],
+  ["Conteúdo dos documentos", "Document content"],
+  ["Tickets e e-mails", "Tickets and emails"],
+  ["Regras de classificação e roteamento", "Classification and routing rules"],
+  ["Dados de tempos e tickets", "Time and ticket data"],
+  ["Dados financeiros", "Financial data"],
+  ["Extrato informado manualmente", "Manually provided statement"],
+  ["Lista de pagamentos", "Payment list"],
+  ["Dados de cálculo", "Calculation data"],
+  ["Dados dos itens", "Item data"],
+  ["Dados do pedido", "Order data"],
+  ["Dados da frota", "Fleet data"],
+  ["Ocorrencias e atividades do dia", "Daily occurrences and activities"],
+  ["Planejamento e pendencias", "Planning and pending items"],
+  ["Demanda e pedidos do dia", "Demand and daily orders"],
+  [
+    "Estoque, consumo e produção planejada",
+    "Inventory, consumption, and planned production",
+  ],
+  ["Estoque, lead time e restricoes", "Inventory, lead time, and restrictions"],
+  ["Capacidade, equipe e estoque", "Capacity, team, and inventory"],
+  ["Produção, vendas e sobras", "Production, sales, and leftovers"],
+  ["Vendas e produção planejadas", "Sales and planned production"],
+  ["Historico de demanda e vendas", "Demand and sales history"],
+  ["Historico de vendas estruturado", "Structured sales history"],
+  [
+    "Produtos, servicos e NCMs informados",
+    "Products, services, and provided NCMs",
+  ],
+  ["Perfil fiscal da empresa", "Company tax profile"],
+  ["Regime atual", "Current regime"],
+  ["Tipo de tributo", "Tax type"],
+  ["Regras informadas manualmente", "Manually provided rules"],
+  ["Alérgenos e avisos", "Allergens and notices"],
+  ["Formulação e porção", "Formula and serving"],
+  ["Dados nutricionais disponíveis", "Available nutritional data"],
+  ["Validade, alérgenos e revisão", "Expiration, allergens, and review"],
+  [
+    "Validade, fornecedores e lead time",
+    "Expiration, suppliers, and lead time",
+  ],
+  ["Estoque e validade", "Inventory and expiration"],
+  ["Regras sanitárias e internas", "Health and internal rules"],
+  ["Produto e formulação", "Product and formula"],
+  ["Variacoes desejadas", "Desired variations"],
+  ["Custos e processo", "Costs and process"],
+  ["Preços próprios", "Own prices"],
+  ["Preços de concorrentes permitidos", "Allowed competitor prices"],
+  ["Oferta, publico e canal", "Offer, audience, and channel"],
+  ["Detalhes da oferta", "Offer details"],
+  ["Objecoes e evidencias permitidas", "Allowed objections and evidence"],
+  ["Politicas e limites comerciais", "Commercial policies and limits"],
+  ["Contexto do atendimento", "Service context"],
+  ["Conteúdo das interações", "Interaction content"],
+  ["Base de atendimento", "Service baseline"],
+  ["Contexto de SLA e atendimento", "SLA and service context"],
+  ["Contexto do cliente", "Customer context"],
+  ["Nome do cliente", "Customer name"],
+  ["Nome da empresa", "Company name"],
+  ["Perfil da empresa", "Company profile"],
+  ["Estrutura operacional", "Operational structure"],
+  ["Orçamento e restrições", "Budget and restrictions"],
+  [
+    "Politicas, fluxo e limites de alcada",
+    "Policies, workflow, and approval limits",
+  ],
+  ["Política e limites", "Policy and limits"],
+  ["Tipo de obrigação", "Obligation type"],
+  [
+    "Norma, politica ou criterio de referencia",
+    "Reference standard, policy, or criterion",
+  ],
+  ["Critérios/checklist interno", "Internal criteria/checklist"],
+  ["Rigor, escopo e limites", "Rigor, scope, and limits"],
+  ["Regras, tolerancias e excecoes", "Rules, tolerances, and exceptions"],
+  ["Regras de tolerância", "Tolerance rules"],
+  ["Premissas e limites", "Assumptions and limits"],
+  ["Premissas, rateio e limites", "Assumptions, allocation, and limits"],
+  [
+    "Dados de entradas, saidas e provisoes",
+    "Inflows, outflows, and provisions data",
+  ],
+  ["Data inicial", "Start date"],
+  ["Data final", "End date"],
+  ["Data-alvo", "Target date"],
+  ["Data de referência", "Reference date"],
+  ["Data prevista de início", "Expected start date"],
+  ["Data da reunião", "Meeting date"],
+  ["Data de nascimento", "Date of birth"],
+  ["Participantes", "Participants"],
+  ["Título", "Title"],
+  ["Tema ou tese buscada", "Target topic or thesis"],
+  ["Texto da intimação", "Notice text"],
+  ["Material de precedentes", "Precedent material"],
+  ["Material de precedentes fornecido", "Provided precedent material"],
+  ["Contexto do caso", "Case context"],
+  ["Contexto jurídico", "Legal context"],
+  ["Requisitos obrigatórios", "Mandatory requirements"],
+  ["Restrições para revisão", "Review restrictions"],
+  ["Descrição da vaga", "Job description"],
+  ["Cargo", "Position"],
+  ["Função", "Role"],
+  ["Nome do candidato", "Candidate name"],
+  ["E-mail do candidato", "Candidate email"],
+  ["Tipo de admissão", "Admission type"],
+  ["Feedbacks, competencias e gaps", "Feedback, skills, and gaps"],
+  ["Preferencias do PDI", "Development plan preferences"],
+  [
+    "Dados agregados de desligamentos e efetivo",
+    "Aggregated termination and headcount data",
+  ],
+  ["Nivel de agregacao e limites", "Aggregation level and limits"],
+  ["Frequencia, tamanho e formato", "Frequency, size, and format"],
+  ["Categoria e ambiente", "Category and environment"],
+  ["Área", "Area"],
+  ["Regras de compra", "Purchasing rules"],
+  ["Regras de priorização", "Prioritization rules"],
+  ["Criterios de agrupamento", "Grouping criteria"],
+  ["Criterios de qualidade e riscos", "Quality and risk criteria"],
+  ["Critérios de relevância e cautelas", "Relevance criteria and cautions"],
+  ["Dados textuais/estruturados de origem", "Source text/structured data"],
+  ["Fontes e URLs", "Sources and URLs"],
+  ["Tipo de documento desejado", "Desired document type"],
+  ["Estilo do relatório", "Report style"],
+  ["Nível de detalhe", "Detail level"],
+  ["Tipo de inspeção", "Inspection type"],
+  ["Tipo de documento", "Document type"],
+  ["Entrada manual", "Manual input"],
+  ["Regras personalizadas", "Custom rules"],
+  ["Objetivo", "Objective"],
+]);
+
+const DEMO_FRAGMENT_TRANSLATIONS: Array<[RegExp, string]> = [
+  [
+    /\bAgente especializado para organizar uma rotina operacional\./gi,
+    "Specialized agent for organizing an operational routine.",
+  ],
+  [
+    /\bReduz trabalho manual e dispersão de informações\./gi,
+    "Reduces manual work and scattered information.",
+  ],
+  [
+    /\bRecebe informações fornecidas pelo usuário em texto estruturado\./gi,
+    "Receives user-provided information in structured text.",
+  ],
+  [
+    /\bEntrega uma saída estruturada, revisável e acionável\./gi,
+    "Delivers a structured, reviewable, and actionable output.",
+  ],
+  [/\bCenário oficial do Core\b/gi, "Official Core scenario"],
+  [/\bCampos oficiais do Exemplo\b/gi, "Official Example fields"],
+  [/\bEvidências do cenário visíveis\b/gi, "Visible scenario evidence"],
+  [/\bAntes de uso operacional\b/gi, "Before operational use"],
+  [/\bRevisão humana\b/gi, "Human review"],
+  [/\bNecessária\b/gi, "Required"],
+  [/\bMédia\b/gi, "Medium"],
+  [/\bBaixa\b/gi, "Low"],
+  [/\bAlta\b/gi, "High"],
+  [/\bAbaixo\b/gi, "Below"],
+  [/\bAtenção\b/gi, "Attention"],
+  [/\bResponsável pelo processo\b/gi, "Process owner"],
+  [/\bBase principal da leitura\b/gi, "Main reading basis"],
+  [
+    /\bContexto e critério de validação\b/gi,
+    "Context and validation criterion",
+  ],
+  [/\bSem grupo\b/gi, "Ungrouped"],
+  [/\bresultado do Core\b/gi, "Core result"],
+  [
+    /\bSnapshot gerado pelo Agente IA Especialista no Core CerneOps com as entradas oficiais do botão Exemplo\. Revise antes de qualquer uso operacional\./gi,
+    "Snapshot generated by the Specialist AI Agent in CerneOps Core with the official Example inputs. Review it before any operational use.",
+  ],
+];
+
+function hasPortugueseMarkers(value: string) {
+  return /[áàâãéêíóôõúçÁÀÂÃÉÊÍÓÔÕÚÇ]|\b(?:você|empresa|operação|processo|dados|revisão|agentes|planos|gratuito|começar|falar|especialista|usuários|tarefas|cartão|cobrança|disponíveis|catálogo|saiba|mais|porque|gestão|saúde|jurídico|financeiro|atendimento|comercial|relatório|execuções|segurança|suporte|prioridade|entrada|resultado|análise|cenário|exemplo|responsável|premissas|fontes|incertezas|limitações|destaques|próximos|passos)\b/i.test(
+    value,
+  );
+}
+
+function normalizeDemoText(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function translateDemoText(value: string, locale: Locale) {
+  if (locale !== "en-US") return value;
+  const normalized = normalizeDemoText(value);
+  let translated = DEMO_TEXT_TRANSLATIONS.get(normalized);
+  if (!translated) translated = translateText(value, locale);
+  translated = DEMO_FRAGMENT_TRANSLATIONS.reduce(
+    (current, [pattern, replacement]) => current.replace(pattern, replacement),
+    translated,
+  );
+  if (!hasPortugueseMarkers(translated)) return translated;
+  if (hasPortugueseMarkers(value) || hasPortugueseMarkers(translated)) {
+    return "Example content from the official Core scenario, displayed in English for this demo. The original PT-BR scenario remains unchanged for compatibility.";
+  }
+  return value;
+}
+
+function displayAgentTitle(agent: DemoAgent | undefined, locale: Locale) {
+  if (!agent) return "";
+  return getLocalizedAgentName(agent.title, locale);
+}
+
+function displayAgentGroup(group: string, locale: Locale) {
+  return getLocalizedAgentGroup(group, locale);
+}
 
 function normalizeGroupLabel(raw: string) {
   const key = raw.trim().toLowerCase();
@@ -399,6 +753,110 @@ function createDemoResult(
     inputReference,
     getDemoScenario(agent)?.agentCode ?? "",
   );
+}
+
+function createEnglishDemoResult(
+  agent: DemoAgent,
+  fields: DemoField[],
+): DemoResult {
+  const agentTitle = displayAgentTitle(agent, "en-US");
+  const agentGroup = displayAgentGroup(agent.group, "en-US").toLowerCase();
+  const inputReference = fields.map(({ label, value }) => ({
+    label: translateDemoText(label, "en-US"),
+    value: translateDemoText(value, "en-US"),
+  }));
+
+  return {
+    title: `${agentTitle} — Core demo result`,
+    reviewNotice:
+      "Simulated, read-only result for evaluation. Review the output before using any operational recommendation.",
+    summary: `This demo shows how ${agentTitle} organizes ${agentGroup} inputs into a structured, reviewable, and action-oriented output without changing the official PT-BR Core scenario.`,
+    metrics: [
+      {
+        label: "Inputs considered",
+        value: String(fields.length),
+        detail: "Official Example fields",
+        tone: "neutral",
+      },
+      {
+        label: "Traceability",
+        value: "Visible",
+        detail: "Inputs remain attached to the result",
+        tone: "positive",
+      },
+      {
+        label: "Human review",
+        value: "Required",
+        detail: "Before operational use",
+        tone: "warning",
+      },
+      {
+        label: "Execution status",
+        value: "Simulated",
+        detail: "No real-time external execution",
+        tone: "neutral",
+      },
+    ],
+    inputReference,
+    premises: [
+      "The demo uses the official Core Example inputs for the selected agent.",
+      "The output is static, read-only, and intended to demonstrate the agent flow.",
+      "The PT-BR scenario remains the compatibility source for automated demo QA.",
+    ],
+    uncertainties: [
+      "Operational conclusions must be validated against the company's real data.",
+      "This demo does not replace legal, financial, medical, or technical expert review where applicable.",
+    ],
+    highlights: [
+      `${agentTitle} turns scattered context into a structured output for review.`,
+      "The flow keeps the original Example inputs visible next to the result.",
+      "The English experience changes only strings; layout, colors, identity, and demo behavior remain unchanged.",
+    ],
+    tables: [
+      {
+        title: "Demo checkpoints",
+        columns: ["Checkpoint", "Status", "Evidence"],
+        rows: [
+          {
+            Checkpoint: "Scenario loaded",
+            Status: "Ready",
+            Evidence: "Official Example inputs",
+          },
+          {
+            Checkpoint: "Result generated",
+            Status: "Simulated",
+            Evidence: "Static local output",
+          },
+          {
+            Checkpoint: "Review required",
+            Status: "Yes",
+            Evidence: "Read-only demo notice",
+          },
+        ],
+      },
+    ],
+    sections: [
+      {
+        title: "Execution recommendation",
+        items: [
+          "Review the visible inputs before interpreting the result.",
+          "Use the demo output as an example of the Core workflow, not as an operational decision.",
+          "Run the Trial with real company routines when business validation is required.",
+        ],
+      },
+      {
+        title: "Evidence considered in the example scenario",
+        items: inputReference.length
+          ? inputReference.map((input) => `${input.label}: ${input.value}`)
+          : ["No Example inputs were available for this agent."],
+      },
+    ],
+    nextSteps: [
+      "Confirm that the selected agent matches the routine you want to test.",
+      "Compare the static demo flow with the company's real process.",
+      "Start the Trial to validate the agent with real operational context.",
+    ],
+  };
 }
 
 type ResultFocus = {
@@ -2251,10 +2709,12 @@ function ResultJsonValue({
   value,
   depth = 0,
   archetype = "documental",
+  locale = "pt-BR",
 }: {
   value: unknown;
   depth?: number;
   archetype?: "analitico" | "tabular" | "documental";
+  locale?: Locale;
 }) {
   if (!hasMeaningfulResultValue(value)) return null;
   if (typeof value !== "object") {
@@ -2262,14 +2722,18 @@ function ResultJsonValue({
     if (typeof value === "boolean") {
       return (
         <span className="whitespace-pre-wrap break-words">
-          {value ? "Sim" : "Não"}
+          {translateDemoText(value ? "Sim" : "Não", locale)}
         </span>
       );
     }
     if (isLikelyMarkdownText(text)) {
-      return <MarkdownResultOutput output={text} />;
+      return <MarkdownResultOutput output={text} locale={locale} />;
     }
-    return <span className="whitespace-pre-wrap break-words">{text}</span>;
+    return (
+      <span className="whitespace-pre-wrap break-words">
+        {translateDemoText(text, locale)}
+      </span>
+    );
   }
   if (Array.isArray(value)) {
     const visibleItems = value.filter(hasMeaningfulResultValue);
@@ -2285,7 +2749,7 @@ function ResultJsonValue({
                 -
               </span>
               <span className="whitespace-pre-wrap break-words">
-                {String(item)}
+                {translateDemoText(String(item), locale)}
               </span>
             </li>
           ))}
@@ -2341,7 +2805,9 @@ function ResultJsonValue({
                 className="rounded-lg border border-border bg-background/60 p-4"
               >
                 <h5 className="text-sm font-semibold text-foreground/90">
-                  {titleEntry ? String(titleEntry[1]) : `Item ${index + 1}`}
+                  {titleEntry
+                    ? translateDemoText(String(titleEntry[1]), locale)
+                    : `Item ${index + 1}`}
                 </h5>
                 <dl className="mt-3 grid gap-3 lg:grid-cols-2">
                   {Object.entries(item)
@@ -2354,13 +2820,14 @@ function ResultJsonValue({
                     .map(([key, itemValue]) => (
                       <div key={key} className="min-w-0">
                         <dt className="text-xs font-medium text-muted-foreground">
-                          {humanizeResultKey(key)}
+                          {translateDemoText(humanizeResultKey(key), locale)}
                         </dt>
                         <dd className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/80">
                           <ResultJsonValue
                             value={itemValue}
                             depth={depth + 1}
                             archetype={archetype}
+                            locale={locale}
                           />
                         </dd>
                       </div>
@@ -2381,7 +2848,10 @@ function ResultJsonValue({
         >
           <table className="min-w-full divide-y divide-border/60 text-left text-sm">
             <caption className="sr-only">
-              Dados estruturados do resultado do agente
+              {translateDemoText(
+                "Dados estruturados do resultado do agente",
+                locale,
+              )}
             </caption>
             <thead className="bg-background/70 text-muted-foreground">
               <tr>
@@ -2391,7 +2861,7 @@ function ResultJsonValue({
                     scope="col"
                     className="whitespace-nowrap px-3 py-2 font-medium"
                   >
-                    {humanizeResultKey(column)}
+                    {translateDemoText(humanizeResultKey(column), locale)}
                   </th>
                 ))}
               </tr>
@@ -2408,6 +2878,7 @@ function ResultJsonValue({
                         value={row[column] ?? "-"}
                         depth={depth + 1}
                         archetype={archetype}
+                        locale={locale}
                       />
                     </td>
                   ))}
@@ -2429,6 +2900,7 @@ function ResultJsonValue({
               value={item}
               depth={depth + 1}
               archetype={archetype}
+              locale={locale}
             />
           </div>
         ))}
@@ -2498,21 +2970,21 @@ function ResultJsonValue({
     <div className="space-y-4">
       {rootNotice ? (
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-6 text-amber-100">
-          {rootNotice[1]}
+          {translateDemoText(rootNotice[1], locale)}
         </div>
       ) : null}
       {rootTitle || rootSummary ? (
         <section className="rounded-lg border border-border bg-background/60 p-4">
           {rootTitle ? (
             <h3 className="text-base font-semibold text-foreground">
-              {rootTitle[1]}
+              {translateDemoText(rootTitle[1], locale)}
             </h3>
           ) : null}
           {rootSummary ? (
             <p
               className={`${rootTitle ? "mt-2" : ""} whitespace-pre-wrap text-sm leading-6 text-muted-foreground`}
             >
-              {rootSummary[1]}
+              {translateDemoText(rootSummary[1], locale)}
             </p>
           ) : null}
         </section>
@@ -2525,13 +2997,14 @@ function ResultJsonValue({
               className="min-w-0 rounded-lg border border-border bg-background/60 p-3"
             >
               <dt className="text-xs text-muted-foreground">
-                {humanizeResultKey(key)}
+                {translateDemoText(humanizeResultKey(key), locale)}
               </dt>
               <dd className="mt-1 text-sm font-medium leading-6 text-foreground/90">
                 <ResultJsonValue
                   value={item}
                   depth={depth + 1}
                   archetype={archetype}
+                  locale={locale}
                 />
               </dd>
             </div>
@@ -2553,13 +3026,14 @@ function ResultJsonValue({
               }`}
             >
               <h4 className="mb-3 text-sm font-semibold text-foreground/90">
-                {humanizeResultKey(key)}
+                {translateDemoText(humanizeResultKey(key), locale)}
               </h4>
               <div className="text-sm leading-6 text-muted-foreground">
                 <ResultJsonValue
                   value={item}
                   depth={depth + 1}
                   archetype={archetype}
+                  locale={locale}
                 />
               </div>
             </section>
@@ -2777,7 +3251,13 @@ function groupMarkdownSections(blocks: MarkdownBlock[]): MarkdownSection[] {
   return sections;
 }
 
-function InlineResultText({ text }: { text: string }) {
+function InlineResultText({
+  text,
+  locale = "pt-BR",
+}: {
+  text: string;
+  locale?: Locale;
+}) {
   const fragments = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
   return (
     <>
@@ -2785,7 +3265,7 @@ function InlineResultText({ text }: { text: string }) {
         if (fragment.startsWith("**") && fragment.endsWith("**")) {
           return (
             <strong key={index} className="font-semibold text-foreground">
-              {fragment.slice(2, -2)}
+              {translateDemoText(fragment.slice(2, -2), locale)}
             </strong>
           );
         }
@@ -2799,7 +3279,7 @@ function InlineResultText({ text }: { text: string }) {
             </code>
           );
         }
-        return fragment;
+        return translateDemoText(fragment, locale);
       })}
     </>
   );
@@ -2815,7 +3295,13 @@ function resultTone(title = "") {
   return "default";
 }
 
-function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
+function ResultMarkdownBlocks({
+  blocks,
+  locale = "pt-BR",
+}: {
+  blocks: MarkdownBlock[];
+  locale?: Locale;
+}) {
   return (
     <div className="space-y-4">
       {blocks.map((block, index) => {
@@ -2828,6 +3314,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
             return (
               <ResultMarkdownBlocks
                 key={index}
+                locale={locale}
                 blocks={[
                   {
                     kind: "table",
@@ -2846,7 +3333,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
               className="overflow-x-auto rounded-lg border border-border bg-background/80 p-4"
             >
               <pre className="min-w-max whitespace-pre font-mono text-xs leading-6 text-foreground/75">
-                {block.content}
+                {translateDemoText(block.content, locale)}
               </pre>
             </div>
           );
@@ -2857,7 +3344,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
               key={index}
               className="rounded-r-lg border-l-2 border-circuit bg-background/60 px-4 py-3 text-sm italic leading-6 text-foreground/75"
             >
-              <InlineResultText text={block.text} />
+              <InlineResultText text={block.text} locale={locale} />
             </blockquote>
           );
         }
@@ -2867,7 +3354,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
               key={index}
               className="pt-1 font-display text-lg font-semibold leading-snug text-foreground"
             >
-              {block.text}
+              {translateDemoText(block.text, locale)}
             </h4>
           );
         }
@@ -2879,7 +3366,10 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
             >
               <table className="min-w-full divide-y divide-border/70 text-left text-sm">
                 <caption className="sr-only">
-                  Tabela apresentada no resultado do agente
+                  {translateDemoText(
+                    "Tabela apresentada no resultado do agente",
+                    locale,
+                  )}
                 </caption>
                 <thead className="bg-background/70 text-left text-muted-foreground">
                   <tr>
@@ -2889,7 +3379,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
                         scope="col"
                         className="whitespace-nowrap px-3 py-2 font-medium"
                       >
-                        <InlineResultText text={column} />
+                        <InlineResultText text={column} locale={locale} />
                       </th>
                     ))}
                   </tr>
@@ -2905,7 +3395,10 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
                           key={`${column}-${columnIndex}`}
                           className="min-w-36 max-w-md whitespace-pre-wrap break-words px-3 py-2.5 align-top leading-6 text-foreground/80"
                         >
-                          <InlineResultText text={row[columnIndex] || "-"} />
+                          <InlineResultText
+                            text={row[columnIndex] || "-"}
+                            locale={locale}
+                          />
                         </td>
                       ))}
                     </tr>
@@ -2952,7 +3445,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
                     >
                       {marker ?? numberedPrefix}
                     </span>{" "}
-                    <InlineResultText text={item.text} />
+                    <InlineResultText text={item.text} locale={locale} />
                   </li>
                 );
               })}
@@ -2966,9 +3459,11 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
               key={index}
               className="rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm leading-6"
             >
-              <span className="font-medium text-foreground">{fact[1]}:</span>{" "}
+              <span className="font-medium text-foreground">
+                {translateDemoText(fact[1], locale)}:
+              </span>{" "}
               <span className="text-muted-foreground">
-                <InlineResultText text={fact[2]} />
+                <InlineResultText text={fact[2]} locale={locale} />
               </span>
             </div>
           );
@@ -2978,7 +3473,7 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
             key={index}
             className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground"
           >
-            <InlineResultText text={block.text} />
+            <InlineResultText text={block.text} locale={locale} />
           </p>
         );
       })}
@@ -2986,7 +3481,13 @@ function ResultMarkdownBlocks({ blocks }: { blocks: MarkdownBlock[] }) {
   );
 }
 
-function MarkdownResultOutput({ output }: { output: string }) {
+function MarkdownResultOutput({
+  output,
+  locale = "pt-BR",
+}: {
+  output: string;
+  locale?: Locale;
+}) {
   const sections = groupMarkdownSections(parseMarkdownBlocks(output));
   const metricCandidates = sections.flatMap((section) =>
     section.blocks.flatMap((block) => {
@@ -3033,10 +3534,10 @@ function MarkdownResultOutput({ output }: { output: string }) {
               className="rounded-lg border border-border bg-background/60 p-3"
             >
               <p className="text-xs text-muted-foreground">
-                <InlineResultText text={metric.label} />
+                <InlineResultText text={metric.label} locale={locale} />
               </p>
               <p className="mt-1 text-base font-semibold leading-6 text-foreground">
-                <InlineResultText text={metric.value} />
+                <InlineResultText text={metric.value} locale={locale} />
               </p>
             </div>
           ))}
@@ -3056,11 +3557,11 @@ function MarkdownResultOutput({ output }: { output: string }) {
             {section.title ? (
               <div className="mb-3">
                 <h3 className="text-sm font-semibold leading-tight text-foreground/90">
-                  {section.title}
+                  {translateDemoText(section.title, locale)}
                 </h3>
               </div>
             ) : null}
-            <ResultMarkdownBlocks blocks={section.blocks} />
+            <ResultMarkdownBlocks blocks={section.blocks} locale={locale} />
           </section>
         );
       })}
@@ -3127,10 +3628,12 @@ function CoreResultOutput({
   output,
   structuredResult,
   agentCode,
+  locale = "pt-BR",
 }: {
   output: string;
   structuredResult?: unknown;
   agentCode?: string;
+  locale?: Locale;
 }) {
   const hasStructuredResult =
     structuredResult !== null && structuredResult !== undefined;
@@ -3145,7 +3648,11 @@ function CoreResultOutput({
             value={structuredResult as Record<string, unknown>}
           />
         ) : (
-          <ResultJsonValue value={structuredResult} archetype={archetype} />
+          <ResultJsonValue
+            value={structuredResult}
+            archetype={archetype}
+            locale={locale}
+          />
         )}
       </div>
     );
@@ -3161,96 +3668,102 @@ function CoreResultOutput({
     }
     return (
       <div data-result-archetype={parsedArchetype}>
-        <ResultJsonValue value={parsed} archetype={parsedArchetype} />
+        <ResultJsonValue
+          value={parsed}
+          archetype={parsedArchetype}
+          locale={locale}
+        />
       </div>
     );
   } catch {
     return (
       <div data-result-archetype={archetype}>
-        <MarkdownResultOutput output={output} />
+        <MarkdownResultOutput output={output} locale={locale} />
       </div>
     );
   }
 }
 
-function buildDemoResultText(result: DemoResult) {
+function buildDemoResultText(result: DemoResult, locale: Locale) {
+  const t = (value: string) => translateDemoText(value, locale);
   if (result.agentCode === "extrator_precedentes") {
     return [
-      `# ${result.title}`,
-      result.reviewNotice,
+      `# ${t(result.title)}`,
+      t(result.reviewNotice),
       "",
-      "## Entradas utilizadas nesta simulação",
+      `## ${t("Entradas utilizadas nesta simulação")}`,
       ...result.inputReference.flatMap((input) => [
-        `### ${input.label}`,
-        input.value,
+        `### ${t(input.label)}`,
+        t(input.value),
         "",
       ]),
-      "## Resultado",
-      buildPrecedentExtractionText(result.rawStructuredResult),
+      `## ${t("Resultado")}`,
+      t(buildPrecedentExtractionText(result.rawStructuredResult)),
     ].join("\n");
   }
   if (result.rawOutput) {
     return [
-      `# ${result.title}`,
-      result.reviewNotice,
+      `# ${t(result.title)}`,
+      t(result.reviewNotice),
       "",
-      "## Entradas utilizadas nesta simulação",
+      `## ${t("Entradas utilizadas nesta simulação")}`,
       ...result.inputReference.flatMap((input) => [
-        `### ${input.label}`,
-        input.value,
+        `### ${t(input.label)}`,
+        t(input.value),
         "",
       ]),
-      "## Resultado",
-      result.rawOutput,
+      `## ${t("Resultado")}`,
+      t(result.rawOutput),
     ].join("\n");
   }
   return [
-    `# ${result.title}`,
-    result.reviewNotice,
+    `# ${t(result.title)}`,
+    t(result.reviewNotice),
     "",
-    "## Entradas utilizadas nesta simulação",
+    `## ${t("Entradas utilizadas nesta simulação")}`,
     ...result.inputReference.flatMap((input) => [
-      `### ${input.label}`,
-      input.value,
+      `### ${t(input.label)}`,
+      t(input.value),
       "",
     ]),
-    "## Resumo",
-    result.summary,
+    `## ${t("Resumo")}`,
+    t(result.summary),
     "",
-    "## Indicadores do resultado",
+    `## ${t("Indicadores do resultado")}`,
     ...result.metrics.map(
-      (metric) => `- ${metric.label}: ${metric.value} (${metric.detail})`,
+      (metric) =>
+        `- ${t(metric.label)}: ${t(metric.value)} (${t(metric.detail)})`,
     ),
     "",
-    "## Premissas e fontes",
-    ...result.premises.map((item) => `- ${item}`),
+    `## ${t("Premissas e fontes")}`,
+    ...result.premises.map((item) => `- ${t(item)}`),
     "",
-    "## Incertezas e limitações",
-    ...result.uncertainties.map((item) => `- ${item}`),
+    `## ${t("Incertezas e limitações")}`,
+    ...result.uncertainties.map((item) => `- ${t(item)}`),
     "",
-    "## Destaques",
-    ...result.highlights.map((item) => `- ${item}`),
+    `## ${t("Destaques")}`,
+    ...result.highlights.map((item) => `- ${t(item)}`),
     "",
     ...result.tables.flatMap((table) => [
-      `## ${table.title}`,
-      table.columns.join(" | "),
+      `## ${t(table.title)}`,
+      table.columns.map(t).join(" | "),
       ...table.rows.map((row) =>
-        table.columns.map((column) => row[column] ?? "-").join(" | "),
+        table.columns.map((column) => t(row[column] ?? "-")).join(" | "),
       ),
       "",
     ]),
     ...result.sections.flatMap((section) => [
-      `## ${section.title}`,
-      ...section.items.map((item) => `- ${item}`),
+      `## ${t(section.title)}`,
+      ...section.items.map((item) => `- ${t(item)}`),
       "",
     ]),
-    "## Próximos passos",
-    ...result.nextSteps.map((item) => `- ${item}`),
+    `## ${t("Próximos passos")}`,
+    ...result.nextSteps.map((item) => `- ${t(item)}`),
   ].join("\n");
 }
 
-function downloadDemoResult(result: DemoResult) {
-  const blob = new Blob([buildDemoResultText(result)], {
+function downloadDemoResult(result: DemoResult, locale: Locale) {
+  const blob = new Blob([buildDemoResultText(result, locale)], {
     type: "text/plain;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
@@ -3262,6 +3775,7 @@ function downloadDemoResult(result: DemoResult) {
 }
 
 export function DemoWorkspace() {
+  const { locale } = useI18n();
   const [agents, setAgents] = useState<DemoAgent[]>([]);
   const [isLoadingAgents, setIsLoadingAgents] = useState(true);
   const [hasAgentError, setHasAgentError] = useState(false);
@@ -3278,6 +3792,19 @@ export function DemoWorkspace() {
 
     const loadAgents = async () => {
       try {
+        if (locale === "en-US") {
+          const nextAgents = getLocalFallbackAgents();
+          const preferredAgent = nextAgents.find(isKpiAgent) ?? nextAgents[0];
+          if (!alive) return;
+          setAgents(nextAgents);
+          setSelectedId(preferredAgent?.id ?? "");
+          setFields(preferredAgent ? createFields(preferredAgent) : []);
+          setOpenGroups(
+            preferredAgent ? new Set([preferredAgent.group]) : new Set(),
+          );
+          setHasAgentError(false);
+          return;
+        }
         const plans = await fetchLandingPlans();
         if (!alive) return;
         const nextAgents = plans
@@ -3308,7 +3835,7 @@ export function DemoWorkspace() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [locale]);
 
   const selectedAgent = useMemo(
     () => agents.find((agent) => agent.id === selectedId) ?? agents[0],
@@ -3337,7 +3864,13 @@ export function DemoWorkspace() {
       if (
         normalizedSearch &&
         !agent.title.toLowerCase().includes(normalizedSearch) &&
-        !agent.group.toLowerCase().includes(normalizedSearch)
+        !agent.group.toLowerCase().includes(normalizedSearch) &&
+        !displayAgentTitle(agent, locale)
+          .toLowerCase()
+          .includes(normalizedSearch) &&
+        !displayAgentGroup(agent.group, locale)
+          .toLowerCase()
+          .includes(normalizedSearch)
       ) {
         continue;
       }
@@ -3348,7 +3881,7 @@ export function DemoWorkspace() {
     return Array.from(groups.entries()).sort(([a], [b]) =>
       a.localeCompare(b, "pt-BR"),
     );
-  }, [agents, search]);
+  }, [agents, locale, search]);
 
   const selectAgent = (agent: DemoAgent) => {
     executionRef.current += 1;
@@ -3383,6 +3916,11 @@ export function DemoWorkspace() {
     setResult(null);
     window.setTimeout(() => {
       if (executionRef.current !== executionId) return;
+      if (locale === "en-US") {
+        setResult(createEnglishDemoResult(selectedAgent, fields));
+        setStatus("success");
+        return;
+      }
       void import("@/lib/core-demo-golden-results.generated").then(
         ({ CORE_DEMO_GOLDEN_RESULTS }) => {
           if (executionRef.current !== executionId) return;
@@ -3413,7 +3951,7 @@ export function DemoWorkspace() {
         <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8">
           <div className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-ember">
             <span>/</span>
-            <span>Demo de agentes</span>
+            <span>{translateDemoText("Demo de agentes", locale)}</span>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[350px_minmax(0,1fr)]">
@@ -3421,22 +3959,30 @@ export function DemoWorkspace() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-display text-2xl font-semibold">
-                    Selecione um agente por setor
+                    {translateDemoText("Selecione um agente por setor", locale)}
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Escolha o setor e o agente que deseja testar.
+                    {translateDemoText(
+                      "Escolha o setor e o agente que deseja testar.",
+                      locale,
+                    )}
                   </p>
                 </div>
                 <Bot className="mt-1 h-5 w-5 shrink-0 text-ember" />
               </div>
 
               <label className="relative mt-5 block">
-                <span className="sr-only">Buscar setor ou agente</span>
+                <span className="sr-only">
+                  {translateDemoText("Buscar setor ou agente", locale)}
+                </span>
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Buscar setor ou agente"
+                  placeholder={translateDemoText(
+                    "Buscar setor ou agente",
+                    locale,
+                  )}
                   className="h-11 w-full rounded-lg border border-border bg-surface/50 pl-10 pr-3 text-sm outline-none transition placeholder:text-muted-foreground/75 focus:border-ember/60 focus:ring-2 focus:ring-ember/20"
                 />
               </label>
@@ -3444,14 +3990,16 @@ export function DemoWorkspace() {
               {isLoadingAgents ? (
                 <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin text-ember" />
-                  Carregando catálogo oficial...
+                  {translateDemoText("Carregando catálogo oficial...", locale)}
                 </div>
               ) : null}
 
               {hasAgentError ? (
                 <p className="mt-4 text-xs leading-relaxed text-amber-200">
-                  Catálogo dinâmico indisponível. Exibindo a cópia local dos
-                  agentes para a demonstração.
+                  {translateDemoText(
+                    "Catálogo dinâmico indisponível. Exibindo a cópia local dos agentes para a demonstração.",
+                    locale,
+                  )}
                 </p>
               ) : null}
 
@@ -3472,11 +4020,12 @@ export function DemoWorkspace() {
                         <span className="flex min-w-0 items-center gap-2">
                           <Bot className="h-4 w-4 shrink-0 text-ember" />
                           <span className="truncate text-sm font-medium">
-                            {group}
+                            {displayAgentGroup(group, locale)}
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-                          {groupAgents.length} agentes
+                          {groupAgents.length}{" "}
+                          {translateDemoText("agentes", locale)}
                           {isOpen ? (
                             <ChevronUp className="h-4 w-4" />
                           ) : (
@@ -3501,7 +4050,7 @@ export function DemoWorkspace() {
                                 }`}
                               >
                                 <span className="min-w-0 truncate">
-                                  {agent.title}
+                                  {displayAgentTitle(agent, locale)}
                                 </span>
                                 {selected ? (
                                   <Check className="h-4 w-4 shrink-0 text-ember" />
@@ -3518,10 +4067,14 @@ export function DemoWorkspace() {
 
               <div className="mt-5 rounded-xl border border-circuit/25 bg-circuit/5 p-4 text-sm leading-relaxed text-muted-foreground">
                 <ShieldCheck className="mb-2 h-5 w-5 text-circuit" />
-                Todos os agentes operam com{" "}
-                <span className="font-medium text-foreground">zero código</span>
-                , seguindo os princípios Core de simplicidade, redução de
-                burocracia e praticidade operacional.
+                {translateDemoText("Todos os agentes operam com", locale)}{" "}
+                <span className="font-medium text-foreground">
+                  {translateDemoText("zero código", locale)}
+                </span>
+                {translateDemoText(
+                  ", seguindo os princípios Core de simplicidade, redução de burocracia e praticidade operacional.",
+                  locale,
+                )}
               </div>
             </aside>
 
@@ -3531,13 +4084,13 @@ export function DemoWorkspace() {
                   <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                     <div>
                       <div className="font-mono text-xs uppercase tracking-widest text-ember">
-                        Agente selecionado
+                        {translateDemoText("Agente selecionado", locale)}
                       </div>
                       <h1 className="mt-2 font-display text-3xl font-semibold leading-tight sm:text-4xl">
-                        {selectedAgent.title}
+                        {displayAgentTitle(selectedAgent, locale)}
                       </h1>
                       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                        {selectedAgent.description}
+                        {translateDemoText(selectedAgent.description, locale)}
                       </p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
@@ -3547,7 +4100,7 @@ export function DemoWorkspace() {
                         className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/55 px-4 py-2.5 text-sm font-medium transition hover:bg-surface-elevated"
                       >
                         <Plus className="h-4 w-4" />
-                        Novo
+                        {translateDemoText("Novo", locale)}
                       </button>
                       <button
                         type="button"
@@ -3555,16 +4108,17 @@ export function DemoWorkspace() {
                         className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/55 px-4 py-2.5 text-sm font-medium transition hover:bg-surface-elevated"
                       >
                         <Sparkles className="h-4 w-4" />
-                        Exemplo
+                        {translateDemoText("Exemplo", locale)}
                       </button>
                     </div>
                   </div>
 
                   <form onSubmit={handleSubmit} className="mt-6 space-y-5">
                     <p className="text-xs leading-relaxed text-muted-foreground">
-                      Dados preenchidos pelo botão “Exemplo” do Core CerneOps.
-                      As entradas são exibidas exatamente como no fluxo do
-                      agente e permanecem somente leitura.
+                      {translateDemoText(
+                        "Dados preenchidos pelo botão “Exemplo” do Core CerneOps. As entradas são exibidas exatamente como no fluxo do agente e permanecem somente leitura.",
+                        locale,
+                      )}
                     </p>
                     <div className="grid gap-4 md:grid-cols-2">
                       {fields.map((field, index) => (
@@ -3573,14 +4127,18 @@ export function DemoWorkspace() {
                           className={`block space-y-2 ${index === 2 ? "md:col-span-2" : ""}`}
                         >
                           <span className="text-xs text-muted-foreground">
-                            {index + 1}. {field.label}
+                            {index + 1}.{" "}
+                            {translateDemoText(field.label, locale)}
                           </span>
                           <textarea
-                            value={field.value}
+                            value={translateDemoText(field.value, locale)}
                             rows={field.rows}
                             readOnly
                             aria-readonly="true"
-                            placeholder={field.placeholder}
+                            placeholder={translateDemoText(
+                              field.placeholder,
+                              locale,
+                            )}
                             className="w-full resize-none rounded-lg border border-border bg-surface/40 px-4 py-3 text-sm leading-6 outline-none placeholder:text-muted-foreground/65"
                           />
                         </label>
@@ -3589,24 +4147,29 @@ export function DemoWorkspace() {
 
                     {!fields.length ? (
                       <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
-                        O cenário oficial de demonstração deste agente ainda
-                        está em preparação. A execução ficará disponível assim
-                        que o exemplo do Core for publicado.
+                        {translateDemoText(
+                          "O cenário oficial de demonstração deste agente ainda está em preparação. A execução ficará disponível assim que o exemplo do Core for publicado.",
+                          locale,
+                        )}
                       </div>
                     ) : null}
 
                     <div className="flex items-start gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
                       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
                       <p>
-                        Demonstração simulando uma análise real do Agente IA
-                        Especialista.
+                        {translateDemoText(
+                          "Demonstração simulando uma análise real do Agente IA Especialista.",
+                          locale,
+                        )}
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <p className="text-xs text-muted-foreground">
-                        Entradas e resultado são simulados e somente leitura
-                        para você conhecer o fluxo do Core.
+                        {translateDemoText(
+                          "Entradas e resultado são simulados e somente leitura para você conhecer o fluxo do Core.",
+                          locale,
+                        )}
                       </p>
                       <button
                         type="submit"
@@ -3618,16 +4181,22 @@ export function DemoWorkspace() {
                         ) : (
                           <Sparkles className="h-4 w-4" />
                         )}
-                        {status === "loading"
-                          ? "Executando demonstração..."
-                          : "Executar análise"}
+                        {translateDemoText(
+                          status === "loading"
+                            ? "Executando demonstração..."
+                            : "Executar análise",
+                          locale,
+                        )}
                       </button>
                     </div>
                   </form>
                 </section>
               ) : (
                 <section className="rounded-2xl border border-border bg-background/65 p-8 text-center text-muted-foreground">
-                  Selecione um agente para iniciar a demonstração.
+                  {translateDemoText(
+                    "Selecione um agente para iniciar a demonstração.",
+                    locale,
+                  )}
                 </section>
               )}
 
@@ -3641,26 +4210,28 @@ export function DemoWorkspace() {
                     <div>
                       <div className="flex items-center gap-2 text-sm font-semibold uppercase text-foreground/90">
                         <CircleCheck className="h-4 w-4 text-emerald-400" />
-                        Resultado do agente
+                        {translateDemoText("Resultado do agente", locale)}
                       </div>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        Demonstração simulando uma análise real do Agente IA
-                        Especialista.
+                        {translateDemoText(
+                          "Demonstração simulando uma análise real do Agente IA Especialista.",
+                          locale,
+                        )}
                       </p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => downloadDemoResult(result)}
+                      onClick={() => downloadDemoResult(result, locale)}
                       className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border bg-surface/55 px-3 py-2 text-sm text-muted-foreground transition hover:text-foreground"
                     >
                       <FileText className="h-4 w-4" />
-                      Exportar relatório
+                      {translateDemoText("Exportar relatório", locale)}
                     </button>
                   </div>
 
                   {!result.rawOutput ? (
                     <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
-                      {result.reviewNotice}
+                      {translateDemoText(result.reviewNotice, locale)}
                     </div>
                   ) : null}
 
@@ -3680,13 +4251,13 @@ export function DemoWorkspace() {
                               className={`rounded-lg border p-3 ${tone}`}
                             >
                               <p className="text-xs text-muted-foreground">
-                                {metric.label}
+                                {translateDemoText(metric.label, locale)}
                               </p>
                               <p className="mt-1 font-display text-xl font-semibold text-foreground">
-                                {metric.value}
+                                {translateDemoText(metric.value, locale)}
                               </p>
                               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                {metric.detail}
+                                {translateDemoText(metric.detail, locale)}
                               </p>
                             </div>
                           );
@@ -3697,16 +4268,19 @@ export function DemoWorkspace() {
 
                   <details className="mt-4 rounded-lg border border-border bg-background/60">
                     <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-foreground/85 marker:text-muted-foreground">
-                      Conferir entradas do Exemplo utilizadas
+                      {translateDemoText(
+                        "Conferir entradas do Exemplo utilizadas",
+                        locale,
+                      )}
                     </summary>
                     <div className="grid gap-3 border-t border-border p-4 lg:grid-cols-2">
                       {result.inputReference.map((input) => (
                         <div key={input.label} className="min-w-0">
                           <p className="text-xs font-medium text-muted-foreground">
-                            {input.label}
+                            {translateDemoText(input.label, locale)}
                           </p>
                           <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/85">
-                            {input.value}
+                            {translateDemoText(input.value, locale)}
                           </p>
                         </div>
                       ))}
@@ -3719,14 +4293,17 @@ export function DemoWorkspace() {
                         output={result.rawOutput}
                         structuredResult={result.rawStructuredResult}
                         agentCode={result.agentCode}
+                        locale={locale}
                       />
                     </div>
                   ) : (
                     <>
                       <div className="mt-4 rounded-lg border border-border bg-surface/30 p-4">
-                        <h3 className="text-base font-semibold">Resumo</h3>
+                        <h3 className="text-base font-semibold">
+                          {translateDemoText("Resumo", locale)}
+                        </h3>
                         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                          {result.summary}
+                          {translateDemoText(result.summary, locale)}
                         </p>
                       </div>
 
@@ -3735,18 +4312,21 @@ export function DemoWorkspace() {
                           title="Premissas e fontes"
                           items={result.premises}
                           empty="Sem premissas informadas."
+                          locale={locale}
                         />
                         <ResultList
                           title="Incertezas e limitações"
                           items={result.uncertainties}
                           empty="Sem incertezas informadas."
                           tone="warning"
+                          locale={locale}
                         />
                       </div>
                       <ResultList
                         title="Destaques"
                         items={result.highlights}
                         empty="Sem destaques informados."
+                        locale={locale}
                       />
 
                       {result.tables.map((table) => (
@@ -3756,7 +4336,7 @@ export function DemoWorkspace() {
                         >
                           <table className="min-w-full divide-y divide-border text-sm">
                             <caption className="bg-surface/30 px-4 py-3 text-left font-semibold text-foreground">
-                              {table.title}
+                              {translateDemoText(table.title, locale)}
                             </caption>
                             <thead className="bg-surface/55 text-left text-muted-foreground">
                               <tr>
@@ -3765,7 +4345,7 @@ export function DemoWorkspace() {
                                     key={column}
                                     className="whitespace-nowrap px-3 py-2 font-medium"
                                   >
-                                    {column}
+                                    {translateDemoText(column, locale)}
                                   </th>
                                 ))}
                               </tr>
@@ -3778,7 +4358,10 @@ export function DemoWorkspace() {
                                       key={column}
                                       className="whitespace-nowrap px-3 py-2 text-muted-foreground"
                                     >
-                                      {row[column] || "-"}
+                                      {translateDemoText(
+                                        row[column] || "-",
+                                        locale,
+                                      )}
                                     </td>
                                   ))}
                                 </tr>
@@ -3795,6 +4378,7 @@ export function DemoWorkspace() {
                             title={section.title}
                             items={section.items}
                             empty="Sem itens informados."
+                            locale={locale}
                           />
                         ))}
                         <ResultList
@@ -3802,6 +4386,7 @@ export function DemoWorkspace() {
                           items={result.nextSteps}
                           empty="Sem próximos passos."
                           tone="warning"
+                          locale={locale}
                         />
                       </div>
                     </>
@@ -3822,11 +4407,13 @@ function ResultList({
   title,
   items,
   empty,
+  locale,
   tone = "default",
 }: {
   title: string;
   items: string[];
   empty: string;
+  locale: Locale;
   tone?: "default" | "warning";
 }) {
   const classes =
@@ -3835,21 +4422,28 @@ function ResultList({
       : "border-border bg-surface/30";
   return (
     <div className={`rounded-lg border p-4 ${classes}`}>
-      <h3 className="text-sm font-semibold">{title}</h3>
+      <h3 className="text-sm font-semibold">
+        {translateDemoText(title, locale)}
+      </h3>
       {items.length ? (
         <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
           {items.map((item, index) => (
-            <li key={`${item}-${index}`}>- {item}</li>
+            <li key={`${item}-${index}`}>
+              - {translateDemoText(item, locale)}
+            </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-muted-foreground/70">{empty}</p>
+        <p className="mt-3 text-sm text-muted-foreground/70">
+          {translateDemoText(empty, locale)}
+        </p>
       )}
     </div>
   );
 }
 
 function TrialCta() {
+  const { locale } = useI18n();
   return (
     <section
       data-testid="demo-trial-cta"
@@ -3862,18 +4456,22 @@ function TrialCta() {
           </div>
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-ember">
-              Próximo passo
+              {translateDemoText("Próximo passo", locale)}
             </p>
             <h2 className="mt-1 font-display text-2xl font-semibold leading-tight">
-              Agora veja os ganhos em sua empresa na prática,{" "}
+              {translateDemoText(
+                "Agora veja os ganhos em sua empresa na prática,",
+                locale,
+              )}{" "}
               <span className="text-ember">
-                teste nosso trial gratuitamente
+                {translateDemoText("teste nosso trial gratuitamente", locale)}
               </span>
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Leve o fluxo para os dados e rotinas reais da sua empresa. A
-              demonstração reflete fielmente os Agentes IA Especialistas do Core
-              CerneOps.
+              {translateDemoText(
+                "Leve o fluxo para os dados e rotinas reais da sua empresa. A demonstração reflete fielmente os Agentes IA Especialistas do Core CerneOps.",
+                locale,
+              )}
             </p>
           </div>
         </div>
@@ -3881,7 +4479,7 @@ function TrialCta() {
           href="https://cerneops.com.br/planos/trial"
           className="inline-flex shrink-0 items-center justify-center rounded-lg gradient-ember px-5 py-3 font-semibold text-primary-foreground shadow-ember transition hover:brightness-110"
         >
-          Testar o Trial gratuitamente
+          {translateDemoText("Testar o Trial gratuitamente", locale)}
         </a>
       </div>
     </section>

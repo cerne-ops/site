@@ -2,10 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import {
-  trackPlanSelected,
-  trackPricingViewed,
-} from "@/lib/analytics";
+import { trackPlanSelected, trackPricingViewed } from "@/lib/analytics";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +18,7 @@ import {
   mergePlanDynamic,
   type PlanDynamic,
 } from "@/lib/plans";
+import { useI18n, type Locale } from "@/lib/i18n";
 
 const SITE_URL = "https://cerneops.com.br";
 const CORE_SIGNUP_BASE =
@@ -58,6 +56,92 @@ function formatUploadSize(value: string | number | null | undefined) {
   return /[a-zA-Z]/.test(formatted) ? formatted : `${formatted} MB`;
 }
 
+function formatAgentCountLabel(
+  count: number,
+  isTrialPlan: boolean,
+  hasDynamicAgentCount: boolean,
+  locale: Locale,
+) {
+  if (isTrialPlan && !hasDynamicAgentCount) {
+    return locale === "en-US"
+      ? "All agents available in Core"
+      : "Todos os agentes disponíveis no Core";
+  }
+  return locale === "en-US" ? `${count} agents` : `${count} agentes`;
+}
+
+function getPlanPageCopy(locale: Locale, isTrialPlan: boolean) {
+  const en = locale === "en-US";
+  return {
+    free: en ? "Free" : "Gratuito",
+    startTrial: en ? "Start Trial" : "Começar Trial",
+    subscribePlan: en ? "Subscribe to plan" : "Assinar plano",
+    talkSpecialist: en ? "Talk to a specialist" : "Falar com especialista",
+    audienceTitle: en ? "Who this plan is for" : "Para quem é este plano",
+    includedTitle: en
+      ? "CerneOps Agents included in this plan:"
+      : "Agentes CerneOps inclusos nesse plano:",
+    includedBody: isTrialPlan
+      ? en
+        ? "Try all agents available in Core while your Trial balance is available."
+        : "Experimente todos os agentes disponíveis no Core enquanto houver saldo Trial."
+      : en
+        ? "Hire the agent team according to your needs."
+        : "Contrate o time de agentes conforme sua necessidade",
+    viewAgents: en
+      ? "Explore available agents"
+      : "Confira nossos agentes disponíveis",
+    capacityTitle: en ? "Plan capacity" : "Capacidade do plano",
+    users: en ? "users" : "usuários",
+    tasksDay: en ? "tasks/day" : "tarefas/dia",
+    tasksTrial: en ? "Trial tasks" : "tarefas Trial",
+    tasksMonth: en ? "tasks/month" : "tarefas/mês",
+    uploadsDay: en ? "uploads/day" : "uploads/dia",
+    uploadSize: en ? "upload size" : "upload size",
+    retentionDays: en ? "retention days" : "retenção dias",
+    support: en ? "support" : "suporte",
+    priority: en ? "priority" : "prioridade",
+    practicalTitle: en ? "What changes in practice" : "O que muda na prática",
+    upgradeTitle: en ? "When to upgrade" : "Quando subir de plano",
+    readyTitle: en ? "Ready to operate better?" : "Pronto para operar melhor?",
+    subscriptionEyebrow: en ? "/ Core subscription" : "/ Assinatura Core",
+    modalTitle: isTrialPlan
+      ? en
+        ? "Start for free in less than 2 minutes"
+        : "Comece gratuitamente em menos de 2 minutos"
+      : "",
+    modalDescription: isTrialPlan
+      ? en
+        ? "Try CerneOps for free and access digital specialists ready to support your operation. No card, no charge, no commitment."
+        : "Teste a CerneOps gratuitamente e acesse especialistas digitais prontos para apoiar sua operação. Sem cartão, sem cobrança e sem compromisso."
+      : en
+        ? "You are starting a CerneOps Core subscription. Your company registration and account creation happen in the secure Core environment before payment."
+        : "Você está iniciando a contratação do CerneOps Core. O cadastro da sua empresa e a criação da sua conta acontecem no ambiente seguro do Core antes da etapa de pagamento.",
+    specialists: en ? "Specialists" : "Especialistas",
+    plan: en ? "Plan" : "Plano",
+    executions: en ? "Executions" : "Execuções",
+    value: en ? "Price" : "Valor",
+    security: en ? "Security" : "Segurança",
+    capacity: en ? "Capacity" : "Capacidade",
+    specialistsValue: en
+      ? "58 digital specialists"
+      : "58 especialistas digitais",
+    executionsValue: en ? "10 free executions" : "10 execuções gratuitas",
+    noCard: en ? "No credit card" : "Sem cartão de crédito",
+    trialNotice: en
+      ? "Your access will be created securely in Core. No checkout, card, or charge will be requested."
+      : "Seu acesso será criado com segurança no Core. Nenhum checkout, cartão ou cobrança será solicitado.",
+    paidNotice: en
+      ? "When you continue, you will be redirected to Core to create your account, confirm your email, and proceed to payment in a secure environment. No checkout is created on this page."
+      : "Ao continuar, você será direcionado para o Core para criar sua conta, confirmar seu email e seguir para o pagamento em ambiente seguro. Nenhum checkout é criado nesta página.",
+    startFree: en ? "Start for free" : "Começar gratuitamente",
+    continueSignup: en ? "Continue signup" : "Continuar cadastro",
+    viewPlansAgain: en ? "View plans again" : "Ver planos novamente",
+    backToPlan: en ? "Back to plan" : "Voltar ao plano",
+    closeTrial: en ? "Close Trial modal" : "Fechar modal Trial",
+  };
+}
+
 export const Route = createFileRoute("/planos/$slug")({
   head: ({ params }) => {
     const meta = getPlanMeta(params.slug);
@@ -83,11 +167,19 @@ export const Route = createFileRoute("/planos/$slug")({
 });
 
 function PlanRoutePage() {
+  const { locale } = useI18n();
   const { slug } = Route.useParams();
-  const staticPlan = useMemo(() => getStaticPlanBySlug(slug), [slug]);
+  const staticPlan = useMemo(
+    () => getStaticPlanBySlug(slug, locale),
+    [slug, locale],
+  );
   const [dynamic, setDynamic] = useState<PlanDynamic>({});
   const [subscribeOpen, setSubscribeOpen] = useState(false);
   const isTrialPlan = slug === "trial";
+  const copy = useMemo(
+    () => getPlanPageCopy(locale, isTrialPlan),
+    [isTrialPlan, locale],
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -125,8 +217,8 @@ function PlanRoutePage() {
   }, [slug]);
 
   const plan = useMemo(
-    () => (staticPlan ? mergePlanDynamic(slug, dynamic) : null),
-    [slug, dynamic, staticPlan],
+    () => (staticPlan ? mergePlanDynamic(slug, dynamic, locale) : null),
+    [slug, dynamic, locale, staticPlan],
   );
   const hasDynamicAgentCount =
     dynamic.max_agents !== null &&
@@ -137,10 +229,12 @@ function PlanRoutePage() {
     hasDynamicAgentCount && Number.isFinite(parsedAgentCount)
       ? Math.trunc(parsedAgentCount)
       : (PLAN_AGENT_COUNT[slug] ?? 0);
-  const agentCountLabel =
-    isTrialPlan && !hasDynamicAgentCount
-      ? "Todos os agentes disponíveis no Core"
-      : `${planAgentCount} agentes`;
+  const agentCountLabel = formatAgentCountLabel(
+    planAgentCount,
+    isTrialPlan,
+    hasDynamicAgentCount,
+    locale,
+  );
   const trialTaskLimit =
     isTrialPlan &&
     (dynamic.tasks_month === null ||
@@ -164,11 +258,14 @@ function PlanRoutePage() {
         name: "CerneOps",
         url: SITE_URL,
       },
-      description: plan.dynamic.short_description || plan.teaser,
+      description:
+        locale === "pt-BR"
+          ? plan.dynamic.short_description || plan.teaser
+          : plan.teaser,
       url: `${SITE_URL}/planos/${slug}`,
       areaServed: "BR",
     };
-  }, [plan, slug]);
+  }, [locale, plan, slug]);
 
   useEffect(() => {
     trackPricingViewed();
@@ -240,11 +337,13 @@ function PlanRoutePage() {
                   </h1>
                   <div className="mt-4 font-mono text-[15px] text-foreground/80">
                     {isTrialPlan
-                      ? "Gratuito"
-                      : formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                      ? copy.free
+                      : formatPlanPriceBRL(plan.dynamic.price_monthly, locale)}
                   </div>
                   <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
-                    {plan.dynamic.short_description || plan.teaser}
+                    {locale === "pt-BR"
+                      ? plan.dynamic.short_description || plan.teaser
+                      : plan.teaser}
                   </p>
                   <p className="mt-3 text-foreground/90">{plan.heroIntent}</p>
                   <div className="mt-8 flex flex-wrap gap-3">
@@ -261,7 +360,7 @@ function PlanRoutePage() {
                         }
                         className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                       >
-                        Começar Trial
+                        {copy.startTrial}
                       </a>
                     ) : (
                       <button
@@ -269,14 +368,14 @@ function PlanRoutePage() {
                         onClick={handleSubscribe}
                         className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                       >
-                        Assinar plano
+                        {copy.subscribePlan}
                       </button>
                     )}
                     <a
                       href="/#contato"
                       className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
                     >
-                      Falar com especialista
+                      {copy.talkSpecialist}
                     </a>
                   </div>
                 </div>
@@ -304,7 +403,7 @@ function PlanRoutePage() {
           <div className="mx-auto max-w-7xl px-6 grid gap-6">
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
-                Para quem é este plano
+                {copy.audienceTitle}
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 {plan.audience}
@@ -313,20 +412,18 @@ function PlanRoutePage() {
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
-                Agentes CerneOps inclusos nesse plano:{" "}
+                {copy.includedTitle}{" "}
                 <span className="text-ember">{agentCountLabel}</span>
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                {isTrialPlan
-                  ? "Experimente todos os agentes disponíveis no Core enquanto houver saldo Trial."
-                  : "Contrate o time de agentes conforme sua necessidade"}
+                {copy.includedBody}
               </p>
               <div className="mt-5">
                 <a
                   href="/agentes-cerneops"
                   className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-5 py-3 shadow-ember hover:brightness-110 transition"
                 >
-                  Confira nossos agentes disponíveis
+                  {copy.viewAgents}
                   <span aria-hidden>→</span>
                 </a>
               </div>
@@ -334,47 +431,47 @@ function PlanRoutePage() {
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold mb-4">
-                Capacidade do plano
+                {copy.capacityTitle}
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <StatCard
                   value={formatPlanValue(plan.dynamic.max_users)}
-                  label="usuários"
+                  label={copy.users}
                 />
                 <StatCard
                   value={formatPlanValue(plan.dynamic.tasks_day)}
-                  label="tarefas/dia"
+                  label={copy.tasksDay}
                 />
                 <StatCard
                   value={formatPlanValue(trialTaskLimit)}
-                  label={isTrialPlan ? "tarefas Trial" : "tarefas/mês"}
+                  label={isTrialPlan ? copy.tasksTrial : copy.tasksMonth}
                 />
                 <StatCard
                   value={formatPlanValue(plan.dynamic.uploads_day)}
-                  label="uploads/dia"
+                  label={copy.uploadsDay}
                 />
                 <StatCard
                   value={formatUploadSize(plan.dynamic.upload_size)}
-                  label="upload size"
+                  label={copy.uploadSize}
                 />
                 <StatCard
                   value={formatPlanValue(plan.dynamic.retention_days)}
-                  label="retenção dias"
+                  label={copy.retentionDays}
                 />
                 <StatCard
                   value={formatPlanValue(plan.dynamic.support_level)}
-                  label="suporte"
+                  label={copy.support}
                 />
                 <StatCard
                   value={formatPlanValue(plan.dynamic.priority)}
-                  label="prioridade"
+                  label={copy.priority}
                 />
               </div>
             </div>
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold mb-4">
-                O que muda na prática
+                {copy.practicalTitle}
               </h2>
               <div className="flex flex-wrap gap-2">
                 {plan.impact.map((item) => (
@@ -390,7 +487,7 @@ function PlanRoutePage() {
 
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
-                Quando subir de plano
+                {copy.upgradeTitle}
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 {plan.evolution}
@@ -399,7 +496,7 @@ function PlanRoutePage() {
 
             <div className="rounded-2xl border border-ember/35 bg-surface-elevated p-7">
               <h2 className="font-display text-3xl font-semibold">
-                Pronto para operar melhor?
+                {copy.readyTitle}
               </h2>
               <div className="mt-5 flex flex-wrap gap-3">
                 {isTrialPlan ? (
@@ -415,7 +512,7 @@ function PlanRoutePage() {
                     }
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                   >
-                    Começar Trial
+                    {copy.startTrial}
                   </a>
                 ) : (
                   <button
@@ -423,14 +520,14 @@ function PlanRoutePage() {
                     onClick={handleSubscribe}
                     className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                   >
-                    Assinar plano
+                    {copy.subscribePlan}
                   </button>
                 )}
                 <a
                   href="/#contato"
                   className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
                 >
-                  Falar com especialista
+                  {copy.talkSpecialist}
                 </a>
               </div>
             </div>
@@ -441,6 +538,7 @@ function PlanRoutePage() {
         <TrialSignupAnchorModal
           signupHref={signupHref}
           slug={slug}
+          locale={locale}
         />
       ) : null}
       <Dialog open={subscribeOpen} onOpenChange={setSubscribeOpen}>
@@ -455,42 +553,42 @@ function PlanRoutePage() {
             <div className="relative">
               <DialogHeader className="space-y-3 text-left">
                 <div className="font-mono text-xs uppercase tracking-widest text-ember">
-                  / Assinatura Core
+                  {copy.subscriptionEyebrow}
                 </div>
                 <DialogTitle className="font-display text-3xl leading-tight">
                   {isTrialPlan
-                    ? "Comece gratuitamente em menos de 2 minutos"
-                    : `Assinar plano ${plan.name}`}
+                    ? copy.modalTitle
+                    : locale === "en-US"
+                      ? `Subscribe to ${plan.name}`
+                      : `Assinar plano ${plan.name}`}
                 </DialogTitle>
                 <DialogDescription className="text-base text-foreground/80 leading-relaxed">
-                  {isTrialPlan
-                    ? "Teste a CerneOps gratuitamente e acesse especialistas digitais prontos para apoiar sua operação. Sem cartão, sem cobrança e sem compromisso."
-                    : "Você está iniciando a contratação do CerneOps Core. O cadastro da sua empresa e a criação da sua conta acontecem no ambiente seguro do Core antes da etapa de pagamento."}
+                  {isTrialPlan ? copy.modalDescription : copy.modalDescription}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="mt-7 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                   <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
-                    {isTrialPlan ? "Especialistas" : "Plano"}
+                    {isTrialPlan ? copy.specialists : copy.plan}
                   </div>
                   <div className="mt-2 font-display text-xl leading-tight">
-                    {isTrialPlan ? "58 especialistas digitais" : plan.name}
+                    {isTrialPlan ? copy.specialistsValue : plan.name}
                   </div>
                 </div>
                 <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                   <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
-                    {isTrialPlan ? "Execuções" : "Valor"}
+                    {isTrialPlan ? copy.executions : copy.value}
                   </div>
                   <div className="mt-2 font-display text-xl leading-tight">
                     {isTrialPlan
-                      ? "10 execuções gratuitas"
-                      : formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                      ? copy.executionsValue
+                      : formatPlanPriceBRL(plan.dynamic.price_monthly, locale)}
                   </div>
                 </div>
                 <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                   <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
-                    {isTrialPlan ? "Segurança" : "Capacidade"}
+                    {isTrialPlan ? copy.security : copy.capacity}
                   </div>
                   <div
                     className={`mt-2 ${
@@ -500,12 +598,17 @@ function PlanRoutePage() {
                     }`}
                   >
                     {isTrialPlan ? (
-                      "Sem cartão de crédito"
+                      copy.noCard
                     ) : (
                       <>
-                        {formatPlanValue(plan.dynamic.max_users)} usuários
+                        {formatPlanValue(plan.dynamic.max_users)} {copy.users}
                         <br />
-                        {planAgentCount} agentes
+                        {formatAgentCountLabel(
+                          planAgentCount,
+                          false,
+                          true,
+                          locale,
+                        )}
                       </>
                     )}
                   </div>
@@ -519,9 +622,7 @@ function PlanRoutePage() {
                     : "border border-ember/25 bg-ember/10 text-foreground/85"
                 }`}
               >
-                {isTrialPlan
-                  ? "Seu acesso será criado com segurança no Core. Nenhum checkout, cartão ou cobrança será solicitado."
-                  : "Ao continuar, você será direcionado para o Core para criar sua conta, confirmar seu email e seguir para o pagamento em ambiente seguro. Nenhum checkout é criado nesta página."}
+                {isTrialPlan ? copy.trialNotice : copy.paidNotice}
               </div>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -530,7 +631,7 @@ function PlanRoutePage() {
                   onClick={handleConfirmSubscribe}
                   className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
                 >
-                  {isTrialPlan ? "Começar gratuitamente" : "Continuar cadastro"}
+                  {isTrialPlan ? copy.startFree : copy.continueSignup}
                   <span aria-hidden>→</span>
                 </button>
                 <button
@@ -538,7 +639,7 @@ function PlanRoutePage() {
                   onClick={() => setSubscribeOpen(false)}
                   className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
                 >
-                  {isTrialPlan ? "Ver planos novamente" : "Voltar ao plano"}
+                  {isTrialPlan ? copy.viewPlansAgain : copy.backToPlan}
                 </button>
               </div>
             </div>
@@ -562,10 +663,13 @@ function StatCard({ value, label }: { value: string; label: string }) {
 function TrialSignupAnchorModal({
   signupHref,
   slug,
+  locale,
 }: {
   signupHref: string;
   slug: string;
+  locale: Locale;
 }) {
+  const copy = getPlanPageCopy(locale, true);
   return (
     <>
       <style>{`
@@ -588,47 +692,44 @@ function TrialSignupAnchorModal({
           <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
           <div className="relative p-7 sm:p-8 lg:p-9">
             <div className="font-mono text-xs uppercase tracking-widest text-ember">
-              / Assinatura Core
+              {copy.subscriptionEyebrow}
             </div>
             <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
-              Comece gratuitamente em menos de 2 minutos
+              {copy.modalTitle}
             </h2>
             <p className="mt-3 text-base text-foreground/80 leading-relaxed">
-              Teste a CerneOps gratuitamente e acesse especialistas digitais
-              prontos para apoiar sua operação. Sem cartão, sem cobrança e sem
-              compromisso.
+              {copy.modalDescription}
             </p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                 <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
-                  Especialistas
+                  {copy.specialists}
                 </div>
                 <div className="mt-2 font-display text-xl leading-tight">
-                  58 especialistas digitais
+                  {copy.specialistsValue}
                 </div>
               </div>
               <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                 <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
-                  Execuções
+                  {copy.executions}
                 </div>
                 <div className="mt-2 font-display text-xl leading-tight">
-                  10 execuções gratuitas
+                  {copy.executionsValue}
                 </div>
               </div>
               <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                 <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
-                  Segurança
+                  {copy.security}
                 </div>
                 <div className="mt-2 font-display text-xl leading-tight">
-                  Sem cartão de crédito
+                  {copy.noCard}
                 </div>
               </div>
             </div>
 
             <div className="mt-5 rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3 text-sm leading-relaxed text-emerald-50/90">
-              Seu acesso será criado com segurança no Core. Nenhum checkout,
-              cartão ou cobrança será solicitado.
+              {copy.trialNotice}
             </div>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -636,20 +737,20 @@ function TrialSignupAnchorModal({
                 href={signupHref}
                 className="inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-6 py-3.5 shadow-ember hover:brightness-110 transition"
               >
-                Começar gratuitamente
+                {copy.startFree}
                 <span aria-hidden>→</span>
               </a>
               <a
                 href={`/planos/${slug}`}
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/50 px-6 py-3.5 font-medium hover:bg-surface transition"
               >
-                Ver planos novamente
+                {copy.viewPlansAgain}
               </a>
             </div>
 
             <a
               href={`/planos/${slug}`}
-              aria-label="Fechar modal Trial"
+              aria-label={copy.closeTrial}
               className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/60 text-foreground/75 hover:bg-surface"
             >
               ×

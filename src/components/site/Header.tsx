@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/cerne-logo.png";
+import { LanguageSelector } from "@/components/site/LanguageSelector";
 import { useSupraContactModal } from "@/components/site/SupraContactModal";
+import { useI18n } from "@/lib/i18n";
 
 const CORE_LOGIN_URL =
   (import.meta.env.VITE_CORE_LOGIN_URL as string | undefined) ||
@@ -33,7 +35,14 @@ const desktopNav = [
 
 export function Header() {
   const { openModal } = useSupraContactModal();
+  const { isEnglish, t } = useI18n();
   const [menuOpen, setMenuOpen] = useState(false);
+  const visibleDesktopNav = desktopNav.filter(
+    (item) => !(isEnglish && item.to === "/academia"),
+  );
+  const visibleMobileNav = nav.filter(
+    (item) => !(isEnglish && item.to === "/academia"),
+  );
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -68,34 +77,35 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-5 lg:gap-8 text-sm text-muted-foreground">
-            {desktopNav.map((item) => (
+            {visibleDesktopNav.map((item) => (
               <a
                 key={item.label}
                 href={item.to}
                 className="hover:text-foreground transition-colors"
               >
-                {item.label}
+                {t(item.label)}
               </a>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
+            <LanguageSelector />
             <a
               href={CORE_LOGIN_URL}
               className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
             >
-              Entrar
+              {t("Entrar")}
             </a>
             <button
               type="button"
               onClick={() => openModal("header-cta")}
               className="hidden md:inline-flex items-center gap-2 rounded-lg gradient-ember text-primary-foreground font-medium text-sm px-4 py-2.5 shadow-ember hover:brightness-110 transition"
             >
-              Falar com a CerneOps
+              {t("Falar com a CerneOps")}
             </button>
             <button
               type="button"
-              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-label={menuOpen ? t("Fechar menu") : t("Abrir menu")}
               onClick={() => setMenuOpen((prev) => !prev)}
               className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-lg border border-border bg-surface/50 text-foreground hover:border-ember/45 hover:text-ember transition"
             >
@@ -109,7 +119,7 @@ export function Header() {
         <div className="md:hidden fixed inset-0 z-40">
           <button
             type="button"
-            aria-label="Fechar menu"
+            aria-label={t("Fechar menu")}
             onClick={() => setMenuOpen(false)}
             className="absolute inset-0 bg-background/75 backdrop-blur-sm"
           />
@@ -121,7 +131,7 @@ export function Header() {
               </div>
               <button
                 type="button"
-                aria-label="Fechar menu"
+                aria-label={t("Fechar menu")}
                 onClick={() => setMenuOpen(false)}
                 className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-border bg-surface/50 text-foreground hover:border-ember/45 hover:text-ember transition"
               >
@@ -130,17 +140,21 @@ export function Header() {
             </div>
 
             <nav className="space-y-2">
-              {nav.map((item) => (
+              {visibleMobileNav.map((item) => (
                 <a
                   key={item.label}
                   href={item.to}
                   onClick={() => setMenuOpen(false)}
                   className="block rounded-lg px-3 py-3 text-base text-foreground/90 hover:bg-background/50 hover:text-foreground transition"
                 >
-                  {item.label}
+                  {t(item.label)}
                 </a>
               ))}
             </nav>
+
+            <div className="mt-6">
+              <LanguageSelector />
+            </div>
 
             <button
               type="button"
@@ -150,7 +164,7 @@ export function Header() {
               }}
               className="mt-8 w-full inline-flex items-center justify-center gap-2 rounded-lg gradient-ember text-primary-foreground font-semibold px-5 py-3.5 shadow-ember hover:brightness-110 transition"
             >
-              Destravar minha operação
+              {t("Destravar minha operação")}
             </button>
           </div>
         </div>

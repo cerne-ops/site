@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { SoroBlogEmbed } from "@/components/site/SoroBlogEmbed";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/academia")({
   head: () => ({
@@ -35,6 +36,18 @@ export const Route = createFileRoute("/academia")({
 });
 
 function AcademiaPage() {
+  const { isEnglish } = useI18n();
+
+  if (isEnglish) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Header />
+        <main className="pt-36 pb-24" />
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -51,14 +64,14 @@ function AcademiaPage() {
               </h1>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg max-w-3xl">
                 Estratégias, guias e aplicações práticas para reduzir trabalho
-                manual, acelerar decisões e aumentar a capacidade operacional
-                da sua empresa.
+                manual, acelerar decisões e aumentar a capacidade operacional da
+                sua empresa.
               </p>
               <p className="mt-4 text-muted-foreground leading-relaxed text-lg max-w-4xl">
                 Aprenda como empresas utilizam especialistas digitais em RH,
                 Comercial, Financeiro, Atendimento, Jurídico, Fiscal,
-                Engenharia, Saúde e Operações para transformar horas de
-                trabalho em minutos de execução.
+                Engenharia, Saúde e Operações para transformar horas de trabalho
+                em minutos de execução.
               </p>
             </div>
           </div>

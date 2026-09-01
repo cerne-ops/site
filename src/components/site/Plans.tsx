@@ -4,20 +4,23 @@ import { trackPlanSelected, trackPricingViewed } from "@/lib/analytics";
 import {
   fetchLandingPlans,
   formatPlanPriceBRL,
+  getPlanCatalog,
   planCatalog,
   type PlanDynamic,
 } from "@/lib/plans";
+import { useI18n } from "@/lib/i18n";
 
 type PlanView = (typeof planCatalog)[number] & { dynamic: PlanDynamic };
 
 export function Plans() {
+  const { locale, t } = useI18n();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [landingData, setLandingData] = useState<Array<
     Record<string, unknown>
   > | null>(null);
 
   const plans = useMemo<PlanView[]>(() => {
-    return planCatalog.map((plan) => {
+    return getPlanCatalog(locale).map((plan) => {
       const fromApi = landingData?.find((item) => {
         const slug = String(item.slug ?? item.id ?? "").toLowerCase();
         return slug === plan.id;
@@ -48,7 +51,7 @@ export function Plans() {
       };
       return { ...plan, dynamic };
     });
-  }, [landingData]);
+  }, [landingData, locale]);
 
   useEffect(() => {
     let mounted = true;
@@ -121,7 +124,11 @@ export function Plans() {
                     ? "border-ember/55 bg-surface-elevated ring-1 ring-ember/30"
                     : "border-border bg-surface/60 hover:border-ember/35"
                 } ${plan.id === "boost" ? "xl:z-10 xl:scale-[1.06]" : ""}`}
-                aria-label={`Ver detalhes do plano ${plan.name}`}
+                aria-label={
+                  locale === "en-US"
+                    ? `View details for the ${plan.name} plan`
+                    : `Ver detalhes do plano ${plan.name}`
+                }
                 onClick={() =>
                   trackPlanSelected({
                     planName: plan.name,
@@ -160,11 +167,13 @@ export function Plans() {
                 </div>
                 <div className="font-mono text-[13px] text-foreground/70 mb-4">
                   {plan.id === "trial"
-                    ? "Gratuito"
-                    : formatPlanPriceBRL(plan.dynamic.price_monthly)}
+                    ? t("Gratuito")
+                    : formatPlanPriceBRL(plan.dynamic.price_monthly, locale)}
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                  {plan.dynamic.short_description || plan.teaser}
+                  {locale === "pt-BR"
+                    ? plan.dynamic.short_description || plan.teaser
+                    : plan.teaser}
                 </p>
                 <ul className="space-y-2.5 text-sm mb-6">
                   {plan.bullets.map((item) => (
@@ -175,7 +184,7 @@ export function Plans() {
                   ))}
                 </ul>
                 <span className="inline-flex items-center gap-1 text-sm text-ember font-medium transition group-hover:translate-x-0.5">
-                  Ver detalhes <span aria-hidden>→</span>
+                  {t("Ver detalhes")} <span aria-hidden>→</span>
                 </span>
               </Link>
             );

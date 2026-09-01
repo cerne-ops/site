@@ -3,6 +3,7 @@ import boostLogo from "@/assets/planos/BOOST.png";
 import scaleLogo from "@/assets/planos/SCALE.png";
 import dominusLogo from "@/assets/planos/DOMINUS.png";
 import trialLogo from "@/assets/planos/TRIAL.png";
+import { type Locale } from "@/lib/i18n";
 
 export type PlanSlug = "trial" | "start" | "boost" | "scale" | "dominus";
 
@@ -183,12 +184,109 @@ export const planCatalog: PlanStatic[] = [
   },
 ];
 
+const planCatalogEn: Record<
+  PlanSlug,
+  Omit<PlanStatic, "id" | "name" | "logo">
+> = {
+  trial: {
+    label: "Discovery",
+    teaser: "Unlock your operation. Discover the power of CerneOps.",
+    bullets: ["All agents", "No credit card", "10 Trial tasks"],
+    heroIntent:
+      "Try CerneOps with no upfront charge and upgrade whenever you need to keep operating.",
+    audience:
+      "For companies that want to experience Core before choosing a paid plan.",
+    whatCanDo: [
+      "Access every agent",
+      "Run tasks within the Trial balance",
+      "Explore Core without a credit card",
+      "Upgrade at the end of the test",
+    ],
+    impact: ["No upfront charge", "Fast validation", "Guided upgrade"],
+    evolution:
+      "After using the Trial balance, choose a paid plan in Settings / General to keep operating.",
+  },
+  start: {
+    label: "Entry",
+    teaser: "For leaving manual work behind and organizing daily execution.",
+    bullets: ["Standardized execution", "Basic organization", "Individual use"],
+    heroIntent: "The first step out of manual work.",
+    audience:
+      "For teams still doing everything manually and ready to organize daily operations.",
+    whatCanDo: [
+      "Create ready-to-use text",
+      "Summarize content",
+      "Organize ideas",
+      "Standardize tasks",
+    ],
+    impact: ["More speed", "Less effort", "Initial organization"],
+    evolution: "Move to Boost when your operation starts running as a team.",
+  },
+  boost: {
+    label: "Acceleration",
+    teaser: "For operations that need to gain speed.",
+    bullets: ["More capacity", "Team use", "Less rework"],
+    heroIntent: "The operation starts gaining traction.",
+    audience: "For teams already feeling rework and lack of standardization.",
+    whatCanDo: [
+      "Organize the team",
+      "Standardize execution",
+      "Prioritize demand",
+      "Adjust communication",
+    ],
+    impact: ["Less rework", "More consistency", "A more productive team"],
+    evolution: "Move to Scale when you need more control and predictability.",
+  },
+  scale: {
+    label: "Scale",
+    teaser: "For companies structuring their operation.",
+    bullets: ["Organized processes", "More control", "Team productivity"],
+    heroIntent: "The operation starts scaling.",
+    audience: "For companies that need to structure operations to grow.",
+    whatCanDo: [
+      "Generate reports",
+      "Analyze data",
+      "Create processes",
+      "Improve service",
+    ],
+    impact: ["More control", "More visibility", "Faster decisions"],
+    evolution: "Move to Dominus when you need maximum platform capacity.",
+  },
+  dominus: {
+    label: "Mastery",
+    teaser: "Maximum platform capacity.",
+    bullets: ["All agents", "Maximum capacity", "Operational priority"],
+    heroIntent: "Maximum Core capacity.",
+    audience: "For operations that require maximum capacity and full control.",
+    whatCanDo: [
+      "Structure documents",
+      "Extract data",
+      "Compare scenarios",
+      "Detect problems",
+      "Suggest actions",
+    ],
+    impact: ["More autonomy", "More intelligence", "More capacity"],
+    evolution: "When the challenge is the entire operation, move to Supra.",
+  },
+};
+
+export function getPlanCatalog(locale: Locale = "pt-BR") {
+  if (locale !== "en-US") return planCatalog;
+  return planCatalog.map((plan) => ({
+    ...plan,
+    ...planCatalogEn[plan.id],
+  }));
+}
+
 export function formatPlanValue(value: string | number | null | undefined) {
   if (value === null || value === undefined || value === "") return "—";
   return String(value);
 }
 
-export function formatPlanPriceBRL(value: string | number | null | undefined) {
+export function formatPlanPriceBRL(
+  value: string | number | null | undefined,
+  locale: Locale = "pt-BR",
+) {
   if (value === null || value === undefined || value === "") return "—";
 
   const toCurrency = (amount: number) =>
@@ -197,7 +295,7 @@ export function formatPlanPriceBRL(value: string | number | null | undefined) {
       currency: "BRL",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount)}/mês`;
+    }).format(amount)}${locale === "en-US" ? "/month" : "/mês"}`;
 
   if (typeof value === "number" && Number.isFinite(value)) {
     return toCurrency(value);
@@ -221,13 +319,17 @@ function normalizeSlug(input: string | undefined | null) {
   return (input ?? "").trim().toLowerCase();
 }
 
-export function getStaticPlanBySlug(slug: string) {
+export function getStaticPlanBySlug(slug: string, locale: Locale = "pt-BR") {
   const normalized = normalizeSlug(slug);
-  return planCatalog.find((plan) => plan.id === normalized);
+  return getPlanCatalog(locale).find((plan) => plan.id === normalized);
 }
 
-export function mergePlanDynamic(slug: string, dynamic: PlanDynamic) {
-  const plan = getStaticPlanBySlug(slug);
+export function mergePlanDynamic(
+  slug: string,
+  dynamic: PlanDynamic,
+  locale: Locale = "pt-BR",
+) {
+  const plan = getStaticPlanBySlug(slug, locale);
   if (!plan) return null;
   return { ...plan, dynamic };
 }
