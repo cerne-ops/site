@@ -1,5 +1,7 @@
 # Plano de execução — fidelidade dos resultados Demo ao Core
 
+> **Status histórico:** plano concluído e publicado; mantido para rastreabilidade.
+
 Data: 2026-08-19
 Risco: P2 — regressão funcional/visual relevante no Site
 Autorização: implementação e publicação em produção aprovadas pelo usuário.

@@ -1,5 +1,7 @@
 # Auditoria de strings EN-US — Site CerneOps
 
+> **Status histórico:** auditoria da versão local que foi publicada posteriormente. Consulte `docs/README.md` para o estado vigente.
+
 Data: 2026-09-01  
 Superfície: Site público CerneOps  
 Worktree local: `.worktrees/site-i18n-local`  

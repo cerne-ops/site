@@ -1,5 +1,7 @@
 # Auditoria comparativa — Extrator de Precedentes
 
+> **Status histórico:** diagnóstico anterior às correções posteriores da Demo. As divergências descritas aqui não representam automaticamente a produção atual.
+
 Data: 2026-08-19
 Escopo: comparação somente leitura entre o resultado real aberto no Core e o resultado publicado na Demo do site.
 

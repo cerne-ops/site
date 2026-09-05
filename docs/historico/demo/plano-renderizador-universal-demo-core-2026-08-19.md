@@ -1,5 +1,7 @@
 # Plano de execução — renderizador universal dos Agentes DEMO
 
+> **Status histórico:** plano concluído e publicado; a versão citada abaixo é a versão da entrega, não a versão pública atual.
+
 Data: 2026-08-19  
 Risco: P2 — regressão visual/funcional relevante no Site  
 Autorização: implementação aprovada pelo usuário; publicação segue condicionada ao gate de QA e à autorização já concedida no contexto desta entrega.

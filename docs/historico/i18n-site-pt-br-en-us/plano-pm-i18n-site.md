@@ -1,6 +1,8 @@
 # Plano PM - Internacionalizacao PT-BR / EN-US do Site
 
-Status: aprovado para preparacao local testavel; producao bloqueada ate aprovacao explicita do usuario.
+> **Status histórico:** plano executado e publicado posteriormente. As restrições de produção abaixo registram o gate existente na época da preparação local.
+
+Status original: aprovado para preparacao local testavel; producao bloqueada ate aprovacao explicita do usuario.
 Repositorio alvo: `site/`, site publico CerneOps.
 Branch local de trabalho: `codex/site-i18n-local`.
 Base local verificada: `1f4774dfb5b4e9caa2473c33d43e8a52d6711dac`.

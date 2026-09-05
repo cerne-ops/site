@@ -1,5 +1,7 @@
 # Design QA — Demo de Agentes CerneOps
 
+> **Status histórico:** QA concluída. Este documento registra a validação da entrega da Demo e não substitui o estado atual descrito em `docs/README.md`.
+
 ## Escopo
 
 Validação do protótipo navegável escolhido pelo usuário a partir da referência visual:

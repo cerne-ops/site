@@ -1,6 +1,8 @@
 # Checklist Amplo - I18n PT-BR / EN-US do Site
 
-Status geral: em execucao local.  
+> **Status histórico:** checklist da preparação local. A internacionalização foi publicada posteriormente; itens não marcados abaixo preservam o estado da rodada original e não são pendências atuais confirmadas.
+
+Status geral original: em execucao local.
 Uso: marcar cada item como `OK`, `N/A`, `BLOQUEADO` ou `PENDENTE`, sempre com evidencia.
 
 ## Governanca e baseline

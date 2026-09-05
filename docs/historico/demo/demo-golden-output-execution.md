@@ -1,5 +1,7 @@
 # Demo Core — snapshots reais dos 68 agentes
 
+> **Status histórico:** coleta e publicação concluídas. O estado vigente da Demo deve ser conferido em `docs/README.md`, no código atual e na produção pública.
+
 ## Resultado
 
 - [x] 68 cenários oficiais do botão `Exemplo` inventariados.
@@ -50,4 +52,4 @@
 
 ## Publicação
 
-O trabalho local está pronto para o gate de publicação do Site. Publicar somente após autorização explícita, seguindo `site/directives/deploy_vps.md`, com commit/push, deploy VPS, smoke público e validação da versão ativa.
+O trabalho foi publicado posteriormente. Novas publicações continuam exigindo autorização explícita e devem seguir `directives/deploy_vps.md`, com commit/push, deploy VPS, smoke público e validação da versão ativa.

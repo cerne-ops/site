@@ -1,5 +1,7 @@
 # Protótipo Demo de Agentes — Plano de execução
 
+> **Status histórico:** plano concluído e preservado como evidência da entrega.
+
 ## Escopo aprovado
 
 - Criar modal de primeiro acesso com os botões `Testar agora` e `Testar depois`.
