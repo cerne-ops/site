@@ -49,6 +49,15 @@ Mesmo que o repositorio contenha `wrangler.jsonc` ou artefatos Cloudflare, nao a
    - Esperado: nenhum resultado.
 6. Quando a entrega envolver email/contato, confirmar presenca das variaveis Resend no ambiente do processo sem expor valores.
 
+## Retenção e fechamento obrigatórios
+
+Aplicar o [SOP global de retenção](../../operacional/deploy-rollback.md#retenção-de-releases-e-artefatos-no-vps): 1 release ativa + 1 anterior estável validada, com SHA completo e artefatos materializados. Antes de alterar o checkout/build vivo, registrar e preservar o rollback recuperável; `git log` posterior não substitui essa preparação.
+
+- Antes do deploy: aprovar manifesto com caminhos/SHAs ativa, rollback e candidata temporária; definir responsável e prazo da janela de observação.
+- Após aceite e janela: regularizar processos e artefatos excedentes somente com o manifesto de limpeza expressamente aprovado, preservando dependências de `server.mjs`, `dist` e rollback.
+- Registrar `df` antes/depois e repetir os smokes deste SOP após limpeza. Não declarar encerrado com limpeza pendente; registrar responsável, prazo e próximo gate.
+- Dados, uploads, segredos, backups de dados e dependências runtime ficam fora da limpeza de releases. Exceções e limiares de capacidade seguem o SOP global; nenhum alerta é configurado por este documento.
+
 ## Deploy
 Executar no VPS:
 
@@ -106,3 +115,4 @@ Rollback deve ser usado somente com autorizacao explicita do Supervisor/usuario,
 - Rotas validadas.
 - Confirmacao de ausencia de runtime dev no HTML publico.
 - Headers de cache de assets criticos.
+- Manifesto de retenção, rollback materializado, janela/aceite e `df` antes/depois; retenção regularizada ou fechamento explicitamente pendente.
