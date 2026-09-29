@@ -1,2 +1,2 @@
-export const SITE_RELEASE_VERSION = "0.S1.31";
+export const SITE_RELEASE_VERSION = "0.S1.32";
 export const SITE_RELEASE_PHASE = "S1";

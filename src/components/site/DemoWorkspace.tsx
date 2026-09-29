@@ -4078,7 +4078,8 @@ export function DemoWorkspace() {
               </div>
             </aside>
 
-            <main className="min-w-0 space-y-6">
+            {/* React translates this dynamic panel; the DOM catalog must not restore stale agent text. */}
+            <main data-i18n-frozen="true" className="min-w-0 space-y-6">
               {selectedAgent ? (
                 <section className="rounded-2xl border border-border bg-background/65 p-5 shadow-elevated backdrop-blur-sm sm:p-7">
                   <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
