@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  fetchPlanBySlug,
   formatPlanPriceBRL,
   formatPlanValue,
   getStaticPlanBySlug,
@@ -19,6 +18,9 @@ import {
   type PlanDynamic,
 } from "@/lib/plans";
 import { useI18n, type Locale } from "@/lib/i18n";
+
+import { usePublicPlans } from "@/hooks/use-public-plans";
+import { PlanDataStatus } from "@/components/site/PlanDataStatus";
 
 const SITE_URL = "https://cerneops.com.br";
 const CORE_SIGNUP_BASE =
@@ -40,13 +42,6 @@ function getPlanMeta(slug: string) {
     description: `${plan.name}: ${plan.teaser}`,
   };
 }
-
-const PLAN_AGENT_COUNT: Record<string, number> = {
-  start: 5,
-  boost: 9,
-  scale: 14,
-  dominus: 20,
-};
 
 const TRIAL_TASK_LIMIT_FALLBACK = 10;
 
@@ -173,7 +168,7 @@ function PlanRoutePage() {
     () => getStaticPlanBySlug(slug, locale),
     [slug, locale],
   );
-  const [dynamic, setDynamic] = useState<PlanDynamic>({});
+  const { data, status, retry } = usePublicPlans(slug);
   const [subscribeOpen, setSubscribeOpen] = useState(false);
   const isTrialPlan = slug === "trial";
   const copy = useMemo(
@@ -181,40 +176,32 @@ function PlanRoutePage() {
     [isTrialPlan, locale],
   );
 
-  useEffect(() => {
-    let mounted = true;
-    fetchPlanBySlug(slug).then((payload) => {
-      if (!mounted || !payload) return;
-      setDynamic({
-        price_monthly: payload.price_monthly as
-          | string
-          | number
-          | null
-          | undefined,
-        max_users: payload.max_users as string | number | null | undefined,
-        max_agents: payload.max_agents as string | number | null | undefined,
-        tasks_day: payload.tasks_day as string | number | null | undefined,
-        tasks_month: payload.tasks_month as string | number | null | undefined,
-        uploads_day: payload.uploads_day as string | number | null | undefined,
-        upload_size: payload.upload_size as string | number | null | undefined,
-        retention_days: payload.retention_days as
-          | string
-          | number
-          | null
-          | undefined,
-        support_level: payload.support_level as string | null | undefined,
-        priority: payload.priority as string | null | undefined,
-        short_description: payload.short_description as
-          | string
-          | null
-          | undefined,
-        stripe_price_id: payload.stripe_price_id as string | null | undefined,
-      });
-    });
-    return () => {
-      mounted = false;
+  const dynamic = useMemo<PlanDynamic>(() => {
+    const payload = data?.[0];
+    if (!payload) return {};
+    return {
+      price_monthly: payload.price_monthly as
+        | string
+        | number
+        | null
+        | undefined,
+      max_users: payload.max_users as string | number | null | undefined,
+      max_agents: payload.max_agents as string | number | null | undefined,
+      tasks_day: payload.tasks_day as string | number | null | undefined,
+      tasks_month: payload.tasks_month as string | number | null | undefined,
+      uploads_day: payload.uploads_day as string | number | null | undefined,
+      upload_size: payload.upload_size as string | number | null | undefined,
+      retention_days: payload.retention_days as
+        | string
+        | number
+        | null
+        | undefined,
+      support_level: payload.support_level as string | null | undefined,
+      priority: payload.priority as string | null | undefined,
+      short_description: payload.short_description as string | null | undefined,
+      stripe_price_id: payload.stripe_price_id as string | null | undefined,
     };
-  }, [slug]);
+  }, [data]);
 
   const plan = useMemo(
     () => (staticPlan ? mergePlanDynamic(slug, dynamic, locale) : null),
@@ -228,13 +215,15 @@ function PlanRoutePage() {
   const planAgentCount =
     hasDynamicAgentCount && Number.isFinite(parsedAgentCount)
       ? Math.trunc(parsedAgentCount)
-      : (PLAN_AGENT_COUNT[slug] ?? 0);
-  const agentCountLabel = formatAgentCountLabel(
-    planAgentCount,
-    isTrialPlan,
-    hasDynamicAgentCount,
-    locale,
-  );
+      : 0;
+  const agentCountLabel = !hasDynamicAgentCount
+    ? "—"
+    : formatAgentCountLabel(
+        planAgentCount,
+        isTrialPlan,
+        hasDynamicAgentCount,
+        locale,
+      );
   const trialTaskLimit =
     isTrialPlan &&
     (dynamic.tasks_month === null ||
@@ -323,6 +312,9 @@ function PlanRoutePage() {
             dangerouslySetInnerHTML={{ __html: JSON.stringify(planJsonLd) }}
           />
         ) : null}
+        <div className="mx-auto max-w-7xl px-6">
+          <PlanDataStatus status={status} locale={locale} retry={retry} />
+        </div>
         <section className="relative">
           <div className="absolute inset-0 bg-grid opacity-35 pointer-events-none" />
           <div className="relative mx-auto max-w-7xl px-6">
@@ -335,12 +327,18 @@ function PlanRoutePage() {
                   <h1 className="font-display text-5xl sm:text-6xl font-bold leading-[0.95]">
                     {plan.name}
                   </h1>
-                  <div className="mt-4 font-mono text-[15px] text-foreground/80">
+                  <div
+                    data-i18n-frozen="true"
+                    className="mt-4 font-mono text-[15px] text-foreground/80"
+                  >
                     {isTrialPlan
                       ? copy.free
                       : formatPlanPriceBRL(plan.dynamic.price_monthly, locale)}
                   </div>
-                  <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                  <p
+                    data-i18n-frozen="true"
+                    className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed"
+                  >
                     {locale === "pt-BR"
                       ? plan.dynamic.short_description || plan.teaser
                       : plan.teaser}
@@ -413,7 +411,9 @@ function PlanRoutePage() {
             <div className="rounded-2xl border border-border bg-surface/55 p-7">
               <h2 className="font-display text-2xl font-semibold">
                 {copy.includedTitle}{" "}
-                <span className="text-ember">{agentCountLabel}</span>
+                <span data-i18n-frozen="true" className="text-ember">
+                  {agentCountLabel}
+                </span>
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 {copy.includedBody}
@@ -567,7 +567,10 @@ function PlanRoutePage() {
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="mt-7 grid gap-3 sm:grid-cols-3">
+              <div
+                data-i18n-frozen="true"
+                className="mt-7 grid gap-3 sm:grid-cols-3"
+              >
                 <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                   <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
                     {isTrialPlan ? copy.specialists : copy.plan}
@@ -603,12 +606,7 @@ function PlanRoutePage() {
                       <>
                         {formatPlanValue(plan.dynamic.max_users)} {copy.users}
                         <br />
-                        {formatAgentCountLabel(
-                          planAgentCount,
-                          false,
-                          true,
-                          locale,
-                        )}
+                        {agentCountLabel}
                       </>
                     )}
                   </div>
@@ -654,7 +652,12 @@ function PlanRoutePage() {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
-      <div className="font-display text-xl leading-none">{value}</div>
+      <div
+        data-i18n-frozen="true"
+        className="font-display text-xl leading-none"
+      >
+        {value}
+      </div>
       <div className="mt-1 text-xs text-muted-foreground">{label}</div>
     </div>
   );
@@ -701,7 +704,10 @@ function TrialSignupAnchorModal({
               {copy.modalDescription}
             </p>
 
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
+            <div
+              data-i18n-frozen="true"
+              className="mt-7 grid gap-3 sm:grid-cols-3"
+            >
               <div className="rounded-xl border border-border/80 bg-background/35 px-4 py-3">
                 <div className="font-mono text-[11px] uppercase tracking-widest text-ember">
                   {copy.specialists}

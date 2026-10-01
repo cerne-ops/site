@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { trackPlanSelected, trackPricingViewed } from "@/lib/analytics";
 import {
-  fetchLandingPlans,
   formatPlanPriceBRL,
   getPlanCatalog,
   planCatalog,
@@ -10,14 +9,15 @@ import {
 } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
 
+import { usePublicPlans } from "@/hooks/use-public-plans";
+import { PlanDataStatus } from "@/components/site/PlanDataStatus";
+
 type PlanView = (typeof planCatalog)[number] & { dynamic: PlanDynamic };
 
 export function Plans() {
   const { locale, t } = useI18n();
   const sectionRef = useRef<HTMLElement | null>(null);
-  const [landingData, setLandingData] = useState<Array<
-    Record<string, unknown>
-  > | null>(null);
+  const { data: landingData, status, retry } = usePublicPlans();
 
   const plans = useMemo<PlanView[]>(() => {
     return getPlanCatalog(locale).map((plan) => {
@@ -52,17 +52,6 @@ export function Plans() {
       return { ...plan, dynamic };
     });
   }, [landingData, locale]);
-
-  useEffect(() => {
-    let mounted = true;
-    fetchLandingPlans().then((data) => {
-      if (!mounted) return;
-      setLandingData(data);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -111,6 +100,7 @@ export function Plans() {
           </p>
         </div>
 
+        <PlanDataStatus status={status} locale={locale} retry={retry} />
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
           {plans.map((plan) => {
             const isFeaturedPlan = plan.id === "boost" || plan.id === "dominus";
@@ -165,12 +155,18 @@ export function Plans() {
                     }`}
                   />
                 </div>
-                <div className="font-mono text-[13px] text-foreground/70 mb-4">
+                <div
+                  data-i18n-frozen="true"
+                  className="font-mono text-[13px] text-foreground/70 mb-4"
+                >
                   {plan.id === "trial"
                     ? t("Gratuito")
                     : formatPlanPriceBRL(plan.dynamic.price_monthly, locale)}
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                <p
+                  data-i18n-frozen="true"
+                  className="text-sm text-muted-foreground leading-relaxed mb-6"
+                >
                   {locale === "pt-BR"
                     ? plan.dynamic.short_description || plan.teaser
                     : plan.teaser}

@@ -376,7 +376,9 @@ function mapApiPlanToLegacy(plan: LandingApiPlan): Record<string, unknown> {
 
 export async function fetchLandingPlans() {
   try {
-    const response = await fetch(`${getPlansApiBase()}/api/plans/landing`);
+    const response = await fetch(`${getPlansApiBase()}/api/plans/landing`, {
+      signal: AbortSignal.timeout(15000),
+    });
     if (!response.ok) throw new Error("landing plans unavailable");
     const payload = (await response.json()) as { plans?: LandingApiPlan[] };
     if (!Array.isArray(payload?.plans))
@@ -389,7 +391,10 @@ export async function fetchLandingPlans() {
 
 export async function fetchPlanBySlug(slug: string) {
   try {
-    const response = await fetch(`${getPlansApiBase()}/api/plans/${slug}`);
+    const response = await fetch(
+      `${getPlansApiBase()}/api/plans/${encodeURIComponent(slug)}`,
+      { signal: AbortSignal.timeout(15000) },
+    );
     if (!response.ok) throw new Error("plan unavailable");
     const payload = (await response.json()) as { plan?: LandingApiPlan | null };
     if (!payload?.plan) return null;
